@@ -1,0 +1,36 @@
+/* Página de ACERCA DE NOSOTROS -- estilos  */
+.hero {
+      background: linear-gradient(to right, #fcb045, #fd1d1d, #833ab4);
+      color: rgb(0, 0, 0);
+      padding: 30px 30px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-weight: bold;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: #fd1d1d;
+    }
+
+.footer{
+    background-color: #261E45;
+}
+
+.logo{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+
+}
+
+body {
+    font-family: 'Jost', sans-serif;
+  }
