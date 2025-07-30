@@ -32,5 +32,77 @@
 }
 
 body {
+    background-color: #121212;
     font-family: 'Jost', sans-serif;
+    color: #f4f4f4;
   }
+/* Perfiles responsive */
+.perfiles .container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Tarjeta personal */
+.card-custom {
+  background-color: #1e1e2f;
+  border-radius: 1rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.card-custom:hover {
+  transform: translateY(-5px);
+}
+
+/* Imagen circular */
+.card-img {
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #6c63ff;
+  margin-bottom: 1rem;
+}
+
+/* Información de tarjeta */
+.card-info h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.card-info p {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+/* Redes sociales */
+.social-links a {
+  display: inline-block;
+  margin: 0 0.5rem;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #ffffff;
+}
+
+.social-links i {
+  margin-right: 0.3rem;
+}
+.card-row.center {
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* espacio entre las dos tarjetas */
+  flex-wrap: wrap;
+}
