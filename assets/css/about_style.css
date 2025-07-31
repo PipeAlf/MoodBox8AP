@@ -36,74 +36,191 @@ body {
     font-family: 'Jost', sans-serif;
     color: #f4f4f4;
   }
-  
-/* Perfiles responsive */
-.perfiles .container {
-  max-width: 1200px;
+
+/* SECCIÓN: ¿Quiénes somos?*/
+.who-we-are {
+  background-color: #CEF6DD; /* color neutro claro */
+  padding: 60px 20px;
+  font-family: 'Jost', sans-serif;
+}
+
+.who-we-are h2 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  border-left: 4px solid #F74380;
+  padding-left: 12px;
+  color: #261E45;
+}
+
+.who-we-are p {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+  max-width: 800px;
   margin: auto;
 }
 
-/* Tarjeta personal */
-.card-custom {
-  background-color: #1e1e2f;
-  border-radius: 1rem;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  padding: 2rem;
+/* SECCIÓN: Nuestra Misión*/
+.our-mission {
+  background-color: #ffffff;
+  padding: 60px 20px;
+  font-family: 'Jost', sans-serif;
+}
+
+.our-mission h2 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 50px;
+  color: #261E45;
   text-align: center;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  display: inline-block;
+  background: #08E2E3;
+  color: #fff;
+  border-radius: 12px;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
   transition: transform 0.3s ease;
 }
 
-.card-custom:hover {
-  transform: translateY(-5px);
+.feature-icon:hover {
+  transform: scale(1.1);
 }
 
-/* Imagen circular */
+.our-mission h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.our-mission p {
+  font-size: 0.95rem;
+  color: #555;
+  padding: 0 15px;
+}
+
+/* Perfiles responsive */
+.perfiles {
+  padding: 40px 0;
+}
+
+.col-md-6.col-lg-4 {
+  display: flex;
+  justify-content: center;
+  padding: auto;
+}
+
+/* Tarjeta personal */
+.card-flip {
+  perspective: 1000px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.card-inner {
+  position: relative;
+  height: 300px;
+  width: 250px;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.8s ease;
+  transform-style: preserve-3d;
+}
+
+.card-flip:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  background-color: #261E45;
+  border-radius: 15px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-wrapper {
+  padding: 15px;
+}
+
+/* Imagen cuadrada */
 .card-img {
-  width: 400px;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #6c63ff;
+  max-width: 65%;            
+  height: auto;  
+  object-fit: contain;
+  display: block;
   margin-bottom: 1rem;
+  border-radius: 30px !important;
+  border: 4px solid #08E2E3;
 }
 
-/* Información de tarjeta */
-.card-info h3 {
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
+/* Nombre sobre imagen */
+.card-name {
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  width: 100%;
   color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+  padding-top: 10px;
+  margin: 0;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+/* Reverso */
+.card-back {
+  transform: rotateY(180deg);
+  overflow-y: auto;
 }
 
 .card-info p {
   font-size: 0.95rem;
-  color: #ccc;
+  color: #ffffff;
   margin-bottom: 1rem;
+  text-align: center;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
-/* Redes sociales */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* espacio entre los enlaces */
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
 .social-links a {
-  display: inline-block;
-  margin: 0 0.5rem;
-  color: #aaa;
+  display: inline-flex;
+  align-items: center;
+  color: #ffffff;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 14px;
   transition: color 0.3s ease;
 }
 
 .social-links a:hover {
-  color: #ffffff;
+  color: #F74380;
 }
 
 .social-links i {
-  margin-right: 0.3rem;
-}
-.card-row.center {
-  display: flex;
-  justify-content: center;
-  gap: 2rem; /* espacio entre las dos tarjetas */
-  flex-wrap: wrap;
+  font-size: 25px;
 }
