@@ -1,1 +1,120 @@
 /* Página de CONTACTENOS -- estilos  */
+
+/* CONTACTO */
+.contact-section {
+    max-width: 1000px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ffffff;
+    margin-top: 120px;
+}
+ 
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: white;
+}
+ 
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+ 
+textarea {
+    font-family: Arial, sans-serif;
+    font-size: 1.1em;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+ 
+.contact-section .btn-enviar {
+    margin-top: 15px;
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+ 
+.contact-section .btn-enviar:hover {
+    background-color: #357ab8;
+}
+ 
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+ 
+.info .texto {
+    flex: 1 1 60%;
+}
+ 
+.info .boton {
+    flex: 1 1 30%;
+    display: flex;
+    justify-content: flex-end;
+}
+ 
+.info .boton button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+ 
+.info .boton button:hover {
+    background-color: #666;
+}
+ 
+.info-contacto {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+ 
+.contacto-titulo {
+    color: white;
+}
+.card-header h3 {
+    color: white;
+}
+.card-header {
+    background-color: #ecbadd !important;
+    border-bottom-color: #ebbcda !important;
+}
+.info-contacto .columna {
+    flex: 1;
+    min-width: 250px;
+   
+}
+.info-contacto .columna h3 {
+    color: white;
+}
+ 
+.formulario-contacto {
+    margin-top: 40px;
+}
