@@ -23,6 +23,20 @@ label,
 .form-check-label {
     color: #000 !important; /* Negro */
 }
+
+.form-check {
+    display: flex;
+    align-items: center; /* Centra verticalmente la caja y el texto */
+    gap: 8px; /* Espacio entre el checkbox y el texto */
+}
+
+.form-check-input {
+    margin: 0; /* Elimina márgenes que desplacen la caja */
+}
+
+.form-check-label {
+    margin: 0; /* Alinea el texto con la caja */
+}
  
 input[type="text"],
 input[type="email"],
