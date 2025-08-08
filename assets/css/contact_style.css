@@ -20,13 +20,26 @@ label {
  
 input[type="text"],
 input[type="email"],
+input[type="tel"],
+select,
 textarea {
     width: 100%;
     padding: 10px;
-    border: none;
+    border: 1px solid #ccc; /* Borde gris claro */
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 1em;
+    background-color: #fff; /* Fondo blanco */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto al enfocar */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4a90e2; /* Azul de tu tema */
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
+    outline: none; /* Evita el borde azul extra del navegador */
 }
  
 textarea {
@@ -40,7 +53,20 @@ textarea {
     resize: vertical;
     box-sizing: border-box;
 }
- 
+
+label,
+.form-text,
+.form-check-label {
+    color: #000 !important; /* Negro */
+}
+#contador-caracteres {
+    color: #000; /* Negro por defecto */
+    font-size: 0.9em;
+}
+.contador-total {
+    color: #000;
+}
+
 .contact-section .btn-enviar {
     margin-top: 15px;
     background-color: #4a90e2;
@@ -103,8 +129,8 @@ textarea {
     color: white;
 }
 .card-header {
-    background-color: #ecbadd !important;
-    border-bottom-color: #ebbcda !important;
+    background-color: #FCCCF4 !important;
+    border-bottom-color: #FCCCF4 !important;
 }
 .info-contacto .columna {
     flex: 1;
@@ -117,4 +143,8 @@ textarea {
  
 .formulario-contacto {
     margin-top: 40px;
+}
+#progreso-formulario {
+    background-color: #28a745 !important;
+    transition: width 0.3s ease;
 }
