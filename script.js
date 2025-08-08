@@ -1,106 +1,257 @@
-// JS Formulario
-
 document.addEventListener("DOMContentLoaded", function () {
+
     const formulario = document.getElementById("formulario-contacto");
+
+    if (!formulario) return;
+ 
     const mensajeDiv = document.getElementById("mensaje-confirmacion");
+
     const contadorCaracteres = document.getElementById("contador-caracteres");
-    const mensajeTextarea = document.getElementById("mensaje");
+
     const progresoBar = document.getElementById("progreso-formulario");
+
     const submitBtn = formulario.querySelector('button[type="submit"]');
-    const spinner = submitBtn.querySelector('.spinner-border');
 
-    // Contador de caracteres para el mensaje formulario
-    mensajeTextarea.addEventListener('input', function() {
-        const caracteresActuales = this.value.length;
-        contadorCaracteres.textContent = caracteresActuales;
-        
-        if (caracteresActuales > 800) {
-            contadorCaracteres.style.color = '#ff6b6b';
-        } else if (caracteresActuales > 500) {
-            contadorCaracteres.style.color = '#ffd93d';
-        } else {
-            contadorCaracteres.style.color = '#6bcf7f';
-        }
-    });
+    const spinner = submitBtn?.querySelector('.spinner-border');
+ 
+    // Buscar elementos dentro del form (más seguro)
 
-    // Progreso del formulario
+    const mensajeTextarea = formulario.querySelector('#mensaje');
+
+    const nameInput = formulario.querySelector('#nombre');
+
+    const mailInput = formulario.querySelector('#correo');
+
+    const phoneInput = formulario.querySelector('#telefono');
+ 
+    const max = mensajeTextarea?.maxLength || 800;
+ 
+    // Función robusta de progreso
+
     function actualizarProgreso() {
-        const campos = formulario.querySelectorAll('input[required], select[required], textarea[required]');
-        let camposCompletos = 0;
 
-        campos.forEach(campo => {
+        if (!progresoBar) return;
+ 
+        // solo controles "relevantes" (excluye botones/hidden)
+
+        const camposTodos = formulario.querySelectorAll(
+
+            'input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="hidden"]), select, textarea'
+
+        );
+ 
+        // preferimos contar sólo los required (si existen)
+
+        const requeridos = Array.from(camposTodos).filter(c => c.hasAttribute('required'));
+
+        const listaParaEvaluar = requeridos.length ? requeridos : Array.from(camposTodos);
+ 
+        if (listaParaEvaluar.length === 0) {
+
+            progresoBar.style.width = '0%';
+
+            return;
+
+        }
+ 
+        let completos = 0;
+
+        listaParaEvaluar.forEach(campo => {
+
             if (campo.type === 'checkbox') {
-                if (campo.checked) camposCompletos++;
-            } else if (campo.value.trim() !== '') {
-                camposCompletos++;
+
+                if (campo.checked) completos++;
+
+            } else if (campo.value && campo.value.toString().trim() !== '') {
+
+                completos++;
+
             }
+
+        });
+ 
+        const progreso = (completos / listaParaEvaluar.length) * 100;
+
+        progresoBar.style.width = progreso + '%';
+
+    }
+ 
+    // Escuchar cambios a nivel form (captura todos los inputs/selects/textarea)
+
+    formulario.addEventListener('input', actualizarProgreso);
+
+    formulario.addEventListener('change', actualizarProgreso);
+ 
+    // textarea: contador de caracteres + filtrado de caracteres no permitidos
+
+    if (mensajeTextarea) {
+
+        mensajeTextarea.addEventListener('input', function () {
+
+            // Si quieres permitir más caracteres, ajusta la regex
+
+            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+ 
+            const caracteresActuales = this.value.length;
+
+            if (contadorCaracteres) contadorCaracteres.textContent = caracteresActuales;
+ 
+            if (contadorCaracteres) {
+
+                if (caracteresActuales > max) {
+
+                    contadorCaracteres.style.color = '#ff6b6b';
+
+                } else if (caracteresActuales > max * 0.625) {
+
+                    contadorCaracteres.style.color = '#ffd93d';
+
+                } else {
+
+                    contadorCaracteres.style.color = '#6bcf7f';
+
+                }
+
+            }
+ 
+            // actualizar progreso cuando se escribe en el textarea
+
+            actualizarProgreso();
+
         });
 
-        const progreso = (camposCompletos / campos.length) * 100;
-        progresoBar.style.width = progreso + '%';
     }
+ 
+    // submit: validación + spinner (no hacer prevent si válido)
 
-    // Escuchar cambios en todos los campos requeridos
-    const camposRequeridos = formulario.querySelectorAll('input[required], select[required], textarea[required]');
-    camposRequeridos.forEach(campo => {
-        campo.addEventListener('input', actualizarProgreso);
-        campo.addEventListener('change', actualizarProgreso);
+    formulario.addEventListener('submit', function (event) {
+
+        if (!formulario.checkValidity()) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+        } else {
+
+            // aquí puedes poner la lógica de envío (fetch / email API)
+
+            spinner?.classList.remove('d-none');
+
+            if (submitBtn) submitBtn.disabled = true;
+
+        }
+ 
+        formulario.classList.add('was-validated');
+
     });
+ 
+    // reset: esperar al ciclo para que el navegador limpie los campos
 
-    // Bootstrap Comprobar 
-    formulario.addEventListener('submit', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
+    formulario.addEventListener('reset', function () {
 
-        if (formulario.checkValidity()) {
-            // Mostrar spinner
-            spinner.classList.remove('d-none');
-            submitBtn.disabled = true;
+        this.classList.remove('was-validated');
 
-            // Simular envío
-            setTimeout(() => {
-                // Ocultar spinner
-                spinner.classList.add('d-none');
-                submitBtn.disabled = false;
+        setTimeout(() => {
 
-                // Mostrar mensaje de éxito
-                mensajeDiv.innerHTML = `
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <strong>¡Mensaje enviado exitosamente!</strong> 
-                        Gracias por contactarnos. Te responderemos pronto.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
+            if (contadorCaracteres) {
 
-                // Limpiar formulario
-                formulario.reset();
-                actualizarProgreso();
                 contadorCaracteres.textContent = '0';
+
                 contadorCaracteres.style.color = '#6bcf7f';
 
-                // Scroll al mensaje
-                mensajeDiv.scrollIntoView({ behavior: 'smooth' });
-            }, 2000);
-        }
+            }
 
-        formulario.classList.add('was-validated');
+            actualizarProgreso();
+
+        }, 0);
+
     });
+ 
+    // Validaciones puntuales (solo si existen los inputs)
 
-    // Limpiar validación al resetear
-    formulario.addEventListener('reset', function() {
-        this.classList.remove('was-validated');
-        actualizarProgreso();
-        contadorCaracteres.textContent = '0';
-        contadorCaracteres.style.color = '#6bcf7f';
-    });
+    if (nameInput) {
 
-    // Inicializar tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+        nameInput.addEventListener("input", function () {
 
-    // Progreso inicial
+            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+
+            if (/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$/.test(this.value)) {
+
+                this.classList.add("is-valid");
+
+                this.classList.remove("is-invalid");
+
+            } else {
+
+                this.classList.add("is-invalid");
+
+                this.classList.remove("is-valid");
+
+            }
+
+        });
+
+    }
+ 
+    if (phoneInput) {
+
+        phoneInput.addEventListener("input", function () {
+
+            this.value = this.value.replace(/\D/g, '');
+
+            if (/^\d{7,15}$/.test(this.value)) {
+
+                this.classList.add("is-valid");
+
+                this.classList.remove("is-invalid");
+
+            } else {
+
+                this.classList.add("is-invalid");
+
+                this.classList.remove("is-valid");
+
+            }
+
+        });
+
+    }
+ 
+    if (mailInput) {
+
+        mailInput.addEventListener("input", function () {
+
+            const regex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+            if (regex.test(this.value)) {
+
+                this.classList.add("is-valid");
+
+                this.classList.remove("is-invalid");
+
+            } else {
+
+                this.classList.add("is-invalid");
+
+                this.classList.remove("is-valid");
+
+            }
+
+        });
+
+    }
+ 
+    // tooltips bootstrap (si los usas)
+
+    [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+
+        .map(el => new bootstrap.Tooltip(el));
+ 
+    // estado inicial
+
     actualizarProgreso();
+
 });
+
+ 
