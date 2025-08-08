@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const progresoBar = document.getElementById("progreso-formulario");
     const submitBtn = formulario.querySelector('button[type="submit"]');
     const spinner = submitBtn.querySelector('.spinner-border');
+    const name = document.getElementById("nombre");
+    const mail = document.getElementById("correo");
+    const phone = document.getElementById("telefono");
 
     // Contador de caracteres para el mensaje formulario
     mensajeTextarea.addEventListener('input', function() {
@@ -103,4 +106,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Progreso inicial
     actualizarProgreso();
+
+    //Evitar caracteres especiales o no deseados en el campo de texto
+    const max = mensajeTextarea.maxlength;
+
+    mensajeTextarea.addEventListener("input", function (){
+        const longitud = mensajeTextarea.value.length;
+        contadorCaracteres.textContent =longitud;
+
+        mensajeTextarea.value= mensajeTextarea.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+    })
+
+    //Solo letras en nombre
+    name.addEventListener("input", function(){
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        if (/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$/.test(this.value)) {
+            this.classList.add("is-valid");
+            this.classList.remove("is-invalid");
+        } else {
+            this.classList.add("is-invalid");
+            this.classList.remove("is-valid");
+        }
+    });
+
+    phone.addEventListener("input", function(){
+        this.value = this.value.replace(/\D/g, '');
+        if (/^\d{7,15}$/.test(this.value)) { // mínimo 7, máximo 15 dígitos
+            this.classList.add("is-valid");
+            this.classList.remove("is-invalid");
+        } else {
+            this.classList.add("is-invalid");
+            this.classList.remove("is-valid");
+        } 
+    })
+
+    mail.addEventListener("input", function(){
+        const regex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+        if (!regex.test(this.value)) {
+            this.classList.add("is-invalid");
+            this.classList.remove("is-valid");
+        } else {
+            this.classList.add("is-valid");
+            this.classList.remove("is-invalid");
+        }
+    })
 });
