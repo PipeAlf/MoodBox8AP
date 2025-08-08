@@ -17,6 +17,12 @@ label {
     margin-bottom: 5px;
     color: white;
 }
+
+label,
+.form-text,
+.form-check-label {
+    color: #000 !important; /* Negro */
+}
  
 input[type="text"],
 input[type="email"],
@@ -31,6 +37,11 @@ textarea {
     font-size: 1em;
     background-color: #fff; /* Fondo blanco */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progreso-formulario {
+    background-color: #28a745;
+    transition: width 0.3s ease;
 }
 
 /* Efecto al enfocar */
@@ -129,8 +140,8 @@ label,
     color: white;
 }
 .card-header {
-    background-color: #FCCCF4 !important;
-    border-bottom-color: #FCCCF4 !important;
+    background-color: #261E45 !important;
+    border-bottom-color: #08E2E3 !important;
 }
 .info-contacto .columna {
     flex: 1;
@@ -147,4 +158,25 @@ label,
 #progreso-formulario {
     background-color: #28a745 !important;
     transition: width 0.3s ease;
+}
+
+.accordion-button.custom {
+    background-color: #261E45;
+    color: #CEF6DD;
+    border: none;
+    box-shadow: none; /* quita el sombreado por defecto de Bootstrap */
+}
+
+.accordion-button.custom:hover {
+    background-color: #F74380;
+    color: #261E45;
+}
+
+.accordion-button.custom:not(.collapsed) {
+    background-color: #08E2E3;
+    color: #261E45;
+}
+
+.accordion-button.custom:focus {
+    box-shadow: 0 0 0 0.25rem rgba(8, 226, 227, 0.5); /* sombra con tu cian */
 }

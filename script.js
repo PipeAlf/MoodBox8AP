@@ -88,12 +88,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Limpiar validación al resetear
-    formulario.addEventListener('reset', function() {
-        this.classList.remove('was-validated');
+formulario.addEventListener('reset', function() {
+    this.classList.remove('was-validated');
+    setTimeout(() => {
         actualizarProgreso();
         contadorCaracteres.textContent = '0';
         contadorCaracteres.style.color = '#6bcf7f';
-    });
+    }, 0);
+});
 
     // Inicializar tooltips
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
