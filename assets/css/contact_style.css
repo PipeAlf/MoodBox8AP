@@ -1,5 +1,39 @@
 /* Página de CONTACTENOS -- estilos  */
 
+/* Hero */
+.heroContact {
+    position: relative;
+    height: auto;
+    padding: 3rem 1rem;
+    background: linear-gradient(rgba(44, 44, 44, 0.4), rgba(70, 69, 69, 0.4)), url('../imagenes/heroContact.png') center/cover no-repeat;
+}
+
+.heroContact .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.heroContact .container {
+    position: relative;
+    z-index: 2;
+}
+
+.heroContact p {
+    size: 2rem;
+    margin-top: 1rem;
+    display: inline-block;
+    border-radius: 8px;
+    background-color: rgba(10, 10, 10, 0.479);
+}
+
+.heroContact h1,
+.heroContact p {
+    text-shadow: 10px 10px 20px rgba(0, 0, 0, 0.911);
+}
+
 /* CONTACTO */
 .contact-section {
     max-width: 1000px;
@@ -8,65 +42,58 @@
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 10px #ffffff;
-    margin-top: 120px;
 }
- 
+
 label {
     display: block;
-    margin-top: 15px;
+    margin-top: 12px;
     margin-bottom: 5px;
-    color: white;
+}
+
+.form-label {
+    padding-left: 1rem;
+}
+
+.asterisco {
+    color: red;
+    font-weight: bold;
 }
 
 label,
 .form-text,
 .form-check-label {
-    color: #000 !important; /* Negro */
-}
-
-.form-check {
-    display: flex;
-    align-items: center; /* Centra verticalmente la caja y el texto */
-    gap: 8px; /* Espacio entre el checkbox y el texto */
+    color: #000 !important;
 }
 
 .form-check-input {
-    margin: 0; /* Elimina márgenes que desplacen la caja */
+    width: 18px;
+    height: 18px;
+    border: 2px solid #F74380 !important;
+    border-radius: 4px;
+    background-color: white !important;
+    cursor: pointer;
 }
 
-.form-check-label {
-    margin: 0; /* Alinea el texto con la caja */
+.form-check-input:checked {
+    background-color: #F74380 !important;
+    border-color: #F74380 !important;
 }
- 
+
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 select,
 textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc; /* Borde gris claro */
+    padding: 12px;
+    border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 1em;
-    background-color: #fff; /* Fondo blanco */
+    background-color: #fff;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#progreso-formulario {
-    background-color: #28a745;
-    transition: width 0.3s ease;
-}
-
-/* Efecto al enfocar */
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: #4a90e2; /* Azul de tu tema */
-    box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
-    outline: none; /* Evita el borde azul extra del navegador */
-}
- 
 textarea {
     font-family: Arial, sans-serif;
     font-size: 1.1em;
@@ -79,34 +106,51 @@ textarea {
     box-sizing: border-box;
 }
 
-label,
-.form-text,
-.form-check-label {
-    color: #000 !important; /* Negro */
-}
 #contador-caracteres {
-    color: #000; /* Negro por defecto */
+    color: #000;
     font-size: 0.9em;
 }
+
 .contador-total {
     color: #000;
 }
 
-.contact-section .btn-enviar {
+/* Botones */
+.contact-section .btn-limpiar {
     margin-top: 15px;
-    background-color: #4a90e2;
+    background-color: #F74380;
     color: white;
     padding: 10px 20px;
     font-size: 1em;
-    border: none;
+    border: 0.15rem solid #F74380;
     border-radius: 5px;
     cursor: pointer;
 }
- 
-.contact-section .btn-enviar:hover {
-    background-color: #357ab8;
+
+.contact-section .btn-limpiar:hover {
+    background-color: white;
+    border: 0.15rem solid #F74380;
+    color: #F74380;
 }
- 
+
+.contact-section .btn-enviar {
+    margin-top: 15px;
+    background-color: #08E2E3;
+    color: #261E45;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: 0.15rem solid #08E2E3;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contact-section .btn-enviar:hover {
+    background-color: white;
+    border: 0.15rem solid #08E2E3;
+    color: #261E45;
+}
+
+/* Información adicional */
 .info {
     display: flex;
     justify-content: space-between;
@@ -114,76 +158,84 @@ label,
     flex-wrap: wrap;
     gap: 2rem;
 }
- 
+
 .info .texto {
     flex: 1 1 60%;
 }
- 
+
 .info .boton {
     flex: 1 1 30%;
     display: flex;
     justify-content: flex-end;
 }
- 
-.info .boton button {
-    padding: 12px 24px;
-    font-size: 1rem;
-    background-color: #444;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
- 
-.info .boton button:hover {
-    background-color: #666;
-}
- 
+
 .info-contacto {
     display: flex;
     flex-direction: column;
     gap: 20px;
     margin-top: 20px;
 }
- 
+
 .contacto-titulo {
     color: white;
 }
+
 .card-header h3 {
     color: white;
 }
+
 .card-header {
     background-color: #261E45 !important;
     border-bottom-color: #08E2E3 !important;
 }
+
 .info-contacto .columna {
     flex: 1;
     min-width: 250px;
-   
 }
+
 .info-contacto .columna h3 {
     color: white;
 }
- 
+
 .formulario-contacto {
     margin-top: 40px;
 }
+
+/* Barra de progreso */
 #progreso-formulario {
-    background-color: #28a745 !important;
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, #F74380, #08E2E3) !important;
+    transition: width 0.4s ease;
 }
 
+/*Respuestas*/
+.accordion-body {
+    background-color: white !important;
+    border: 1px solid #e0e0e0; 
+    padding: 1rem;
+}
+
+.accordion-button.custom:focus {
+    box-shadow: 0 0 0 0.25rem rgba(8, 226, 227, 0.5);
+    border: 1px solid #08E2E3;
+}
+
+.accordion-button.custom:not(.collapsed) {
+    border: none;
+}
+
+
+/* Acordeón */
 .accordion-button.custom {
     background-color: #261E45;
-    color: #CEF6DD;
+    color: #ffffff;
     border: none;
-    box-shadow: none; /* quita el sombreado por defecto de Bootstrap */
+    box-shadow: none;
 }
 
 .accordion-button.custom:hover {
     background-color: #F74380;
-    color: #261E45;
+    color: #ffffff;
 }
 
 .accordion-button.custom:not(.collapsed) {
@@ -192,17 +244,5 @@ label,
 }
 
 .accordion-button.custom:focus {
-    box-shadow: 0 0 0 0.25rem rgba(8, 226, 227, 0.5); /* sombra con tu cian */
+    box-shadow: 0 0 0 0.25rem rgba(8, 226, 227, 0.5);
 }
-
-#progreso-formulario {
-    background-color: #28a745;
-    transition: width 0.3s ease;
-}
-
-label,
-.form-text,
-.form-check-label {
-    color: #000 !important; /* Negro */
-}
-
