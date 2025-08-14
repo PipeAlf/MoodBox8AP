@@ -66,17 +66,11 @@ label,
 }
 
 .form-check-input {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #F74380 !important;
-    border-radius: 4px;
-    background-color: white !important;
-    cursor: pointer;
+    margin: 0; /* Elimina márgenes que desplacen la caja */
 }
 
-.form-check-input:checked {
-    background-color: #F74380 !important;
-    border-color: #F74380 !important;
+.form-check-label {
+    margin: 0; /* Alinea el texto con la caja */
 }
 
 input[type="text"],
@@ -94,6 +88,20 @@ textarea {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+#progreso-formulario {
+    background-color: #28a745;
+    transition: width 0.3s ease;
+}
+
+/* Efecto al enfocar */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4a90e2; /* Azul de tu tema */
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
+    outline: none; /* Evita el borde azul extra del navegador */
+}
+ 
 textarea {
     font-family: Arial, sans-serif;
     font-size: 1.1em;
