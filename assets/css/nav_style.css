@@ -1,3 +1,7 @@
+body{
+    padding-top: 10vh;
+}
+
 /* Navar -- estilos  */
 /* Fondo con degradado y sombra */
 .navbar {
@@ -14,7 +18,7 @@
     100% { background-position: 0% 50%; }
 }
 
-/* Logo con efecto suave */ .navbar-brand .nombre { transition: transform 0.3s ease; } .navbar-brand:hover .nombre { transform: scale(1.05); } .navbar-brand .logo { transition: transform 0.3s ease; } .navbar-brand:hover .logo { transform: scale(1.05); }
+/* Logo con efecto suave */ .navbar-brand .nombre { transition: transform 0.3s ease; } .navbar-brand:hover .nombre { transform: scale(0.95); } .navbar-brand .logo { transition: transform 0.3s ease; } .navbar-brand:hover .logo { transform: scale(0.95); }
 
 /* Links del menú */
 .navbar-nav .nav-link {
@@ -83,4 +87,33 @@
 /* Alinear opciones a la derecha */
 .navbar-nav {
     text-align: right;
+}
+@media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
+    .navbar-collapse {
+        justify-content: flex-end !important; /* empuja el menú a la derecha */
+        margin-right: 2.5%;
+    }
+}
+/* Tamaño base del logo */
+.navbar-brand img {
+    max-height: 50px;
+    height: auto;
+    width: auto;
+}
+
+/* Tablet y móvil mediano */
+@media (max-width: 991px) {
+    .navbar-brand img {
+        max-height: 40px;
+    }
+}
+
+/* Móviles muy pequeños como Galaxy S8 */
+@media (max-width: 400px) {
+    .navbar-brand img {
+        max-height: 30px; /* aún más pequeño */
+        max-width: 120px;
+        height: auto;
+        width: auto;
+    }
 }
