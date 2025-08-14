@@ -65,6 +65,12 @@ label,
     color: #000 !important;
 }
 
+.form-check{
+    display: flex;
+    align-items: center; /* Centra verticalmente la caja y el texto */
+    gap: 8px; /* Espacio entre el checkbox y el texto */
+}
+
 .form-check-input {
     width: 18px;
     height: 18px;
@@ -72,6 +78,11 @@ label,
     border-radius: 4px;
     background-color: white !important;
     cursor: pointer;
+    margin: 0; /* Elimina márgenes que desplacen la caja */
+}
+
+.form-check-label {
+    margin: 0; /* Alinea el texto con la caja */
 }
 
 .form-check-input:checked {
