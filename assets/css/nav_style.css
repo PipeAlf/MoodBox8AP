@@ -23,9 +23,11 @@ body{
 /* Links del menú */
 .navbar-nav .nav-link {
     position: relative;
-    font-weight: 500;
+    font-weight: 700;
     color: #333 !important;
     transition: color 0.3s ease;
+    font-family: 'Inria Sans', sans-serif;
+    font-size: 18px;
 }
 
 /* Subrayado animado */
