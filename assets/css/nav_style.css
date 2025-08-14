@@ -7,23 +7,15 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     transition: background 0.3s ease;
 }
- 
+
 @keyframes fondoAnimado {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
- 
-.navbar-nav {
-    margin-right: 100px; /* o padding-right */
-}
- 
-.navbar-brand {
-    left: 100px; /* mueve el logo un poco hacia la derecha */
-}
- 
+
 /* Logo con efecto suave */ .navbar-brand .nombre { transition: transform 0.3s ease; } .navbar-brand:hover .nombre { transform: scale(1.05); } .navbar-brand .logo { transition: transform 0.3s ease; } .navbar-brand:hover .logo { transform: scale(1.05); }
- 
+
 /* Links del menú */
 .navbar-nav .nav-link {
     position: relative;
@@ -31,7 +23,7 @@
     color: #333 !important;
     transition: color 0.3s ease;
 }
- 
+
 /* Subrayado animado */
 .navbar-nav .nav-link::after {
     content: "";
@@ -43,49 +35,48 @@
     background-color: #ff6f61;
     transition: width 0.3s ease;
 }
- 
+
 .navbar-nav .nav-link:hover::after {
     width: 100%;
 }
- 
+
 .navbar-nav .nav-link:hover {
     color: #ff6f61 !important;
 }
- 
+
 /* Botón hamburguesa */
 .navbar-toggler {
     border: none;
 }
- 
+
 .navbar-toggler:focus {
     outline: none;
     box-shadow: none;
 }
- 
+
 /* Logo responsive */
 .logo {
     max-width: 10vw;
     height: auto;
     min-width: 35px;
 }
- 
+
 .nombre {
-    width: auto;
-    max-height: 4vh;
+    max-height: 5vh;
     height: auto;
 }
- 
+
 /* Botón hamburguesa */
 .navbar-toggler {
     border: none;
 }
- 
-/* Menú desplegable flotante
+
+/* Menú desplegable flotante 
 .navbar-collapse {
     background-color: #fff;
     padding: 10px;
     border-radius: 8px;
- 
+
     box-shadow: 0 0 10px #261E45;
 }
 */
@@ -93,4 +84,28 @@
 .navbar-nav {
     text-align: right;
 }
- 
+@media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
+    .navbar-collapse {
+        justify-content: flex-end !important; /* empuja el menú a la derecha */
+    }
+}
+/* Tamaño base del logo */
+.navbar-brand img {
+    max-height: 50px;
+    height: auto;
+    width: auto;
+}
+
+/* Tablet y móvil mediano */
+@media (max-width: 991px) {
+    .navbar-brand img {
+        max-height: 40px;
+    }
+}
+
+/* Móviles muy pequeños como Galaxy S8 */
+@media (max-width: 400px) {
+    .navbar-brand img {
+        max-height: 30px; /* aún más pequeño */
+    }
+}

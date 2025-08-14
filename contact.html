@@ -12,34 +12,30 @@
 </head>
 <body>
 
-<nav class="navbar" >
-    <div class="container" >
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img class="logo me-2" src="./assets/imagenes/Cajita.png" alt="logo" width="40" height="40">
+                <img class="nombre" src="./assets/imagenes/Nombre_MoodBox.png" alt="nombre" height="40">
+            </a>
 
-      <div class="name-logo col-6">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img class="logo me-3 " src="./assets/imagenes/Cajita.png" alt="logo" width="40" height="40">
-            <img class="nombre me-3 col-6" src="./assets/imagenes/Nombre_MoodBox-Photoroom.png" alt="nombre">
-        </a>
-      </div>
-
-      <div class="nav-content col-6 d-flex justify-content-end">
-        <!-- Botón hamburguesa siempre visible -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+            <!-- Botón hamburguesa -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
                 aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-<!-- Menú desplegable alineado a la derecha -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
-            <ul class="navbar-nav mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
-            </ul>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menú de navegación -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
+                </ul>
+            </div>
         </div>
-        
-    </div>
-</nav>
+    </nav>
 
 
     <!-- Formulario de contacto -->

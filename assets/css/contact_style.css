@@ -29,11 +29,11 @@ label,
     align-items: center; /* Centra verticalmente la caja y el texto */
     gap: 8px; /* Espacio entre el checkbox y el texto */
 }
- 
+
 .form-check-input {
     margin: 0; /* Elimina márgenes que desplacen la caja */
 }
- 
+
 .form-check-label {
     margin: 0; /* Alinea el texto con la caja */
 }
@@ -51,6 +51,20 @@ textarea {
     font-size: 1em;
     background-color: #fff; /* Fondo blanco */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#progreso-formulario {
+    background-color: #28a745;
+    transition: width 0.3s ease;
+}
+
+/* Efecto al enfocar */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4a90e2; /* Azul de tu tema */
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
+    outline: none; /* Evita el borde azul extra del navegador */
 }
  
 textarea {
