@@ -1,5 +1,24 @@
-body{
-    padding-top: 10vh;
+body {
+    padding-top: 7vh;
+    font-family: 'Inria Sans', sans-serif !important;
+}
+/* Pantallas medianas (tablet horizontal y portátiles pequeños) */
+@media (max-width: 991px) and (min-width: 768px) {
+    body {
+        padding-top: 70px; /* valor fijo que se ajusta mejor */
+    }
+}
+/* Pantallas pequeñas (móvil) */
+@media (max-width: 768px) {
+    body {
+        padding-top: 7vh; /* sigue siendo relativo */
+    }
+}
+/* Móviles muy pequeños (320px aprox) */
+@media (max-width: 300px) {
+    body {
+        padding-top: 60px; /* valor fijo para evitar hueco */
+    }
 }
 
 /* Navar -- estilos  */
@@ -10,6 +29,7 @@ body{
     animation: fondoAnimado 6s ease-in-out infinite;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     transition: background 0.3s ease;
+    position: relative;
 }
 
 @keyframes fondoAnimado {
@@ -28,6 +48,8 @@ body{
     transition: color 0.3s ease;
     font-family: 'Inria Sans', sans-serif;
     font-size: 18px;
+    font-weight: bold;
+    font-size: 20px;
 }
 
 /* Subrayado animado */
