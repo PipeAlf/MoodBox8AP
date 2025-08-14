@@ -194,3 +194,15 @@ label,
 .accordion-button.custom:focus {
     box-shadow: 0 0 0 0.25rem rgba(8, 226, 227, 0.5); /* sombra con tu cian */
 }
+
+#progreso-formulario {
+    background-color: #28a745;
+    transition: width 0.3s ease;
+}
+
+label,
+.form-text,
+.form-check-label {
+    color: #000 !important; /* Negro */
+}
+
