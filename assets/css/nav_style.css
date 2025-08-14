@@ -1,3 +1,59 @@
+/* Navar -- estilos  */
+/* Fondo con degradado y sombra */
+.navbar {
+    background: linear-gradient(135deg, #acf3f3, #f8d1f1);
+    background-size: 600% 600%;
+    animation: fondoAnimado 6s ease-in-out infinite;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+}
+
+@keyframes fondoAnimado {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Logo con efecto suave */ .navbar-brand .nombre { transition: transform 0.3s ease; } .navbar-brand:hover .nombre { transform: scale(1.05); } .navbar-brand .logo { transition: transform 0.3s ease; } .navbar-brand:hover .logo { transform: scale(1.05); }
+
+/* Links del menú */
+.navbar-nav .nav-link {
+    position: relative;
+    font-weight: 500;
+    color: #333 !important;
+    transition: color 0.3s ease;
+}
+
+/* Subrayado animado */
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #ff6f61;
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ff6f61 !important;
+}
+
+/* Botón hamburguesa */
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 /* Logo responsive */
 .logo {
     max-width: 10vw;
@@ -15,16 +71,41 @@
     border: none;
 }
 
-/* Menú desplegable flotante */
+/* Menú desplegable flotante 
 .navbar-collapse {
     background-color: #fff;
     padding: 10px;
     border-radius: 8px;
-    /* Sombra en todas direcciones */
+
     box-shadow: 0 0 10px #261E45;
 }
-
+*/
 /* Alinear opciones a la derecha */
 .navbar-nav {
     text-align: right;
+}
+@media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
+    .navbar-collapse {
+        justify-content: flex-end !important; /* empuja el menú a la derecha */
+    }
+}
+/* Tamaño base del logo */
+.navbar-brand img {
+    max-height: 50px;
+    height: auto;
+    width: auto;
+}
+
+/* Tablet y móvil mediano */
+@media (max-width: 991px) {
+    .navbar-brand img {
+        max-height: 40px;
+    }
+}
+
+/* Móviles muy pequeños como Galaxy S8 */
+@media (max-width: 400px) {
+    .navbar-brand img {
+        max-height: 30px; /* aún más pequeño */
+    }
 }
