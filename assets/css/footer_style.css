@@ -36,11 +36,29 @@ footer {
     font-size: 25px;
 }
 
+/* Centrar los enlaces en el footer */
 footer ul {
-    margin: 0 10px;
-    font-size: 15px;
-    transition: color 0.3s ease;
-    text-decoration: none;
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    gap: 30px; /* Espacio entre cada enlace */
+    padding: 0;
+    list-style: none;
+}
+
+/* Centrar verticalmente ícono y texto */
+footer ul li {
+    display: flex;
+    align-items: center;
+}
+
+/* Hover en iconos */
+footer ul li i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+footer ul li:hover i {
+    color: #F74380; /* Color rosa al pasar el mouse */
+    transform: scale(1.2); /* Efecto de agrandar un poco */
 }
 
 .footer-line {
