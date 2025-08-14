@@ -1,4 +1,4 @@
-/* Footer -- estilos  */
+/* Footer --- estilos  */
 footer {
     background-color: #261E45;
     padding-top: 100px; /* Aumenta para dejar espacio a la ola */
@@ -57,7 +57,7 @@ footer ul li i {
 }
 
 footer ul li:hover i {
-    color: #F74380; /* Color rosa al pasar el mouse */
+    color: #08E2E3; /* Color rosa al pasar el mouse */
     transform: scale(1.2); /* Efecto de agrandar un poco */
 }
 
