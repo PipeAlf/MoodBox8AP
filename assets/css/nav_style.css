@@ -84,28 +84,3 @@
 .navbar-nav {
     text-align: right;
 }
-@media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
-    .navbar-collapse {
-        justify-content: flex-end !important; /* empuja el menú a la derecha */
-    }
-}
-/* Tamaño base del logo */
-.navbar-brand img {
-    max-height: 50px;
-    height: auto;
-    width: auto;
-}
-
-/* Tablet y móvil mediano */
-@media (max-width: 991px) {
-    .navbar-brand img {
-        max-height: 40px;
-    }
-}
-
-/* Móviles muy pequeños como Galaxy S8 */
-@media (max-width: 400px) {
-    .navbar-brand img {
-        max-height: 30px; /* aún más pequeño */
-    }
-}
