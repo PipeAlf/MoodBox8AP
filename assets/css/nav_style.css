@@ -1,7 +1,24 @@
-body{
+body {
+    padding-top: 7vh;
     font-family: 'Inria Sans', sans-serif !important;
-    padding-top: 8vh;
-
+}
+/* Pantallas medianas (tablet horizontal y portátiles pequeños) */
+@media (max-width: 991px) and (min-width: 768px) {
+    body {
+        padding-top: 70px; /* valor fijo que se ajusta mejor */
+    }
+}
+/* Pantallas pequeñas (móvil) */
+@media (max-width: 768px) {
+    body {
+        padding-top: 7vh; /* sigue siendo relativo */
+    }
+}
+/* Móviles muy pequeños (320px aprox) */
+@media (max-width: 300px) {
+    body {
+        padding-top: 60px; /* valor fijo para evitar hueco */
+    }
 }
 
 /* Navar -- estilos  */
