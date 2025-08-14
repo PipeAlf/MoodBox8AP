@@ -1,25 +1,30 @@
-/* Navbar - botón hamburguesa */
+/* Logo responsive */
+.logo {
+    max-width: 10vw;
+    height: auto;
+    min-width: 35px;
+}
+
+.nombre {
+    max-height: 5vh;
+    height: auto;
+}
+
+/* Botón hamburguesa */
 .navbar-toggler {
     border: none;
 }
 
-/* Panel flotante del menú en escritorio */
-@media (min-width: 992px) {
-    .navbar-collapse {
-        position: absolute;
-        top: 70px;
-        right: -15px; /* mueve más a la derecha */
-        background-color: #fff;
-        width: 250px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        padding: 10px;
-
-        z-index: 1050;
-    }
+/* Menú desplegable flotante */
+.navbar-collapse {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    /* Sombra en todas direcciones */
+    box-shadow: 0 0 10px #261E45;
 }
 
-/* Alinear texto a la derecha */
+/* Alinear opciones a la derecha */
 .navbar-nav {
     text-align: right;
 }
