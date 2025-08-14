@@ -17,31 +17,29 @@
 </head>
 <body>
 
-<!-- Navbar siempre con collapse -->
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img class="logo me-3" src="./assets/imagenes/Cajita.png" alt="logo">
-            <img class="nombre me-3" src="./assets/imagenes/Nombre_MoodBox-Photoroom.png" alt="nombre">
-        </a>
+<nav class="navbar navbar-light bg-light fixed-top">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img class="logo me-2" src="./assets/imagenes/Cajita.png" alt="logo">
+      <img class="nombre" src="./assets/imagenes/Nombre_MoodBox.png" alt="nombre">
+    </a>
 
-        <!-- Botón hamburguesa -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Botón hamburguesa SIEMPRE visible -->
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
 
-        <!-- Menú colapsable -->
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">Contactanos</a></li>
-            </ul>
-        </div>
-    </div>
+  <!-- Menú -->
+  <div class="collapse navbar-collapse" id="navbarContent">
+    <ul class="navbar-nav bg-light p-3 border-top w-100">
+      <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+      <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
+      <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
+    </ul>
+  </div>
 </nav>
-
-
 
 <section class="quienes-somos-section position-relative">
   <!-- Bloque del título -->
