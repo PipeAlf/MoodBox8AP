@@ -1,1 +1,25 @@
-/* Navar -- estilos  */
+/* Navbar - botón hamburguesa */
+.navbar-toggler {
+    border: none;
+}
+
+/* Panel flotante del menú en escritorio */
+@media (min-width: 992px) {
+    .navbar-collapse {
+        position: absolute;
+        top: 70px;
+        right: -15px; /* mueve más a la derecha */
+        background-color: #fff;
+        width: 250px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        padding: 10px;
+
+        z-index: 1050;
+    }
+}
+
+/* Alinear texto a la derecha */
+.navbar-nav {
+    text-align: right;
+}
