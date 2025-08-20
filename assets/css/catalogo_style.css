@@ -77,30 +77,39 @@
 }
 @media (max-width: 576px) {
     .hover-info {
-        width: 95%;               /* Que ocupe casi todo el ancho disponible */
-        top: auto;                /* Quitar el centrado vertical */
-        bottom: 10px;             /* Lo pegamos hacia abajo */
-        left: 50%;
-        transform: translateX(-50%); /* Solo centrado horizontal */
-        font-size: 0.85rem;       /* Texto más compacto */
-        padding: 10px;            /* Menos espacio interno */
+        width: 95%;               
+        top: 50%;                 /* Centrado vertical */
+        left: 50%;                /* Centrado horizontal */
+        transform: translate(-50%, -50%); /* Ajuste al centro */
+        font-size: 0.85rem;       
+        padding: 10px;            
+        text-align: center;       /* Centrar el texto */
+        display: flex;            /* Flexbox para centrar contenido interno */
+        flex-direction: column;   /* Apilar elementos (texto, imagen, botón) */
+        align-items: center;      /* Centrar horizontal */
+        justify-content: center;  /* Centrar vertical */
+        display: none;
     }
-        .hover-info img {
-        max-height: 120px;        /* Limitar la imagen dentro del hover */
+
+    .hover-info img {
+        max-height: 120px;        
         object-fit: cover;
+        margin-bottom: 8px;       /* Separación respecto al texto/botón */
     }
 
     .hover-info button {
         font-size: 0.8rem;
-        padding: 6px 10px;        /* Botón más pequeño */
+        padding: 6px 10px;        
+        margin-top: 6px;          /* Espacio superior */
     }
-     .card-img-top {
-        height: 180px; /* 👈 Más compacta en móviles */
+
+    .card-img-top {
+        height: 180px; 
     }
 
     .card {
-        min-height: auto; /* Se ajusta al contenido */
-        width: 100%;      /* Ocupar todo el ancho */
+        min-height: auto; 
+        width: 100%;      
     }
 }
 .card {
