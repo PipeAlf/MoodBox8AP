@@ -921,3 +921,183 @@
       justify-content: center;
     }
   }
+
+
+
+
+
+
+
+
+
+  /* Layout general */
+body {
+  margin: 0;
+  font-family: 'Inria Sans', sans-serif;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px;
+  background-color: #2c1b47;
+  color: white;
+  transition: transform 0.3s ease, width 0.3s ease;
+  overflow: hidden;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Sidebar colapsado (mini) */
+.sidebar.collapsed {
+  width: 40px; /* sigue visible, solo angosto */
+}
+
+.sidebar.collapsed .profile h3,
+.sidebar.collapsed .menu li a {
+  display: none; /* ocultamos textos */
+}
+
+.sidebar .profile,
+.sidebar .menu {
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .profile,
+.sidebar.collapsed .menu {
+  opacity: 0; /* oculta contenido */
+  pointer-events: none; /* desactiva interacciones */
+}
+
+/* Perfil */
+.profile {
+  text-align: center;
+  padding: 20px 10px;
+  border-bottom: 2px solid transparent;
+}
+
+.profile img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  background: #ccc;
+  object-fit: cover;
+}
+
+.profile h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Menú superior */
+.menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.menu li {
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.menu li:hover {
+  background: #3d2a5e;
+}
+
+/* Separador rosado */
+.menu-separator {
+  height: 2px;
+  background-color: #f74380;
+  margin: 10px 10px;
+}
+
+/* Toggle flecha */
+.toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  background: white;
+  color: #2c1b47;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid #2c1b47;
+  font-size: 20px;
+  font-weight: bold;
+  transform: translateY(-50%);
+  z-index: 1100;
+}
+
+.sidebar.hidden .toggle-btn {
+  right: -20px; /* sigue visible */
+}
+
+/* Contenido principal */
+.content {
+  margin-left: 220px;
+  padding: 80px 20px 80px; /* espacio para nav arriba y footer abajo */
+  flex: 1;
+  transition: margin-left 0.3s;
+}
+
+.sidebar.collapsed ~ .content {
+  margin-left: 70px;
+}
+
+/* Ajuste cuando NO quieres nav/footer (vista admin) */
+.admin-view .content {
+  padding-top: 20px; /* sin nav arriba */
+  padding-bottom: 20px; /* sin footer abajo */
+}
+
+/* Ajuste del nav con sidebar */
+.sidebar ~ .navbar.fixed-top {
+  margin-left: 250px;   /* ancho normal del sidebar */
+  width: calc(100% - 250px);
+  transition: all 0.3s ease;
+  z-index: 1000; /* que quede por encima del sidebar */
+}
+
+.sidebar.collapsed ~ .navbar.fixed-top {
+  margin-left: 40px;   /* ancho del sidebar colapsado */
+  width: calc(100% - 40px);
+}
+
+/* Cuando hay sidebar abierto, empujar nav y footer */
+.sidebar ~ footer {
+  margin-left: 250px;
+  transition: margin-left 0.3s;
+}
+
+.sidebar.collapsed ~ footer {
+  margin-left: 40px;
+}
+
+.sidebar ~ section {
+    margin-left: 250px;
+    transition: margin-left 0.3s;
+}
+
+.sidebar.collapsed ~ section {
+    margin-left: 40px;
+}
+
+.sidebar.collapsed ~ section.py-5  {
+    margin-left: 130px;
+}
