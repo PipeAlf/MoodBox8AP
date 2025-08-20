@@ -1,0 +1,129 @@
+.container h5 {
+    font-size: 32px;
+    color: #F74380; /* Rosa fuerte para destacar los títulos */
+}
+
+.card-titulo {
+    font-weight: bold;
+    color: #261E45; /* Azul oscuro para contraste */
+}
+
+.card-texto {
+    font-size: 0.9rem;
+    color: #261E45; /* Texto principal en azul oscuro */
+}
+
+.card-body {
+    background-color: #FCCCF4; /* Fondo rosa pastel */
+}
+
+.card-img-top {
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-footer svg {
+    margin-right: 4px;
+    fill: #08E2E3; /* Íconos en cyan brillante */
+}
+
+.tarjeta-borde {
+    border: 3px solid #08E2E3; /* Bordes en cyan para resaltar */
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 10px 10px 20px 5px rgba(38, 30, 69, 0.4); /* Sombra con azul oscuro */
+}
+
+.hover-card {
+    overflow: hidden;
+    position: relative;
+}
+
+.hover-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 204, 244, 0.9); /* Fondo rosa pastel translúcido */
+    border: 1px solid #08E2E3;
+    display: none;
+    z-index: 10;
+    border-radius: 10px;
+}
+
+.hover-card:hover .hover-info {
+    display: block;
+    backdrop-filter: blur(10px);
+    background-color: rgba(38, 30, 69, 0.7); /* Fondo azul oscuro con blur */
+    color: #CEF6DD; /* Texto en verde claro */
+}
+
+.btn-custom, .btn-ccustom {
+    background-color: #08E2E3; /* Botón cyan brillante */
+    color: #261E45; /* Texto en azul oscuro */
+    font-weight: bold;
+    border: 2px solid #261E45;
+}
+
+.btn-custom:hover, .btn-ccustom:hover {
+    background-color: #F74380; /* Hover en rosa fuerte */
+    color: #FFFFFF;
+    border: 2px solid #261E45;
+}
+@media (max-width: 576px) {
+    .hover-info {
+        width: 95%;               
+        top: 50%;                 /* Centrado vertical */
+        left: 50%;                /* Centrado horizontal */
+        transform: translate(-50%, -50%); /* Ajuste al centro */
+        font-size: 0.85rem;       
+        padding: 10px;            
+        text-align: center;       /* Centrar el texto */
+        display: flex;            /* Flexbox para centrar contenido interno */
+        flex-direction: column;   /* Apilar elementos (texto, imagen, botón) */
+        align-items: center;      /* Centrar horizontal */
+        justify-content: center;  /* Centrar vertical */
+        display: none;
+    }
+
+    .hover-info img {
+        max-height: 120px;        
+        object-fit: cover;
+        margin-bottom: 8px;       /* Separación respecto al texto/botón */
+    }
+
+    .hover-info button {
+        font-size: 0.8rem;
+        padding: 6px 10px;        
+        margin-top: 6px;          /* Espacio superior */
+    }
+
+    .card-img-top {
+        height: 180px; 
+    }
+
+    .card {
+        min-height: auto; 
+        width: 100%;      
+    }
+}
+.card {
+    transform: scale(0.9); /* 👈 Tamaño base más pequeño (90% del original) */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1); /* 👈 Crece un poco desde el tamaño reducido */
+    box-shadow: 8px 8px 18px 4px rgba(38, 30, 69, 0.35);
+}
+body, .card, .card-body, .card-texto, .hover-info, .btn-custom, .btn-ccustom {
+    font-family: 'Inria Sans', sans-serif;
+}
+.card-titulo, .container h5 {
+    font-family: 'Inria Serif', serif;
+}

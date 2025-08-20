@@ -43,9 +43,11 @@ body {
 /* Links del menú */
 .navbar-nav .nav-link {
     position: relative;
-    font-weight: 500;
+    font-weight: 700;
     color: #333 !important;
     transition: color 0.3s ease;
+    font-family: 'Inria Sans', sans-serif;
+    font-size: 18px;
     font-weight: bold;
     font-size: 20px;
 }
@@ -95,6 +97,27 @@ body {
 /* Botón hamburguesa */
 .navbar-toggler {
     border: none;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Logo responsive */
+.logo {
+    max-width: 40px;
+    height: auto;
+}
+
+.nombre {
+    max-height: 40px;
+    height: auto;
+}
+
+.navbar-toggler {
+    margin-left: auto; /* fuerza el botón a ir a la derecha */
+    border:none;
 }
 
 /* Menú desplegable flotante 
