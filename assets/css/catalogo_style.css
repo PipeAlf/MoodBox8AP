@@ -1,43 +1,181 @@
-.container h5 {
-    font-size: 32px;
-    color: #F74380; /* Rosa fuerte para destacar los títulos */
+/* Reset y base */
+* {
+    box-sizing: border-box;
 }
 
-.card-titulo {
-    font-weight: bold;
-    color: #261E45; /* Azul oscuro para contraste */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Inria Sans', sans-serif;
+    color: #1f2430;
+    background: #f7f7fb;
 }
 
-.card-texto {
-    font-size: 0.9rem;
-    color: #261E45; /* Texto principal en azul oscuro */
+/* Contenedor general */
+.contenedorCatalogo {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
 }
 
-.card-body {
-    background-color: #FCCCF4; /* Fondo rosa pastel */
+/* Panel filtros */
+.panelFiltros {
+    background: #ffffff;
+    border: 1px solid #e6e6ef;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    border-left: 6px solid #261E45;
+    /* morado oscuro */
 }
 
+.tituloPanel {
+    margin: 0 0 8px 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2C003E;
+}
+
+/* Acordeones (details/summary) */
+.bloqueFiltro {
+    border: 1px solid #e6e6ef;
+    border-radius: 10px;
+    margin: 10px 0;
+    background: #fff;
+    overflow: hidden;
+}
+
+.tituloFiltro {
+    cursor: pointer;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    background: linear-gradient(180deg, #f3f6ff, #fff);
+    color: #1f2430;
+}
+
+.tituloFiltro::after {
+    content: "▾";
+    opacity: .7;
+    transition: transform .2s ease;
+}
+
+.bloqueFiltro[open] .tituloFiltro::after {
+    transform: rotate(-180deg);
+}
+
+.contenidoFiltro {
+    padding: 12px 12px 16px 12px;
+    border-top: 1px solid #e6e6ef;
+}
+
+/* Campos (mantengo clases que ya usabas) */
+.etiquetaCampo {
+    display: block;
+    font-size: .9rem;
+    color: #616b7a;
+    margin-bottom: 6px;
+}
+
+.campoTexto,
+.campoNumero,
+select,
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e6e6ef;
+    border-radius: 8px;
+    outline: none;
+}
+
+.campoTexto:focus,
+.campoNumero:focus,
+select:focus,
+.form-control:focus {
+    border-color: #00e5ff;
+    box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.08);
+}
+
+.grupoCamposLinea {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.listaOpciones {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    display: grid;
+    gap: 8px;
+}
+
+.itemOpcion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .95rem;
+}
+
+/* Botones filtros */
+.accionesFiltros {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.btnAplicarFiltros {
+    background-color: #F74380;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 0;
+}
+
+.btnLimpiar {
+    background-color: #08E2E3;
+    color: #261E45;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 0;
+}
+
+/* Área productos */
+.areaProductos {
+    min-height: 300px;
+}
+
+/* Cards: menos altura en imágenes para que se vean más anchas */
 .card-img-top {
-    height: 300px;
+    height: 180px;
+    /* menor altura para que la card se vea más ancha */
     object-fit: cover;
     object-position: center;
 }
 
-.card-footer svg {
-    margin-right: 4px;
-    fill: #08E2E3; /* Íconos en cyan brillante */
+/* Tarjeta: bordes y sombra */
+.tarjeta-borde {
+    border: 2px solid #08E2E3;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.tarjeta-borde {
-    border: 3px solid #08E2E3; /* Bordes en cyan para resaltar */
-    border-radius: 10px;
+.card {
+    height: 100%;
+    transition: transform .25s ease, box-shadow .25s ease;
+    position: relative;
 }
 
 .card:hover {
-    transform: scale(1.02);
-    box-shadow: 10px 10px 20px 5px rgba(38, 30, 69, 0.4); /* Sombra con azul oscuro */
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(38, 30, 69, 0.18);
 }
 
+/* Hover overlay: ahora ocupa la card completa y encaja dentro */
 .hover-card {
     overflow: hidden;
     position: relative;
@@ -45,85 +183,94 @@
 
 .hover-info {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 90%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 204, 244, 0.9); /* Fondo rosa pastel translúcido */
-    border: 1px solid #08E2E3;
-    display: none;
-    z-index: 10;
-    border-radius: 10px;
+    inset: 0;
+    /* ocupa todo el tamaño de la card */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    background: rgba(38, 30, 69, 0.86);
+    /* azul oscuro translúcido */
+    color: #fff;
+    opacity: 0;
+    transform: translateY(8px) scale(.995);
+    transition: opacity .22s ease, transform .22s ease;
+    text-align: center;
 }
 
-.hover-card:hover .hover-info {
-    display: block;
-    backdrop-filter: blur(10px);
-    background-color: rgba(38, 30, 69, 0.7); /* Fondo azul oscuro con blur */
-    color: #CEF6DD; /* Texto en verde claro */
+/* al hacer hover o foco, aparece con transición */
+.hover-card:hover .hover-info,
+.hover-card:focus-within .hover-info {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
-.btn-custom, .btn-ccustom {
-    background-color: #08E2E3; /* Botón cyan brillante */
-    color: #261E45; /* Texto en azul oscuro */
-    font-weight: bold;
+.hover-info img {
+    max-height: 120px;
+    width: auto;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.hover-info h6 {
+    margin: 0;
+    font-weight: 700;
+    color: #fff;
+}
+
+.hover-info p {
+    margin: 0;
+    font-weight: 600;
+    color: #dfeff2;
+}
+
+.btn-custom {
+    background-color: #08E2E3;
+    color: #261E45;
+    font-weight: 700;
     border: 2px solid #261E45;
 }
 
-.btn-custom:hover, .btn-ccustom:hover {
-    background-color: #F74380; /* Hover en rosa fuerte */
-    color: #FFFFFF;
-    border: 2px solid #261E45;
+.btn-custom:hover {
+    background-color: #F74380;
+    color: #fff;
 }
+
+/* Badges y textos */
+.card-titulo {
+    font-weight: 700;
+    color: #261E45;
+    font-family: 'Inria Serif', serif;
+}
+
+.card-texto {
+    font-size: .95rem;
+    color: #261E45;
+}
+
+.textoEspacioProductos {
+    color: #616b7a;
+}
+
+/* Responsive: en móviles overlay queda como panel inferior */
 @media (max-width: 576px) {
+    .card-img-top {
+        height: 140px;
+    }
+
     .hover-info {
-        width: 95%;               
-        top: 50%;                 /* Centrado vertical */
-        left: 50%;                /* Centrado horizontal */
-        transform: translate(-50%, -50%); /* Ajuste al centro */
-        font-size: 0.85rem;       
-        padding: 10px;            
-        text-align: center;       /* Centrar el texto */
-        display: flex;            /* Flexbox para centrar contenido interno */
-        flex-direction: column;   /* Apilar elementos (texto, imagen, botón) */
-        align-items: center;      /* Centrar horizontal */
-        justify-content: center;  /* Centrar vertical */
-        display: none;
+        top: auto;
+        bottom: 0;
+        height: auto;
+        inset: auto 8px 8px 8px;
+        /* deja pequeños márgenes para que no toque bordes */
+        border-radius: 8px;
+        transform: translateY(6px) scale(.995);
     }
 
     .hover-info img {
-        max-height: 120px;        
-        object-fit: cover;
-        margin-bottom: 8px;       /* Separación respecto al texto/botón */
+        max-height: 90px;
     }
-
-    .hover-info button {
-        font-size: 0.8rem;
-        padding: 6px 10px;        
-        margin-top: 6px;          /* Espacio superior */
-    }
-
-    .card-img-top {
-        height: 180px; 
-    }
-
-    .card {
-        min-height: auto; 
-        width: 100%;      
-    }
-}
-.card {
-    transform: scale(0.9); /* 👈 Tamaño base más pequeño (90% del original) */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: scale(1); /* 👈 Crece un poco desde el tamaño reducido */
-    box-shadow: 8px 8px 18px 4px rgba(38, 30, 69, 0.35);
-}
-body, .card, .card-body, .card-texto, .hover-info, .btn-custom, .btn-ccustom {
-    font-family: 'Inria Sans', sans-serif;
-}
-.card-titulo, .container h5 {
-    font-family: 'Inria Serif', serif;
 }
