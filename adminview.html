@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="./assets/css/nav_style.css">
+    <link rel="stylesheet" href="./assets/css/footer_style.css">
+    <link rel="stylesheet" href="./assets/css/admin_style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img class="logo me-2" src="./assets/imagenes/Cajita.png" alt="logo" width="40" height="40">
+                <img class="nombre" src="./assets/imagenes/Nombre_MoodBox.png" alt="nombre" height="40">
+            </a>
+
+            <!-- Botón hamburguesa -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menú de navegación -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+    <div class="container mt-5 pt-5">
+  <!-- Botones de navegación -->
+  <div class="d-flex justify-content-center gap-3 mb-4">
+  <button class="btn btn-primary" data-seccion="dashboard">Dashboard de Productos</button>
+  <button class="btn btn-success" data-seccion="agregar">Agregar Producto</button>
+  <button class="btn btn-warning" data-seccion="usuarios">Usuarios Registrados</button>
+  <button class="btn btn-danger" data-seccion="compras">Compras Realizadas</button>
+</div>
+
+
+  <!-- Sección: Dashboard -->
+  <div id="dashboard" class="seccion-admin">
+    <!-- Header del Dashboard -->
+    <div class="dashboard-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="dashboard-title mb-2">Dashboard de Productos</h2>
+          <p class="dashboard-subtitle text-muted">Gestiona tu inventario de productos de manera eficiente</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="stats-card stats-primary">
+            <div class="stats-icon">
+              <i class="bi bi-box-seam"></i>
+            </div>
+            <div class="stats-content">
+              <h3 class="stats-number" id="totalProductos">0</h3>
+              <p class="stats-label">Total Productos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros y Búsqueda -->
+    <div class="dashboard-controls mb-4">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="search-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="form-control search-input" id="buscarProducto" placeholder="Buscar productos...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="filtroCategoria" class="form-label visually-hidden">Filtrar por categoría</label>
+          <select class="form-select" id="filtroCategoria" aria-label="Filtrar por categoría">
+            <option value="">Todas las categorías</option>
+            <option value="Electrónica">Electrónica</option>
+            <option value="Hogar">Hogar</option>
+            <option value="Juguetes">Juguetes</option>
+            <option value="Ropa">Ropa</option>
+            <option value="Alimentos">Alimentos</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="ordenarPor" class="form-label visually-hidden">Ordenar por</label>
+          <select class="form-select" id="ordenarPor" aria-label="Ordenar por">
+            <option value="nombre">Ordenar por nombre</option>
+            <option value="precio">Ordenar por precio</option>
+            <option value="stock">Ordenar por stock</option>
+            <option value="fecha">Ordenar por fecha</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido del Dashboard -->
+    <div class="dashboard-content">
+      <div class="row" id="listaProductos">
+        <!-- Los productos se renderizarán aquí -->
+      </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state d-none" id="emptyState">
+      <div class="empty-state-content text-center">
+        <div class="empty-state-icon">
+          <i class="bi bi-box-seam"></i>
+        </div>
+        <h4 class="empty-state-title">No hay productos</h4>
+        <p class="empty-state-description">Comienza agregando tu primer producto al catálogo</p>
+        <button class="btn btn-primary btn-lg" onclick="mostrarSeccion('agregar')">
+          <i class="bi bi-plus-circle me-2"></i>Agregar Producto
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- Sección: Agregar Producto -->
+  <div id="agregar" class="seccion-admin d-none">
+    <!-- Header del Formulario -->
+    <div class="form-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="form-title mb-2">Agregar Nuevo Producto</h2>
+          <p class="form-subtitle text-muted">Completa la información del producto para agregarlo al catálogo</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="form-stats-card">
+            <div class="form-stats-icon">
+              <i class="bi bi-plus-circle"></i>
+            </div>
+            <div class="form-stats-content">
+              <h3 class="form-stats-number" id="totalProductosForm">0</h3>
+              <p class="form-stats-label">Productos en catálogo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-container">
+      <form id="formProducto">
+        <div class="row g-4">
+          <!-- Columna Izquierda -->
+          <div class="col-lg-8">
+            <div class="form-section">
+              <h4 class="form-section-title">
+                <i class="bi bi-info-circle me-2"></i>Información Básica
+              </h4>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="nombreProducto" placeholder="Nombre del producto" required>
+                    <label for="nombreProducto">Nombre del producto</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="number" class="form-control" id="precioProducto" placeholder="Precio" step="0.01" required>
+                    <label for="precioProducto">Precio</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-floating">
+                    <textarea class="form-control" id="descripcionProducto" placeholder="Descripción del producto" style="height: 100px"></textarea>
+                    <label for="descripcionProducto">Descripción</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">
+                <i class="bi bi-box-seam me-2"></i>Inventario y Códigos
+              </h4>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="number" class="form-control" id="stockProducto" placeholder="Stock disponible" required>
+                    <label for="stockProducto">Stock disponible</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="codigoProducto" placeholder="Código SCU" required>
+                    <label for="codigoProducto">Código SCU</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">
+                <i class="bi bi-tags me-2"></i>Categorías
+              </h4>
+              <div class="categorias-container">
+                <div class="categorias-tags" id="categoriasTags"></div>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="categoriaInput" placeholder="Escribe una categoría y presiona Enter">
+                  <button type="button" class="btn btn-outline-primary" id="agregarCategoria">
+                    <i class="bi bi-plus-circle me-2"></i>Agregar
+                  </button>
+                </div>
+                <div class="form-text">Escribe categorías y presiona Enter o el botón para agregarlas. Haz clic en una etiqueta para eliminarla.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Derecha -->
+          <div class="col-lg-4">
+            <div class="form-section">
+              <h4 class="form-section-title">
+                <i class="bi bi-image me-2"></i>Imagen del Producto
+              </h4>
+              
+              <div class="image-upload-container">
+                <div class="image-preview" id="imagePreview">
+                  <i class="bi bi-image text-muted"></i>
+                  <p class="text-muted">Vista previa de imagen</p>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="imagenArchivo" class="form-label">Subir archivo</label>
+                  <input type="file" class="form-control" id="imagenArchivo" accept="image/*" aria-label="Seleccionar imagen del producto">
+                </div>
+                
+                <div class="mb-3">
+                  <label for="imagenUrl" class="form-label">O URL de imagen</label>
+                  <input type="url" class="form-control" id="imagenUrl" placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">
+                <i class="bi bi-check-circle me-2"></i>Acciones
+              </h4>
+              
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-check-circle me-2"></i>Guardar Producto
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="mostrarSeccion('dashboard')">
+                  <i class="bi bi-arrow-left me-2"></i>Volver al Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sección: Usuarios -->
+  <div id="usuarios" class="seccion-admin d-none">
+    <!-- Header del Dashboard de Usuarios -->
+    <div class="dashboard-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="dashboard-title mb-2">Usuarios Registrados</h2>
+          <p class="dashboard-subtitle text-muted">Gestiona y visualiza la información de todos los usuarios del sistema</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="stats-card stats-success">
+            <div class="stats-icon">
+              <i class="bi bi-people"></i>
+            </div>
+            <div class="stats-content">
+              <h3 class="stats-number" id="totalUsuarios">0</h3>
+              <p class="stats-label">Total Usuarios</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles de Usuarios -->
+    <div class="dashboard-controls mb-4">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="search-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="form-control search-input" id="buscarUsuario" placeholder="Buscar usuarios...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="filtroEstadoUsuario" class="form-label visually-hidden">Filtrar por estado</label>
+          <select class="form-select" id="filtroEstadoUsuario" aria-label="Filtrar por estado">
+            <option value="">Todos los estados</option>
+            <option value="activo">Activos</option>
+            <option value="inactivo">Inactivos</option>
+            <option value="pendiente">Pendientes</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="ordenarUsuarios" class="form-label visually-hidden">Ordenar usuarios</label>
+          <select class="form-select" id="ordenarUsuarios" aria-label="Ordenar usuarios">
+            <option value="nombre">Ordenar por nombre</option>
+            <option value="fecha">Ordenar por fecha</option>
+            <option value="email">Ordenar por email</option>
+            <option value="estado">Ordenar por estado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Usuarios -->
+    <div class="dashboard-content">
+      <div class="row" id="listaUsuarios">
+        <!-- Usuarios de ejemplo -->
+        <div class="col-lg-6 col-xl-4">
+          <div class="user-card">
+            <div class="user-avatar">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="user-info">
+              <h4 class="user-name">Juan Pérez</h4>
+              <p class="user-email">juan.perez@email.com</p>
+              <div class="user-status active">Activo</div>
+              <div class="user-details">
+                <span><i class="bi bi-calendar3"></i> Registrado: 15/01/2025</span>
+                <span><i class="bi bi-geo-alt"></i> Ciudad de México</span>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-sm btn-outline-primary" aria-label="Ver usuario">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-warning" aria-label="Editar usuario">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" aria-label="Eliminar usuario">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-xl-4">
+          <div class="user-card">
+            <div class="user-avatar">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="user-info">
+              <h4 class="user-name">María García</h4>
+              <p class="user-email">maria.garcia@email.com</p>
+              <div class="user-status active">Activo</div>
+              <div class="user-details">
+                <span><i class="bi bi-calendar3"></i> Registrado: 20/01/2025</span>
+                <span><i class="bi bi-geo-alt"></i> Guadalajara</span>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-sm btn-outline-primary" aria-label="Ver usuario">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-warning" aria-label="Editar usuario">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" aria-label="Eliminar usuario">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-xl-4">
+          <div class="user-card">
+            <div class="user-avatar">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="user-info">
+              <h4 class="user-name">Carlos López</h4>
+              <p class="user-email">carlos.lopez@email.com</p>
+              <div class="user-status inactive">Inactivo</div>
+              <div class="user-details">
+                <span><i class="bi bi-calendar3"></i> Registrado: 10/01/2025</span>
+                <span><i class="bi bi-geo-alt"></i> Monterrey</span>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-sm btn-outline-primary" aria-label="Ver usuario">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-warning" aria-label="Editar usuario">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" aria-label="Eliminar usuario">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado vacío para usuarios -->
+    <div class="empty-state d-none" id="emptyStateUsuarios">
+      <div class="empty-state-content text-center">
+        <div class="empty-state-icon">
+          <i class="bi bi-people"></i>
+        </div>
+        <h4 class="empty-state-title">No hay usuarios registrados</h4>
+        <p class="empty-state-description">Aún no se han registrado usuarios en el sistema</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección: Compras -->
+  <div id="compras" class="seccion-admin d-none">
+    <!-- Header del Dashboard de Compras -->
+    <div class="dashboard-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="dashboard-title mb-2">Compras Realizadas</h2>
+          <p class="dashboard-subtitle text-muted">Monitorea y analiza todas las transacciones del sistema</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="stats-card stats-danger">
+            <div class="stats-icon">
+              <i class="bi bi-cart-check"></i>
+            </div>
+            <div class="stats-content">
+              <h3 class="stats-number" id="totalCompras">0</h3>
+              <p class="stats-label">Total Compras</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles de Compras -->
+    <div class="dashboard-controls mb-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="search-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="form-control search-input" id="buscarCompra" placeholder="Buscar compras...">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <label for="filtroEstadoCompra" class="form-label visually-hidden">Filtrar por estado</label>
+          <select class="form-select" id="filtroEstadoCompra" aria-label="Filtrar por estado">
+            <option value="">Todos</option>
+            <option value="completada">Completadas</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="cancelada">Canceladas</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="ordenarCompras" class="form-label visually-hidden">Ordenar compras</label>
+          <select class="form-select" id="ordenarCompras" aria-label="Ordenar compras">
+            <option value="fecha">Por fecha</option>
+            <option value="total">Por total</option>
+            <option value="usuario">Por usuario</option>
+            <option value="producto">Por producto</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <div class="date-range-container">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+              <input type="date" class="form-control" id="fechaInicio" aria-label="Fecha de inicio">
+              <span class="input-group-text">a</span>
+              <input type="date" class="form-control" id="fechaFin" aria-label="Fecha de fin">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de Compras -->
+    <div class="compras-summary mb-4">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="summary-card summary-primary">
+            <div class="summary-icon">
+              <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div class="summary-content">
+              <h4 class="summary-number" id="totalVentas">$0</h4>
+              <p class="summary-label">Total Ventas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="summary-card summary-success">
+            <div class="summary-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <div class="summary-content">
+              <h4 class="summary-number" id="promedioCompra">$0</h4>
+              <p class="summary-label">Promedio por Compra</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="summary-card summary-warning">
+            <div class="summary-icon">
+              <i class="bi bi-people"></i>
+            </div>
+            <div class="summary-content">
+              <h4 class="summary-number" id="usuariosUnicos">0</h4>
+              <p class="summary-label">Usuarios Únicos</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="summary-card summary-info">
+            <div class="summary-icon">
+              <i class="bi bi-box-seam"></i>
+            </div>
+            <div class="summary-content">
+              <h4 class="summary-number" id="productosVendidos">0</h4>
+              <p class="summary-label">Productos Vendidos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Compras -->
+    <div class="dashboard-content">
+      <div class="compras-table-container">
+        <div class="table-responsive">
+          <table class="table table-hover compras-table">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Productos</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Total</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="listaCompras">
+              <!-- Compra de ejemplo -->
+              <tr class="compra-row">
+                <td>1</td>
+                <td>
+                  <div class="user-compra">
+                    <div class="user-avatar-small">
+                      <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div class="user-info-compra">
+                      <strong>usuario@example.com</strong>
+                      <small class="text-muted d-block">Cliente Regular</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="productos-compra">
+                    <span class="producto-tag">Artículo 3</span>
+                    <span class="producto-tag">Artículo 7</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="fecha-compra">
+                    <i class="bi bi-calendar3 text-primary"></i>
+                    20/08/2025
+                  </div>
+                </td>
+                <td>
+                  <span class="badge bg-success">Completada</span>
+                </td>
+                <td>
+                  <strong class="text-success">$150</strong>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-primary" aria-label="Ver detalles">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-warning" aria-label="Editar compra">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" aria-label="Cancelar compra">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado vacío para compras -->
+    <div class="empty-state d-none" id="emptyStateCompras">
+      <div class="empty-state-content text-center">
+        <div class="empty-state-icon">
+          <i class="bi bi-cart-check"></i>
+        </div>
+        <h4 class="empty-state-title">No hay compras registradas</h4>
+        <p class="empty-state-description">Aún no se han realizado compras en el sistema</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="text-white text-left py-4 mt-5 position-relative">
+        <div class="container-fluid px-4">
+            <div class="footer-wave">
+                <svg viewBox="0 0 1440 150" preserveAspectRatio="none" class="wave-svg">
+                    <path fill="#F74380"
+                        d="M0,96C120,64,240,32,360,48C480,64,600,128,720,128C840,128,960,64,1080,48C1200,32,1320,64,1440,96L1440,0L0,0Z">
+                    </path>
+                </svg>
+            </div>
+            <div class="footer-content position-relative z-1">
+                <p class="fw-bold text-left" id="MoodBox">MoodBox8ap</p>
+                <ul class="list-unstyled d-flex gap-4">
+                    <li class="d-flex align-items-center">
+                        <i class="bi bi-github me-2 fs-4"></i>
+                        <a href="https://github.com/PipeAlf/MoodBox8AP" target="_blank"
+                            class="text-white text-decoration-none">github.com/PipeAlf/MoodBox8AP</a>
+                    </li>
+                    <li class="d-flex align-items-center">
+                        <i class="bi bi-whatsapp me-2 fs-4"></i>
+                        <a href="https://www.whatsapp.com/?lang=es_LA" target="_blank"
+                            class="text-white text-decoration-none">+1 202-918-2132</a>
+                    </li>
+                    <li class="d-flex align-items-center">
+                        <i class="bi bi-envelope-fill me-2 fs-4"></i>
+                        <a href="mailto:moodboxsap@gmail.com"
+                            class="text-white text-decoration-none">moodboxsap@gmail.com</a>
+                    </li>
+                </ul>
+
+                <div class="footer-line"></div>
+                <p class="footer-copy">© 2025 Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+    <script src="scriptAdminCatalogo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
