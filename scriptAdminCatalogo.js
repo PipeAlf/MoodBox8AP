@@ -747,3 +747,36 @@ const sidebar = document.getElementById("sidebar");
       sidebar.classList.toggle("collapsed");
       toggleBtn.innerHTML = sidebar.classList.contains("collapsed") ? ">" : "<";
     });
+
+
+
+
+    document.getElementById("guardarCambios").addEventListener("click", function () {
+      // Obtener valores de los inputs
+      const nuevoNombre = document.getElementById("inputNombre").value;
+      const nuevoCorreo = document.getElementById("inputCorreo").value;
+      const nuevaPassword = document.getElementById("inputPassword").value;
+      const nuevaFoto = document.getElementById("inputFoto").files[0];
+   
+      // Cambiar el nombre en el sidebar
+      document.querySelector(".profile h3").textContent = nuevoNombre;
+   
+      // Cambiar la foto en el modal y en el sidebar
+      if (nuevaFoto) {
+        const lector = new FileReader();
+        lector.onload = function (e) {
+          document.getElementById("fotoPerfil").src = e.target.result;
+          document.querySelector(".profile img").src = e.target.result;
+        };
+        lector.readAsDataURL(nuevaFoto);
+      }
+   
+      // (Opcional) Aquí podrías actualizar el correo o password en tu base de datos
+      // pero por ahora solo lo mostramos en consola
+      console.log("Correo actualizado:", nuevoCorreo);
+      console.log("Contraseña nueva:", nuevaPassword);
+   
+      // Cerrar el modal después de guardar
+      const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
+      modal.hide();
+    });

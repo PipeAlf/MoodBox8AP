@@ -18,27 +18,165 @@
 
 <body>
 
-  <!-- Menu Admin -->
-<div class="sidebar" id="sidebar">
-  <div>
-    <div class="profile">
-      <img src="./assets/imagenes/logo.png" alt="Foto de perfil">
-      <h3>ADMIN</h3>
+  <div class="sidebar" id="sidebar">
+    <div>
+      <div class="profile">
+        <img src="./assets/imagenes/Admin.jpg" alt="Foto de perfil" />
+        <h3>ADMIN</h3>
+      </div>
+      <ul class="menu">
+        <li>
+          <a
+            href="#"
+            class="text-white text-decoration-none"
+            data-bs-toggle="modal"
+            data-bs-target="#perfilModal"
+          >
+            Perfil
+          </a>
+        </li>
+        <ul class="menu">
+          <li>
+            <a
+              href="#"
+              class="text-white text-decoration-none"
+              data-bs-toggle="modal"
+              data-bs-target="#perfilModal"
+            >
+              Cerrar Sesión
+            </a>
+          </li>
+      </ul>
+      <div class="menu-separator"></div>
+      <ul class="menu">
+        <li>
+          <a
+            href="./adminview.html"
+            class="text-white text-decoration-none"
+            >Administracion</a
+          >
+        </li>
+        <li>
+          <a
+            href="./about.html"
+            class="text-white text-decoration-none"
+            >Equipo</a
+          >
+        </li>
+        <li>
+          <a
+            href="./contact.html"
+            class="text-white text-decoration-none"
+            >Contáctanos</a
+          >
+        </li>
+        <li>
+          <a
+            href="./catalogo.html"
+            class="text-white text-decoration-none"
+            >Catálogo</a
+          >
+        </li>
+      </ul>
     </div>
-    <ul class="menu">
-      <li><a href="#" class="text-white text-decoration-none" onclick="mostrarSeccion('dashboard')"><i class="bi bi-speedometer2"></i>Dashboard</a></li>
-      <li><a href="#" class="text-white text-decoration-none" onclick="mostrarSeccion('agregar')"><i class="bi bi-plus-circle"></i>Agregar Producto</a></li>
-      <li><a href="#" class="text-white text-decoration-none" onclick="mostrarSeccion('usuarios')"><i class="bi bi-people"></i>Usuarios</a></li>
-      <li><a href="#" class="text-white text-decoration-none" onclick="mostrarSeccion('compras')"><i class="bi bi-cart-check"></i>Compras</a></li>
-    </ul>
-    <div class="menu-separator"></div>
-    <ul class="menu">
-      <li><a href="#" class="text-white text-decoration-none"><i class="bi bi-person-circle"></i>Perfil</a></li>
-      <li><a href="#" class="text-white text-decoration-none"><i class="bi bi-box-arrow-right"></i>Cerrar Sesión</a></li>
-    </ul>
+    <div class="toggle-btn" id="toggleBtn">&lt;</div>
   </div>
-  <div class="toggle-btn" id="toggleBtn">&lt;</div>
-</div>
+
+
+  <div
+    class="modal fade"
+    id="perfilModal"
+    tabindex="-1"
+    aria-labelledby="perfilModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="perfilModalLabel">
+            Perfil del Usuario
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body text-center">
+          <!-- Foto actual -->
+          <img
+            id="fotoPerfil"
+            src="./assets/imagenes/Admin.jpg"
+            alt="Foto de perfil"
+            class="rounded-circle mb-3"
+            width="120"
+            height="120"
+          />
+
+          <!-- Formulario -->
+          <form id="perfilForm">
+            <div class="mb-3">
+              <label class="form-label">Cambiar Foto</label>
+              <input
+                type="file"
+                class="form-control"
+                id="inputFoto"
+                accept="image/*"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input
+                type="text"
+                class="form-control"
+                id="inputNombre"
+                value="Admin"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Correo</label>
+              <input
+                type="email"
+                class="form-control"
+                id="inputCorreo"
+                value="admin@ejemplo.com"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nueva Contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                placeholder="********"
+              />
+            </div>
+          </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+          <button type="button" class="btn btn-primary" id="guardarCambios">
+            Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
