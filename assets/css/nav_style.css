@@ -136,7 +136,6 @@ body {
 @media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
     .navbar-collapse {
         justify-content: flex-end !important; /* empuja el menú a la derecha */
-        margin-right: 2.5%;
     }
 }
 /* Tamaño base del logo */
@@ -157,8 +156,5 @@ body {
 @media (max-width: 400px) {
     .navbar-brand img {
         max-height: 30px; /* aún más pequeño */
-        max-width: 120px;
-        height: auto;
-        width: auto;
     }
 }

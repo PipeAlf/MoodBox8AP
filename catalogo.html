@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Contacto</title>
+    <title>Catalogo</title>
     <link rel="stylesheet" href="./assets/css/nav_style.css">
     <link rel="stylesheet" href="./assets/css/contact_style.css">
     <link rel="stylesheet" href="./assets/css/footer_style.css">
@@ -42,8 +42,151 @@
 
 
 
+    <main class="container contenedorCatalogo mt-4" style="padding-top:72px;">
 
-    <!-- Footer -->
+      <div class="row gx-3">
+
+      <!-- Panel de filtros (sin cambiar estructura) -->
+      <aside class="col-md-3">
+        <div id="panelFiltrosCollapse" class="panelFiltros collapse show">
+          <h2 class="tituloPanel">Filtros del catálogo</h2>
+
+          <form class="formFiltros" aria-label="Filtros del catálogo">
+            <details class="bloqueFiltro" open>
+              <summary class="tituloFiltro">Búsqueda y orden</summary>
+              <div class="contenidoFiltro">
+                <label for="buscarProducto" class="etiquetaCampo">Buscar producto</label>
+                <input id="buscarProducto" class="campoTexto form-control" type="search" placeholder="Escribe el nombre..." />
+
+                <div class="grupoCamposLinea mt-2">
+                  <div class="campoSelect">
+                    <label for="ordenarPorCampo" class="etiquetaCampo">Ordenar por</label>
+                    <select id="ordenarPorCampo" class="form-select form-select-sm">
+                      <option value="catalogo">Página catálogo</option>
+                      <option value="nombre">Nombre</option>
+                      <option value="precio">Precio</option>
+                    </select>
+                  </div>
+
+                  <div class="campoSelect">
+                    <label for="ordenarDireccion" class="etiquetaCampo">Dirección</label>
+                    <select id="ordenarDireccion" class="form-select form-select-sm">
+                      <option value="asc">Ascendente</option>
+                      <option value="desc">Descendente</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="bloqueFiltro">
+              <summary class="tituloFiltro">Colores</summary>
+              <div class="contenidoFiltro">
+                <ul class="listaOpciones">
+                  <li class="itemOpcion"><input type="checkbox" id="colorNegro" /> <label for="colorNegro">Negro</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="colorBlanco" /> <label for="colorBlanco">Blanco</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="colorAzul" /> <label for="colorAzul">Azul</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="colorRojo" /> <label for="colorRojo">Rojo</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="colorVerde" /> <label for="colorVerde">Verde</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="colorAmarillo" /> <label for="colorAmarillo">Amarillo</label></li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="bloqueFiltro">
+              <summary class="tituloFiltro">Subcategorías</summary>
+              <div class="contenidoFiltro">
+                <label for="subcategoriaSeleccionada" class="etiquetaCampo">Elige una</label>
+                <select id="subcategoriaSeleccionada" class="form-select form-select-sm">
+                  <option value="todas">Todas las subcategorías</option>
+                  <option value="camisas">Camisas</option>
+                  <option value="pantalones">Pantalones</option>
+                  <option value="accesorios">Accesorios</option>
+                  <option value="otros">Otros</option>
+                </select>
+              </div>
+            </details>
+
+            <details class="bloqueFiltro">
+              <summary class="tituloFiltro">Etiqueta</summary>
+              <div class="contenidoFiltro">
+                <ul class="listaOpciones">
+                  <li class="itemOpcion"><input type="checkbox" id="etiquetaNuevo" /> <label for="etiquetaNuevo">Nuevo</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="etiquetaDestacado" /> <label for="etiquetaDestacado">Destacado</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="etiquetaOferta" /> <label for="etiquetaOferta">Oferta</label></li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="bloqueFiltro">
+              <summary class="tituloFiltro">Temáticas</summary>
+              <div class="contenidoFiltro">
+                <ul class="listaOpciones">
+                  <li class="itemOpcion"><input type="checkbox" id="tematicaPeliculas" /> <label for="tematicaPeliculas">Películas</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="tematicaAnime" /> <label for="tematicaAnime">Anime</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="tematicaSeries" /> <label for="tematicaSeries">Series</label></li>
+                  <li class="itemOpcion"><input type="checkbox" id="tematicaMusica" /> <label for="tematicaMusica">Música</label></li>
+                </ul>
+              </div>
+            </details>
+
+            <div class="accionesFiltros d-flex gap-2 mt-3">
+              <button type="button" class="btnAplicarFiltros w-50">Aplicar filtros</button>
+              <button type="reset" class="btnLimpiar w-50">Limpiar</button>
+            </div>
+          </form>
+        </div>
+      </aside>
+
+      <!-- Área de productos -->
+      <section class="col-md-9 areaProductos" aria-label="Resultados del catálogo">
+        <div class="productosHeader d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <button class="btn btn-outline-primary d-md-none" id="btnToggleFiltros" data-bs-toggle="collapse"
+              data-bs-target="#panelFiltrosCollapse" aria-controls="panelFiltrosCollapse">Filtros</button>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <label for="mostrarPorPagina" class="me-2 mb-0">Columnas</label>
+            <select id="mostrarPorPagina" class="form-select form-select-sm w-auto">
+              <option value="3" selected>3 por fila</option>
+              <option value="4">4 por fila</option>
+            </select>
+          </div>
+        </div>
+
+            <section class="catalogo" id="catalogo">
+        <div class="container py-5">
+            <h5 class="text-center mb-4">NUESTROS PRODUCTOS</h5>
+                    
+            
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="productos-container">
+                <!-- Los productos se cargarán dinámicamente aquí -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando productos...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Cargando productos...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    
+
+   
+
+
+
+
+
+
+
+
+
+
+<!-- Footer -->
     <footer class="text-white text-left py-4 mt-5 position-relative">
         <div class="container-fluid px-4">
             <div class="footer-wave">
@@ -58,12 +201,12 @@
                 <ul class="list-unstyled d-flex gap-4">
                     <li class="d-flex align-items-center">
                         <i class="bi bi-github me-2 fs-4"></i>
-                        <a href="https://github.com/PipeAlf/MoodBox8AP" target="_blank"
+                        <a href="https://github.com/PipeAlf/MoodBox8AP" target="_blank" rel="noopener"
                             class="text-white text-decoration-none">github.com/PipeAlf/MoodBox8AP</a>
                     </li>
                     <li class="d-flex align-items-center">
                         <i class="bi bi-whatsapp me-2 fs-4"></i>
-                        <a href="https://www.whatsapp.com/?lang=es_LA" target="_blank"
+                        <a href="https://www.whatsapp.com/?lang=es_LA" target="_blank" rel="noopener"
                             class="text-white text-decoration-none">+1 202-918-2132</a>
                     </li>
                     <li class="d-flex align-items-center">
@@ -78,6 +221,7 @@
             </div>
         </div>
     </footer>
+    
 
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -85,3 +229,6 @@
 </body>
 
 </html>
+
+
+

@@ -1,257 +1,163 @@
-document.addEventListener("DOMContentLoaded", function () {
-
-    const formulario = document.getElementById("formulario-contacto");
-
-    if (!formulario) return;
- 
-    const mensajeDiv = document.getElementById("mensaje-confirmacion");
-
-    const contadorCaracteres = document.getElementById("contador-caracteres");
-
-    const progresoBar = document.getElementById("progreso-formulario");
-
-    const submitBtn = formulario.querySelector('button[type="submit"]');
-
-    const spinner = submitBtn?.querySelector('.spinner-border');
- 
-    // Buscar elementos dentro del form (más seguro)
-
-    const mensajeTextarea = formulario.querySelector('#mensaje');
-
-    const nameInput = formulario.querySelector('#nombre');
-
-    const mailInput = formulario.querySelector('#correo');
-
-    const phoneInput = formulario.querySelector('#telefono');
- 
-    const max = mensajeTextarea?.maxLength || 800;
- 
-    // Función robusta de progreso
-
-    function actualizarProgreso() {
-
-        if (!progresoBar) return;
- 
-        // solo controles "relevantes" (excluye botones/hidden)
-
-        const camposTodos = formulario.querySelectorAll(
-
-            'input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="hidden"]), select, textarea'
-
-        );
- 
-        // preferimos contar sólo los required (si existen)
-
-        const requeridos = Array.from(camposTodos).filter(c => c.hasAttribute('required'));
-
-        const listaParaEvaluar = requeridos.length ? requeridos : Array.from(camposTodos);
- 
-        if (listaParaEvaluar.length === 0) {
-
-            progresoBar.style.width = '0%';
-
+// Script para el catálogo - Filtra productos activos
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para cargar productos activos desde el localStorage
+    function cargarProductosActivos() {
+        const productos = JSON.parse(localStorage.getItem("productos")) || [];
+        const productosActivos = productos.filter(producto => producto.activo !== false);
+        
+        // Si no hay productos activos, mostrar mensaje
+        if (productosActivos.length === 0) {
+            mostrarMensajeSinProductos();
             return;
-
         }
- 
-        let completos = 0;
-
-        listaParaEvaluar.forEach(campo => {
-
-            if (campo.type === 'checkbox') {
-
-                if (campo.checked) completos++;
-
-            } else if (campo.value && campo.value.toString().trim() !== '') {
-
-                completos++;
-
-            }
-
-        });
- 
-        const progreso = (completos / listaParaEvaluar.length) * 100;
-
-        progresoBar.style.width = progreso + '%';
-
+        
+        // Renderizar productos activos
+        renderizarProductosActivos(productosActivos);
     }
- 
-    // Escuchar cambios a nivel form (captura todos los inputs/selects/textarea)
-
-    formulario.addEventListener('input', actualizarProgreso);
-
-    formulario.addEventListener('change', actualizarProgreso);
- 
-    // textarea: contador de caracteres + filtrado de caracteres no permitidos
-
-    if (mensajeTextarea) {
-
-        mensajeTextarea.addEventListener('input', function () {
-
-            // Si quieres permitir más caracteres, ajusta la regex
-
-            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
- 
-            const caracteresActuales = this.value.length;
-
-            if (contadorCaracteres) contadorCaracteres.textContent = caracteresActuales;
- 
-            if (contadorCaracteres) {
-
-                if (caracteresActuales > max) {
-
-                    contadorCaracteres.style.color = '#ff6b6b';
-
-                } else if (caracteresActuales > max * 0.625) {
-
-                    contadorCaracteres.style.color = '#ffd93d';
-
-                } else {
-
-                    contadorCaracteres.style.color = '#6bcf7f';
-
-                }
-
-            }
- 
-            // actualizar progreso cuando se escribe en el textarea
-
-            actualizarProgreso();
-
-        });
-
+    
+    // Función para mostrar mensaje cuando no hay productos
+    function mostrarMensajeSinProductos() {
+        const contenedor = document.getElementById('productos-container');
+        if (contenedor) {
+            contenedor.innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>No hay productos disponibles en este momento.</strong>
+                        <br>
+                        <small>Vuelve más tarde para ver nuestros productos.</small>
+                    </div>
+                </div>
+            `;
+        }
     }
- 
-    // submit: validación + spinner (no hacer prevent si válido)
-
-    formulario.addEventListener('submit', function (event) {
-
-        if (!formulario.checkValidity()) {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
+    
+    // Función para renderizar productos activos
+    function renderizarProductosActivos(productos) {
+        const contenedor = document.getElementById('productos-container');
+        if (!contenedor) return;
+        
+        contenedor.innerHTML = '';
+        
+        productos.forEach(producto => {
+            const col = document.createElement('div');
+            col.className = 'col';
+            
+            // Crear la tarjeta del producto
+            col.innerHTML = `
+                <div class="card h-100 tarjeta-borde position-relative hover-card">
+                    <img src="${producto.imagen || './assets/imagenes_catalogo/cajita.png'}" class="card-img-top" alt="${producto.nombre}">
+                    <div class="card-body">
+                        <h5 class="card-titulo text-start">${producto.nombre}</h5>
+                        <p class="card-texto text-start">${producto.descripcion || 'Descripción no disponible'}</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="card-footer bg-white border-0">
+                            ★ 4.5
+                        </div>
+                    </div>
+                    <div class="hover-info p-3 rounded shadow">
+                        <img src="${producto.imagen || './assets/imagenes_catalogo/cajita.png'}" class="img-fluid rounded mb-2" alt="Preview">
+                        <h6 class="text-start">${producto.nombre}</h6>
+                        <p id="precio">$${parseFloat(producto.precio).toLocaleString()}</p>
+                        <button class="btn btn-sm btn-custom add-to-cart" 
+                                data-name="${producto.nombre}" 
+                                data-price="${producto.precio}" 
+                                data-image="${producto.imagen || './assets/imagenes_catalogo/cajita.png'}">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            contenedor.appendChild(col);
+        });
+        
+        // Agregar funcionalidad de carrito si existe
+        inicializarCarrito();
+    }
+    
+    // Función para inicializar funcionalidad del carrito
+    function inicializarCarrito() {
+        const botonesCarrito = document.querySelectorAll('.add-to-cart');
+        
+        botonesCarrito.forEach(boton => {
+            boton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const nombre = this.getAttribute('data-name');
+                const precio = this.getAttribute('data-price');
+                const imagen = this.getAttribute('data-image');
+                
+                // Agregar al carrito (localStorage)
+                agregarAlCarrito(nombre, precio, imagen);
+                
+                // Mostrar notificación
+                mostrarNotificacionAgregado(nombre);
+            });
+        });
+    }
+    
+    // Función para agregar producto al carrito
+    function agregarAlCarrito(nombre, precio, imagen) {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        
+        // Verificar si el producto ya está en el carrito
+        const productoExistente = carrito.find(item => item.nombre === nombre);
+        
+        if (productoExistente) {
+            productoExistente.cantidad += 1;
         } else {
-
-            // aquí puedes poner la lógica de envío (fetch / email API)
-
-            spinner?.classList.remove('d-none');
-
-            if (submitBtn) submitBtn.disabled = true;
-
+            carrito.push({
+                nombre: nombre,
+                precio: parseFloat(precio),
+                imagen: imagen,
+                cantidad: 1
+            });
         }
- 
-        formulario.classList.add('was-validated');
-
-    });
- 
-    // reset: esperar al ciclo para que el navegador limpie los campos
-
-    formulario.addEventListener('reset', function () {
-
-        this.classList.remove('was-validated');
-
+        
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+    }
+    
+    // Función para mostrar notificación de producto agregado
+    function mostrarNotificacionAgregado(nombre) {
+        // Crear notificación
+        const notificacion = document.createElement('div');
+        notificacion.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        notificacion.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notificacion.innerHTML = `
+            <i class="bi bi-check-circle me-2"></i>
+            <strong>¡Producto agregado!</strong><br>
+            ${nombre} se agregó al carrito
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notificacion);
+        
+        // Auto-ocultar después de 3 segundos
         setTimeout(() => {
-
-            if (contadorCaracteres) {
-
-                contadorCaracteres.textContent = '0';
-
-                contadorCaracteres.style.color = '#6bcf7f';
-
+            if (notificacion.parentNode) {
+                notificacion.remove();
             }
-
-            actualizarProgreso();
-
-        }, 0);
-
-    });
- 
-    // Validaciones puntuales (solo si existen los inputs)
-
-    if (nameInput) {
-
-        nameInput.addEventListener("input", function () {
-
-            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
-
-            if (/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$/.test(this.value)) {
-
-                this.classList.add("is-valid");
-
-                this.classList.remove("is-invalid");
-
-            } else {
-
-                this.classList.add("is-invalid");
-
-                this.classList.remove("is-valid");
-
-            }
-
-        });
-
+        }, 3000);
     }
- 
-    if (phoneInput) {
-
-        phoneInput.addEventListener("input", function () {
-
-            this.value = this.value.replace(/\D/g, '');
-
-            if (/^\d{7,15}$/.test(this.value)) {
-
-                this.classList.add("is-valid");
-
-                this.classList.remove("is-invalid");
-
-            } else {
-
-                this.classList.add("is-invalid");
-
-                this.classList.remove("is-valid");
-
+    
+    // Función para actualizar productos en tiempo real
+    function actualizarProductos() {
+        // Escuchar cambios en el localStorage
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'productos') {
+                cargarProductosActivos();
             }
-
         });
-
     }
- 
-    if (mailInput) {
-
-        mailInput.addEventListener("input", function () {
-
-            const regex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-
-            if (regex.test(this.value)) {
-
-                this.classList.add("is-valid");
-
-                this.classList.remove("is-invalid");
-
-            } else {
-
-                this.classList.add("is-invalid");
-
-                this.classList.remove("is-valid");
-
-            }
-
-        });
-
-    }
- 
-    // tooltips bootstrap (si los usas)
-
-    [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-
-        .map(el => new bootstrap.Tooltip(el));
- 
-    // estado inicial
-
-    actualizarProgreso();
-
+    
+    // Inicializar
+    cargarProductosActivos();
+    actualizarProductos();
+    
+    // Actualizar cada 5 segundos para cambios locales
+    setInterval(cargarProductosActivos, 5000);
 });
 
  
