@@ -843,32 +843,64 @@ const sidebar = document.getElementById("sidebar");
 
 
 
-    document.getElementById("guardarCambios").addEventListener("click", function () {
-      // Obtener valores de los inputs
-      const nuevoNombre = document.getElementById("inputNombre").value;
-      const nuevoCorreo = document.getElementById("inputCorreo").value;
-      const nuevaPassword = document.getElementById("inputPassword").value;
-      const nuevaFoto = document.getElementById("inputFoto").files[0];
-   
-      // Cambiar el nombre en el sidebar
-      document.querySelector(".profile h3").textContent = nuevoNombre;
-   
-      // Cambiar la foto en el modal y en el sidebar
-      if (nuevaFoto) {
-        const lector = new FileReader();
-        lector.onload = function (e) {
-          document.getElementById("fotoPerfil").src = e.target.result;
-          document.querySelector(".profile img").src = e.target.result;
-        };
-        lector.readAsDataURL(nuevaFoto);
-      }
-   
-      // (Opcional) Aquí podrías actualizar el correo o password en tu base de datos
-      // pero por ahora solo lo mostramos en consola
-      console.log("Correo actualizado:", nuevoCorreo);
-      console.log("Contraseña nueva:", nuevaPassword);
-   
-      // Cerrar el modal después de guardar
-      const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
-      modal.hide();
-    });
+document.addEventListener("DOMContentLoaded", function () {
+  // Referencias a elementos
+  const nombreSidebar = document.querySelector(".profile h3");
+  const fotoSidebar = document.querySelector(".profile img");
+  const fotoPerfil = document.getElementById("fotoPerfil");
+  const inputNombre = document.getElementById("inputNombre");
+  const inputCorreo = document.getElementById("inputCorreo");
+  const inputPassword = document.getElementById("inputPassword");
+  const inputFoto = document.getElementById("inputFoto");
+  const guardarBtn = document.getElementById("guardarCambios");
+ 
+  // 🔹 Cargar datos guardados del localStorage al abrir la página
+  if (localStorage.getItem("nombre")) {
+    inputNombre.value = localStorage.getItem("nombre");
+    nombreSidebar.textContent = localStorage.getItem("nombre");
+  }
+  if (localStorage.getItem("correo")) {
+    inputCorreo.value = localStorage.getItem("correo");
+  }
+  if (localStorage.getItem("foto")) {
+    fotoPerfil.src = localStorage.getItem("foto");
+    fotoSidebar.src = localStorage.getItem("foto");
+  }
+ 
+  // Evento guardar cambios
+  guardarBtn.addEventListener("click", function () {
+    const nuevoNombre = inputNombre.value;
+    const nuevoCorreo = inputCorreo.value;
+    const nuevaPassword = inputPassword.value;
+    const nuevaFoto = inputFoto.files[0];
+ 
+    // Cambiar nombre en el sidebar
+    nombreSidebar.textContent = nuevoNombre;
+ 
+    // Guardar en localStorage
+    localStorage.setItem("nombre", nuevoNombre);
+    localStorage.setItem("correo", nuevoCorreo);
+    if (nuevaPassword.trim() !== "") {
+      localStorage.setItem("password", nuevaPassword); 
+    }
+ 
+    // Guardar foto si se subió
+    if (nuevaFoto) {
+      const lector = new FileReader();
+      lector.onload = function (e) {
+        fotoPerfil.src = e.target.result;
+        fotoSidebar.src = e.target.result;
+        localStorage.setItem("foto", e.target.result); // Guardar en localStorage
+      };
+      lector.readAsDataURL(nuevaFoto);
+    }
+ 
+    // Mostrar en consola (solo demostración)
+    console.log("Correo actualizado:", nuevoCorreo);
+    console.log("Contraseña nueva:", nuevaPassword);
+ 
+    // Cerrar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
+    modal.hide();
+  });
+});
