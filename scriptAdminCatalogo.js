@@ -5,6 +5,7 @@ let categoriasSeleccionadas = [];
 
 const form = document.getElementById("formProducto");
 
+
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('[data-seccion]').forEach(btn => {
     btn.addEventListener("click", () => mostrarSeccion(btn.dataset.seccion));
