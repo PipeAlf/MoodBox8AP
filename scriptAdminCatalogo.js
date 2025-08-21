@@ -61,6 +61,98 @@ function inicializarDatosEjemplo() {
       activo: true,
       fechaCreacion: new Date(Date.now() - 3000).toISOString(),
       fechaModificacion: new Date(Date.now() - 3000).toISOString()
+    },
+    {
+      id: Date.now() - 4000,
+      nombre: "Bolsa Hogwarts",
+      precio: 6.99,
+      descripcion: "Bolsa de tela con tematica de Harry Potter y su escuela Hogwarts",
+      stock: 100,
+      codigo: "BH001",
+      categorias: ["Accesorios", "Hogar"],
+      imagen: "./assets/imagenes_catalogo/bolsa.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 4000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 4000).toISOString()
+    },
+    {
+      id: Date.now() - 5000,
+      nombre: "Botilito día de la madre",
+      precio: 10.99,
+      descripcion: "Botilito para frio/caliente con diseño para el día de la madre y capacidad de 300mL",
+      stock: 100,
+      codigo: "BM001",
+      categorias: ["Accesorios", "Hogar"],
+      imagen: "./assets/imagenes_catalogo/botilito.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 5000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 5000).toISOString()
+    },
+    {
+      id: Date.now() - 6000,
+      nombre: "Cojin Minecraft",
+      precio: 7.99,
+      descripcion: "Cojín de sofá con diseño de Minecraft",
+      stock: 100,
+      codigo: "CM001",
+      categorias: ["Accesorios", "Hogar", "Anime"],
+      imagen: "./assets/imagenes_catalogo/cojin.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 6000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 6000).toISOString()
+    },
+    {
+      id: Date.now() - 7000,
+      nombre: "Case de celular para papá",
+      precio: 4.99,
+      descripcion: "Case protector de celular Iphone 15 con mensaje para papá",
+      stock: 100,
+      codigo: "CP001",
+      categorias: ["Accesorios", "Hogar"],
+      imagen: "./assets/imagenes_catalogo/fundacel.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 7000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 7000).toISOString()
+    },
+    {
+      id: Date.now() - 8000,
+      nombre: "Gorra de dragón",
+      precio: 5.99,
+      descripcion: "Gorra negra con estampado de dragón rojo",
+      stock: 100,
+      codigo: "GD001",
+      categorias: ["Accesorios", "Hogar", "Ropa"],
+      imagen: "./assets/imagenes_catalogo/gorra.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 8000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 8000).toISOString()
+    },
+    {
+      id: Date.now() - 9000,
+      nombre: "Morral Superman",
+      precio: 15.99,
+      descripcion: "Morral negro con logo de Superman",
+      stock: 100,
+      codigo: "MS001",
+      categorias: ["Accesorios", "Ropa"],
+      imagen: "./assets/imagenes_catalogo/morral.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 9000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 9000).toISOString()
+    }
+    ,
+    {
+      id: Date.now() - 10000,
+      nombre: "PADMouse de Rick & Morty",
+      precio: 3.99,
+      descripcion: "PADMouse con estampado de Rick & Morty en un portal",
+      stock: 100,
+      codigo: "PM001",
+      categorias: ["Accesorios", "Anime"],
+      imagen: "./assets/imagenes_catalogo/padmouse.png",
+      activo: true,
+      fechaCreacion: new Date(Date.now() - 10000).toISOString(),
+      fechaModificacion: new Date(Date.now() - 10000).toISOString()
     }
   ];
   
@@ -164,6 +256,7 @@ form.addEventListener("submit", function (e) {
       } else {
         productos.push(nuevoProducto);
         mostrarNotificacion(`Producto "${nombre}" agregado exitosamente`, "success");
+        console.log("Producto agregado:", nuevoProducto);
       }
 
       // Intentar guardar en localStorage
@@ -751,7 +844,7 @@ const sidebar = document.getElementById("sidebar");
 
 
 
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   // Referencias a elementos
   const nombreSidebar = document.querySelector(".profile h3");
   const fotoSidebar = document.querySelector(".profile img");
