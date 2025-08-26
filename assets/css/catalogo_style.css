@@ -17,6 +17,13 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 16px;
+    margin-bottom: 200px; /* Margen inferior para evitar superposición con el footer fijo */
+}
+
+/* Asegurar que el main tenga espacio suficiente para el footer fijo */
+main {
+    min-height: calc(100vh - 200px); /* Altura mínima considerando el footer */
+    padding-bottom: 20px;
 }
 
 /* Panel filtros */
@@ -151,11 +158,20 @@ select:focus,
 
 /* Cards: menos altura en imágenes para que se vean más anchas */
 .card-img-top {
-    height: 180px;
+    height: 220px;
     /* menor altura para que la card se vea más ancha */
     object-fit: cover;
     object-position: center;
 }
+
+.card-body {
+    padding: 8px 12px;   /* menos espacio arriba/abajo */
+  }
+  .card-footer {
+    padding: 4px 12px;   /* reduce padding del footer */
+    margin-top: -8px;    /* opcional: sube el footer un poco */
+    font-size: 0.85rem;  /* más compacto el texto */
+  }
 
 /* Tarjeta: bordes y sombra */
 .tarjeta-borde {

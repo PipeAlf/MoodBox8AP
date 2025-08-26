@@ -3,10 +3,15 @@ footer {
     background-color: #261E45;
     padding-top: 100px; /* Aumenta para dejar espacio a la ola */
     padding-bottom: 20px;
-    position: relative;
+    position: fixed; /* Cambiado a fixed para que esté fijo al final de la ventana */
+    bottom: 0; /* Fijo al final de la ventana */
+    left: 0;
+    right: 0;
+    width: 100%;
     color: white;
     font-size: 16px;
     overflow: hidden;
+    z-index: 1000; /* Asegura que esté por encima del contenido */
 }
 
 /* Ola en la parte superior del footer */

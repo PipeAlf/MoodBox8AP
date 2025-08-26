@@ -177,9 +177,8 @@
       el.grid.appendChild(col);
     }
 
-    if (typeof inicializarCarrito === "function") {
-      inicializarCarrito();
-    }
+    // El carrito se inicializa automáticamente desde carrito.js
+    // No es necesario llamar a inicializarCarrito aquí
   }
 
   // -------------------------------

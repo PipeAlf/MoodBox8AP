@@ -117,7 +117,10 @@
 
    
 <!-- Botón flotante para abrir el carrito -->
-<button id="toggleCartBtn" class="btn-cart-toggle"><i class="bi bi-cart3"></i></button>
+<button id="toggleCartBtn" class="btn-cart-toggle" title="Abrir carrito de compras" aria-label="Abrir carrito de compras">
+  <i class="bi bi-cart3" aria-hidden="true"></i>
+  <span class="visually-hidden">Carrito</span>
+</button>
 
 <!-- Panel lateral del carrito -->
 <div id="cartPanel" class="cart-panel">
@@ -180,6 +183,7 @@
     </footer>
     
 
+    <script src="config.js"></script>
     <script src="script.js"></script>
     <script src="scriptCatalogo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
