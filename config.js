@@ -11,7 +11,6 @@ window.MoodBoxConfig = {
   products: {
     localStorageKey: 'productos',
     defaultImage: './assets/imagenes/logo.png',
-    defaultRating: '4.5'
   },
   
   // Configuración de la interfaz

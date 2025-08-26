@@ -1,23 +1,36 @@
 {
   "name": "moodbox8ap",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Proyecto de e-commerce desarrollado por el equipo MoodBox con catálogo dinámico, sistema de carrito y panel de administración",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "echo 'Abrir index.html en tu navegador'",
+    "test": "echo 'No hay tests configurados actualmente'",
+    "lint": "echo 'No hay linter configurado actualmente'"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PipeAlf/MoodBox8AP.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "e-commerce",
+    "catalogo",
+    "carrito",
+    "admin",
+    "bootstrap",
+    "javascript"
+  ],
+  "author": "Equipo MoodBox",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/PipeAlf/MoodBox8AP/issues"
   },
   "homepage": "https://github.com/PipeAlf/MoodBox8AP#readme",
   "dependencies": {
     "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
