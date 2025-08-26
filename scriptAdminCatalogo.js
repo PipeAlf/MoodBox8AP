@@ -11,15 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => mostrarSeccion(btn.dataset.seccion));
   });
 
-  // Inicializar datos de ejemplo si no hay productos
+  // ⚠️ SOLO para pruebas, quítalo en producción si no quieres los ejemplos
   if (productos.length === 0) {
-    inicializarDatosEjemplo();
+    // inicializarDatosEjemplo();
   }
 
   inicializarSistemaCategorias();
   inicializarDashboard();
-  renderizarProductos();
-  actualizarContadores();
+
+  // 🔹 Solo se ejecuta si existe la lista de productos (vista admin)
+  if (document.getElementById("listaProductos")) {
+    renderizarProductos();
+    actualizarContadores();
+  }
 });
 
 function inicializarDatosEjemplo() {

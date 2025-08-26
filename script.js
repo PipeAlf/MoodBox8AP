@@ -157,7 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
     actualizarProductos();
     
     // Actualizar cada 5 segundos para cambios locales
-    setInterval(cargarProductosActivos, 5000);
+    if (document.getElementById("listaProductos")) {
+  setInterval(cargarProductosActivos, 5000);
+}
 });
 
  
