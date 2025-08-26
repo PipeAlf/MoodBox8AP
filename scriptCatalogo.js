@@ -1,28 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const selectMostrar = document.getElementById('mostrarPorPagina');
-  const productosRow = document.getElementById('productosRow');
-
-  function updateColumns() {
-    // limpiamos clases md/lg anteriores
-    productosRow.classList.remove('row-cols-md-3', 'row-cols-md-4', 'row-cols-lg-3', 'row-cols-lg-4');
-
-    const val = selectMostrar.value;
-    if (val === '3') {
-      // por defecto 3 columnas en md y lg
-      productosRow.classList.add('row-cols-md-3', 'row-cols-lg-3');
-    } else {
-      // 4 columnas en md y lg
-      productosRow.classList.add('row-cols-md-4', 'row-cols-lg-4');
-    }
-  }
-
-  // estado inicial (por defecto está en 3)
-  updateColumns();
-
-  // escucha cambios en el select
-  selectMostrar.addEventListener('change', updateColumns);
-});
-
 // assets/js/scriptCatalogo.js
 // Catálogo con filtros conectados a las "categorías" (tags) creadas en la vista de administración.
 // Requiere Bootstrap para el colapso del panel de filtros (ya presente en tu HTML).
@@ -30,9 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
 (function () {
   "use strict";
 
-  // -------------------------------
+  
   // Utilidades
-  // -------------------------------
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
@@ -105,16 +79,24 @@ document.addEventListener('DOMContentLoaded', function () {
   // -------------------------------
   // Estado
   // -------------------------------
-  const productosAll = (function cargarProductos() {
-    // Lee los productos creados en Admin (localStorage)
-    // Solo mostramos los activos
+  let productosAll = [];
+  let productos = [];
+  let filtrosActivos = false;
+  let ultimaBusqueda = "";
+
+  function cargarProductos() {
     try {
       const arr = JSON.parse(localStorage.getItem("productos")) || [];
-      return arr.filter((p) => p && p.activo !== false);
+      productosAll = arr.filter((p) => p && p.activo !== false);
+      productos = productosAll.map((p) => ({
+        ...p,
+        __cat: categorizarTags(Array.isArray(p.categorias) ? p.categorias : []),
+      }));
     } catch {
-      return [];
+      productosAll = [];
+      productos = [];
     }
-  })();
+  }
 
   // Elementos UI del catálogo
   const el = {
@@ -150,18 +132,15 @@ document.addEventListener('DOMContentLoaded', function () {
     formFiltros: $(".formFiltros"),
   };
 
-  // Pre-procesar productos con sets categorizados
-  const productos = productosAll.map((p) => ({
-    ...p,
-    __cat: categorizarTags(Array.isArray(p.categorias) ? p.categorias : []),
-  }));
-
   // -------------------------------
-  // Lógica de columnas (3 / 4 por fila)
+  // Lógica de columnas (3 / 4 por fila) - Mantiene compatibilidad con script.js
   // -------------------------------
   function applyColumns() {
     if (!el.grid) return;
+    
+    // Remover clases anteriores
     el.grid.classList.remove("row-cols-md-3", "row-cols-md-4", "row-cols-lg-3", "row-cols-lg-4");
+    
     const val = (el.selectCols?.value || "3").trim();
     if (val === "3") {
       el.grid.classList.add("row-cols-md-3", "row-cols-lg-3");
@@ -220,6 +199,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const tematicasSel = new Set(getSelectedTematicas());
     const subcatSel = (el.subcat?.value || "todas").toString();
 
+    // Verificar si hay filtros activos
+    const hayFiltros = term || coloresSel.size > 0 || etiquetasSel.size > 0 || 
+                      tematicasSel.size > 0 || (subcatSel && subcatSel !== "todas");
+
     let list = productos.filter((p) => {
       // Texto: nombre, descripcion, codigo
       const tNombre = norm(p.nombre);
@@ -275,14 +258,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (dir === "desc") list.reverse();
 
+    // Actualizar estado de filtros
+    filtrosActivos = hayFiltros;
+    ultimaBusqueda = term;
+
     return list;
   }
 
   // -------------------------------
-  // Render
+  // Prevención de sobrescritura por script.js
+  // -------------------------------
+  function protegerContenido() {
+    if (!el.grid) return;
+    
+    // Crear un observer para detectar cambios en el contenedor
+    const observer = new MutationObserver((mutations) => {
+      // Solo restaurar si hay filtros activos Y no es un cambio interno nuestro
+      if (filtrosActivos && !el.grid.dataset.filtradoInterno) {
+        // Usar requestAnimationFrame para evitar parpadeos
+        requestAnimationFrame(() => {
+          if (filtrosActivos && !el.grid.dataset.filtradoInterno) {
+            renderProductos(filtrarYOrdenar());
+          }
+        });
+      }
+    });
+
+    observer.observe(el.grid, {
+      childList: true,
+      subtree: true
+    });
+
+    return observer;
+  }
+
+  // -------------------------------
+  // Render - Mantiene el estilo original de las tarjetas
   // -------------------------------
   function renderProductos(lista) {
     if (!el.grid) return;
+
+    // Marcar que estamos haciendo un filtrado interno
+    el.grid.dataset.filtradoInterno = 'true';
 
     // Limpiar spinner/placeholder
     el.grid.innerHTML = "";
@@ -296,44 +313,61 @@ document.addEventListener('DOMContentLoaded', function () {
           <p class="mt-2 mb-0">No se encontraron productos con los filtros seleccionados.</p>
         </div>`;
       el.grid.appendChild(vacio);
+      
+      // Remover marca de filtrado interno
+      delete el.grid.dataset.filtradoInterno;
       return;
     }
 
-    // Crear tarjetas
+    // Crear tarjetas manteniendo el estilo original de script.js
     for (const p of lista) {
       const precio = parseFloat(p.precio) || 0;
       const img = p.imagen || "./assets/imagenes/logo.png";
       const cats = (Array.isArray(p.categorias) ? p.categorias : []).map((c) => c || "").filter(Boolean);
 
       const col = document.createElement("div");
-      // En layout con row-cols-* no es obligatorio .col-*, pero agregamos una clase ligera
-      col.className = "d-flex";
+      // Mantener la estructura original de columnas
+      col.className = "col";
 
       col.innerHTML = `
-        <div class="card h-100 flex-fill product-card">
+        <div class="card h-100 tarjeta-borde position-relative hover-card">
           <img src="${img}" class="card-img-top" alt="${escapeHtml(p.nombre || "Producto")}"
                onerror="this.onerror=null;this.src='./assets/imagenes/logo.png';">
-          <div class="card-body d-flex flex-column">
-            <h6 class="card-title mb-1">${escapeHtml(p.nombre || "Sin nombre")}</h6>
-            <div class="small text-muted mb-2">Código: ${escapeHtml(p.codigo || "—")}</div>
-            ${p.descripcion ? `<p class="card-text small flex-grow-1">${escapeHtml(p.descripcion)}</p>` : `<div class="flex-grow-1"></div>`}
-            <div class="d-flex align-items-center justify-content-between mt-2">
-              <span class="fw-semibold">$${precio.toFixed(2)}</span>
-              <span class="badge text-bg-light">Stock: ${Number.parseInt(p.stock || 0)}</span>
+          <div class="card-body">
+            <h5 class="card-titulo text-start">${escapeHtml(p.nombre || "Sin nombre")}</h5>
+            <p class="card-texto text-start">${escapeHtml(p.descripcion || "Descripción no disponible")}</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <div class="card-footer bg-white border-0">
+              ★ 4.5
             </div>
           </div>
-          ${
-            cats.length
-              ? `<div class="card-footer bg-transparent border-0 pt-0 pb-3">
-                   ${cats.map((c) => `<span class="badge text-bg-secondary me-1 mb-1">${escapeHtml(c)}</span>`).join("")}
-                 </div>`
-              : ""
-          }
+          <div class="hover-info p-3 rounded shadow">
+            <img src="${img}" class="img-fluid rounded mb-2" alt="Preview">
+            <h6 class="text-start">${escapeHtml(p.nombre || "Sin nombre")}</h6>
+            <p id="precio">$${precio.toLocaleString()}</p>
+            <button class="btn btn-sm btn-custom add-to-cart" 
+                    data-name="${escapeHtml(p.nombre || "Sin nombre")}" 
+                    data-price="${precio}" 
+                    data-image="${img}">
+              Agregar al carrito
+            </button>
+          </div>
         </div>
       `;
 
       el.grid.appendChild(col);
     }
+
+    // Reinicializar funcionalidad del carrito después de renderizar
+    if (typeof inicializarCarrito === 'function') {
+      inicializarCarrito();
+    }
+
+    // Remover marca de filtrado interno después de un pequeño delay
+    setTimeout(() => {
+      delete el.grid.dataset.filtradoInterno;
+    }, 50);
   }
 
   function escapeHtml(s) {
@@ -347,41 +381,139 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // -------------------------------
-  // Eventos
+  // Eventos - Solo se ejecuta si estamos en la página de catálogo
   // -------------------------------
-  document.addEventListener("DOMContentLoaded", () => {
+  function inicializarCatalogo() {
+    // Verificar que estamos en la página de catálogo
+    if (!el.grid || !el.selectCols) {
+      return; // No estamos en la página de catálogo
+    }
+
+    // Cargar productos inicialmente
+    cargarProductos();
+
     // Columnas
     applyColumns();
     el.selectCols?.addEventListener("change", applyColumns);
 
     // Aplicar filtros
     el.btnAplicar?.addEventListener("click", () => {
+      filtrosActivos = true;
       renderProductos(filtrarYOrdenar());
     });
 
-    // Cambios en ordenar
+    // Cambios en ordenar - NO reiniciar filtros
     el.ordenarPor?.addEventListener("change", () => {
-      renderProductos(filtrarYOrdenar());
+      // Solo reordenar, mantener filtros activos
+      if (filtrosActivos) {
+        renderProductos(filtrarYOrdenar());
+      } else {
+        // Si no hay filtros, solo ordenar todos los productos
+        const productosOrdenados = [...productos].sort((a, b) => {
+          const campo = (el.ordenarPor?.value || "catalogo").toString();
+          const dir = (el.ordenarDir?.value || "asc").toString();
+          
+          let va, vb;
+          if (campo === "nombre") {
+            va = (a.nombre || "").toString();
+            vb = (b.nombre || "").toString();
+            return va.localeCompare(vb, "es");
+          }
+          if (campo === "precio") {
+            va = parseFloat(a.precio) || 0;
+            vb = parseFloat(b.precio) || 0;
+            return va - vb;
+          }
+          // "catalogo" → por fechaCreacion (o id)
+          const fa = a.fechaCreacion ? new Date(a.fechaCreacion).getTime() : Number(a.id) || 0;
+          const fb = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : Number(b.id) || 0;
+          return fa - fb;
+        });
+
+        if ((el.ordenarDir?.value || "asc") === "desc") {
+          productosOrdenados.reverse();
+        }
+        
+        renderProductos(productosOrdenados);
+      }
     });
+
     el.ordenarDir?.addEventListener("change", () => {
-      renderProductos(filtrarYOrdenar());
+      // Solo reordenar, mantener filtros activos
+      if (filtrosActivos) {
+        renderProductos(filtrarYOrdenar());
+      } else {
+        // Si no hay filtros, solo ordenar todos los productos
+        const productosOrdenados = [...productos].sort((a, b) => {
+          const campo = (el.ordenarPor?.value || "catalogo").toString();
+          const dir = (el.ordenarDir?.value || "asc").toString();
+          
+          let va, vb;
+          if (campo === "nombre") {
+            va = (a.nombre || "").toString();
+            vb = (b.nombre || "").toString();
+            return va.localeCompare(vb, "es");
+          }
+          if (campo === "precio") {
+            va = parseFloat(a.precio) || 0;
+            vb = parseFloat(b.precio) || 0;
+            return va - vb;
+          }
+          // "catalogo" → por fechaCreacion (o id)
+          const fa = a.fechaCreacion ? new Date(a.fechaCreacion).getTime() : Number(a.id) || 0;
+          const fb = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : Number(b.id) || 0;
+          return fa - fb;
+        });
+
+        if ((el.ordenarDir?.value || "asc") === "desc") {
+          productosOrdenados.reverse();
+        }
+        
+        renderProductos(productosOrdenados);
+      }
     });
 
-    // Buscar en vivo (opcional puedes dejarlo solo con “Aplicar filtros”)
+    // Buscar en vivo
     el.buscar?.addEventListener("input", () => {
+      filtrosActivos = true;
       renderProductos(filtrarYOrdenar());
     });
 
-    // Reset (botón “Limpiar” del form)
+    // Reset (botón "Limpiar" del form)
     el.formFiltros?.addEventListener("reset", () => {
       // Esperar al reset completo del form antes de renderizar
       setTimeout(() => {
+        filtrosActivos = false;
+        ultimaBusqueda = "";
         applyColumns();
-        renderProductos(filtrarYOrdenar());
+        renderProductos(productos); // Mostrar todos los productos
       }, 0);
     });
 
+    // Proteger contra sobrescritura
+    const observer = protegerContenido();
+
     // Primer render
-    renderProductos(filtrarYOrdenar());
-  });
+    renderProductos(productos);
+  }
+
+  // -------------------------------
+  // Inicialización única y segura
+  // -------------------------------
+  // Solo inicializar si no se ha hecho antes
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarCatalogo);
+  } else {
+    // Si el DOM ya está cargado, inicializar inmediatamente
+    inicializarCatalogo();
+  }
+
+  // Exponer funciones para uso externo si es necesario
+  window.catalogoFiltros = {
+    renderProductos,
+    filtrarYOrdenar,
+    applyColumns,
+    cargarProductos
+  };
+
 })();
