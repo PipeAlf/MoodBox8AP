@@ -7,68 +7,18 @@
   // -------------------------------
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
 
-  const norm = (s) =>
-    (s || "")
-      .toString()
-      .trim()
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/\p{Diacritic}/gu, "");
-
-  const MAPEO = {
-    subcategorias: {
-      camisas: ["camisas", "camisa", "playera", "remera", "tshirt", "t-shirt"],
-      pantalones: ["pantalones", "pantalon", "jeans"],
-      accesorios: ["accesorios", "accesorio"],
-      otros: ["otros", "varios", "miscelanea", "misc", "other"],
-    },
-    tematicas: {
-      peliculas: ["peliculas", "pelicula", "cine", "movie", "film"],
-      anime: ["anime", "manga", "otaku"],
-      series: ["series", "serie", "tv", "show"],
-      musica: ["musica", "music", "bandas", "cantantes"],
-    },
-  };
-
-  function categorizarTags(categorias = []) {
-    const res = {
-      subcategorias: new Set(),
-      tematicas: new Set(),
-      originales: [],
-    };
-
-    categorias.forEach((raw) => {
-      const c = norm(raw);
-      if (!c) return;
-      res.originales.push(raw);
-
-      for (const [grupo, valores] of Object.entries(MAPEO)) {
-        for (const [canon, sinonimos] of Object.entries(valores)) {
-          if (sinonimos.some((s) => c === norm(s))) {
-            res[grupo].add(canon);
-          }
-        }
-      }
-    });
-
-    return res;
-  }
-
   // -------------------------------
   // Estado
   // -------------------------------
   let productos = [];
   let filtrosActivos = false;
+  let categoriasDisponibles = new Set();
+  let categoriasSeleccionadas = new Set();
 
   function cargarProductos() {
     try {
       const arr = JSON.parse(localStorage.getItem("productos")) || [];
-      productos = arr
-        .filter((p) => p && p.activo !== false)
-        .map((p) => ({
-          ...p,
-          __cat: categorizarTags(Array.isArray(p.categorias) ? p.categorias : []),
-        }));
+      productos = arr.filter((p) => p && p.activo !== false);
     } catch {
       productos = [];
     }
@@ -77,13 +27,11 @@
   const el = {
     grid: $("#productos-container"),
     selectCols: $("#mostrarPorPagina"),
-    subcat: $("#subcategoriaSeleccionada"),
-    temPeliculas: $("#tematicaPeliculas"),
-    temAnime: $("#tematicaAnime"),
-    temSeries: $("#tematicaSeries"),
-    temMusica: $("#tematicaMusica"),
+    categoriasDinamicas: $("#categoriasDinamicas"),
     btnAplicar: $(".btnAplicarFiltros"),
     formFiltros: $(".formFiltros"),
+    searchInput: $("#searchProducts"),
+    clearSearchBtn: $("#clearSearch"),
   };
 
   // -------------------------------
@@ -97,34 +45,117 @@
     el.grid.classList.add(val === "3" ? "row-cols-lg-3" : "row-cols-lg-4");
   }
 
-  function getSelectedTematicas() {
-    const map = {
-      peliculas: el.temPeliculas?.checked,
-      anime: el.temAnime?.checked,
-      series: el.temSeries?.checked,
-      musica: el.temMusica?.checked,
-    };
-    return Object.entries(map)
-      .filter(([, v]) => v)
-      .map(([k]) => k);
+  // -------------------------------
+  // Sistema de categorías dinámicas
+  // -------------------------------
+  function extraerCategoriasDeProductos() {
+    const categorias = new Set();
+    productos.forEach(producto => {
+      if (producto.categorias && Array.isArray(producto.categorias)) {
+        producto.categorias.forEach(categoria => {
+          if (categoria && typeof categoria === 'string') {
+            categorias.add(categoria.trim());
+          }
+        });
+      }
+    });
+    return Array.from(categorias).sort();
+  }
+
+  function renderizarCategoriasDinamicas() {
+    if (!el.categoriasDinamicas) return;
+
+    categoriasDisponibles = new Set(extraerCategoriasDeProductos());
+    
+    if (categoriasDisponibles.size === 0) {
+      el.categoriasDinamicas.innerHTML = `
+        <div class="categorias-vacio">
+          <i class="bi bi-tags"></i>
+          <p>No hay categorías disponibles</p>
+          <small>Agrega productos desde el panel de administración para crear categorías</small>
+        </div>
+      `;
+      return;
+    }
+
+    const header = document.createElement('div');
+    header.className = 'categorias-header';
+    header.innerHTML = `
+      <span><i class="bi bi-tags me-2"></i>Categorías disponibles</span>
+      <span class="categorias-count">${categoriasDisponibles.size}</span>
+    `;
+
+    el.categoriasDinamicas.innerHTML = '';
+    el.categoriasDinamicas.appendChild(header);
+
+    categoriasDisponibles.forEach(categoria => {
+      const checkboxContainer = document.createElement('div');
+      checkboxContainer.className = 'categoria-checkbox';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `cat_${categoria.replace(/\s+/g, '_')}`;
+      checkbox.checked = categoriasSeleccionadas.has(categoria);
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          categoriasSeleccionadas.add(categoria);
+        } else {
+          categoriasSeleccionadas.delete(categoria);
+        }
+        renderProductos(filtrar());
+      });
+
+      const label = document.createElement('label');
+      label.htmlFor = checkbox.id;
+      label.textContent = categoria;
+
+      checkboxContainer.appendChild(checkbox);
+      checkboxContainer.appendChild(label);
+      el.categoriasDinamicas.appendChild(checkboxContainer);
+    });
+  }
+
+  function getCategoriasSeleccionadas() {
+    return Array.from(categoriasSeleccionadas);
+  }
+
+  // -------------------------------
+  // Búsqueda por nombre
+  // -------------------------------
+  function getSearchTerm() {
+    return el.searchInput?.value?.trim().toLowerCase() || "";
+  }
+
+  function clearSearch() {
+    if (el.searchInput) {
+      el.searchInput.value = "";
+      el.searchInput.focus();
+    }
   }
 
   // -------------------------------
   // Filtro
   // -------------------------------
   function filtrar() {
-    const subcatSel = (el.subcat?.value || "todas").toString();
-    const tematicasSel = new Set(getSelectedTematicas());
+    const searchTerm = getSearchTerm();
+    const categoriasSel = getCategoriasSeleccionadas();
 
-    const hayFiltros =
-      (subcatSel && subcatSel !== "todas") || tematicasSel.size > 0;
+    const hayFiltros = searchTerm.length > 0 || categoriasSel.length > 0;
 
     let list = productos.filter((p) => {
-      const matchSubcat =
-        !subcatSel || subcatSel === "todas" || p.__cat.subcategorias.has(norm(subcatSel));
-      const matchTematica =
-        tematicasSel.size === 0 || [...tematicasSel].some((t) => p.__cat.tematicas.has(t));
-      return matchSubcat && matchTematica;
+      // Filtro por búsqueda de nombre
+      const matchSearch = 
+        searchTerm.length === 0 || 
+        p.nombre?.toLowerCase().includes(searchTerm) ||
+        p.descripcion?.toLowerCase().includes(searchTerm);
+      
+      // Filtro por categorías seleccionadas
+      const matchCategorias = 
+        categoriasSel.length === 0 || 
+        (p.categorias && Array.isArray(p.categorias) && 
+         categoriasSel.some(cat => p.categorias.includes(cat)));
+
+      return matchSearch && matchCategorias;
     });
 
     filtrosActivos = hayFiltros;
@@ -184,25 +215,70 @@
   // -------------------------------
   // Inicializar
   // -------------------------------
-function inicializarCatalogo() {
-  if (!el.grid || !el.selectCols) return;
-  cargarProductos();
-  applyColumns();
-  el.selectCols?.addEventListener("change", applyColumns);
+  function inicializarCatalogo() {
+    if (!el.grid || !el.selectCols) return;
+    cargarProductos();
+    applyColumns();
+    el.selectCols?.addEventListener("change", applyColumns);
 
-  // Aplicar filtros solo al presionar el botón
-  el.btnAplicar?.addEventListener("click", () => {
-    renderProductos(filtrar());
-  });
+    // Event listeners para búsqueda
+    if (el.searchInput) {
+      // Búsqueda en tiempo real con debounce
+      let searchTimeout;
+      el.searchInput.addEventListener("input", () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          renderProductos(filtrar());
+        }, 300); // Esperar 300ms después de que el usuario deje de escribir
+      });
 
-  // Limpiar filtros vuelve a todos
-  el.formFiltros?.addEventListener("reset", () => {
-    setTimeout(() => renderProductos(productos), 0);
-  });
+      // Búsqueda al presionar Enter
+      el.searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          renderProductos(filtrar());
+        }
+      });
+    }
 
-  // 👇 al inicio mostrar TODOS los productos
-  renderProductos(productos);
-}
+    // Botón para limpiar búsqueda
+    if (el.clearSearchBtn) {
+      el.clearSearchBtn.addEventListener("click", () => {
+        clearSearch();
+        renderProductos(filtrar());
+      });
+    }
+
+    // Aplicar filtros solo al presionar el botón
+    el.btnAplicar?.addEventListener("click", () => {
+      renderProductos(filtrar());
+    });
+
+    // Limpiar filtros vuelve a todos
+    el.formFiltros?.addEventListener("reset", () => {
+      setTimeout(() => {
+        clearSearch();
+        categoriasSeleccionadas.clear();
+        renderizarCategoriasDinamicas();
+        renderProductos(productos);
+      }, 0);
+    });
+
+    // Listener para cambios en localStorage (nuevos productos)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'productos') {
+        cargarProductos();
+        renderizarCategoriasDinamicas();
+        renderProductos(filtrar());
+      }
+    });
+
+    // Renderizar categorías dinámicas
+    renderizarCategoriasDinamicas();
+
+    // 👇 al inicio mostrar TODOS los productos
+    renderProductos(productos);
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", inicializarCatalogo);

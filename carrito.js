@@ -72,6 +72,9 @@ function renderCart() {
   
   cartTotal.textContent = `$${total.toFixed(2)}`;
   localStorage.setItem("cart", JSON.stringify(cart));
+  
+  // Actualizar el badge del carrito
+  updateCartBadge();
 }
 
 // Cambiar cantidad
@@ -166,6 +169,26 @@ function showCartAlert(message, title = "¡Producto agregado!", type = "success"
       setTimeout(() => alert.remove(), 300);
     }
   }, 3000);
+}
+
+// Función para actualizar el badge del carrito
+function updateCartBadge() {
+  const cartBadge = document.getElementById("cartBadge");
+  if (!cartBadge) return;
+  
+  const totalItems = cart.reduce((total, item) => total + item.qty, 0);
+  
+  if (totalItems > 0) {
+    cartBadge.textContent = totalItems;
+    cartBadge.classList.remove("hidden");
+    
+    // Agregar animación cuando cambia la cantidad
+    cartBadge.style.animation = "none";
+    cartBadge.offsetHeight; // Trigger reflow
+    cartBadge.style.animation = "badgePop 0.3s ease-out";
+  } else {
+    cartBadge.classList.add("hidden");
+  }
 }
 
 // Inicialización del carrito
