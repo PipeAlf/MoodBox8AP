@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./assets/css/catalogo_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inria+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="assets/imagenes/Cajita.png" type="image/png">
+    <link rel="stylesheet" href="./assets/css/carrito.css">
   </head>
 
 <body>
@@ -180,7 +181,24 @@
     
 
    
+<!-- Botón flotante para abrir el carrito -->
+<button id="toggleCartBtn" class="btn-cart-toggle">🛒 Carrito</button>
 
+<!-- Panel lateral del carrito -->
+<div id="cartPanel" class="cart-panel">
+  <div class="cart-header">
+    <h2>Tu Carrito</h2>
+    <button id="closeCartBtn" class="close-cart">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <!-- Aquí se insertan los productos dinámicamente -->
+  </div>
+  <div class="cart-footer">
+    <p>Total: <span id="cartTotal">$0</span></p>
+    <button class="btn-finalizar">Finalizar Compra</button>
+  </div>
+</div>
+<div id="cartOverlay" class="cart-overlay"></div>
 
 
 
@@ -230,6 +248,7 @@
     <script src="script.js"></script>
     <script src="scriptCatalogo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="carrito.js"></script>
 
 </body>
 
