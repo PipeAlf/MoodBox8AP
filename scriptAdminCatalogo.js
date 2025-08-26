@@ -872,3 +872,10 @@ const sidebar = document.getElementById("sidebar");
       const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
       modal.hide();
     });
+
+  const sidebar2 = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburgerBtn');
+
+  hamburger.addEventListener('click', () => {
+    sidebar2.classList.toggle('show');
+  });
