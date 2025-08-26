@@ -657,11 +657,50 @@ function renderizarCategorias() {
   });
 }
 
+// -------------------------------
+// Sistema de categorías dinámicas para el dashboard
+// -------------------------------
+function cargarCategoriasDinamicas() {
+  const filtroCategoria = document.getElementById('filtroCategoria');
+  if (!filtroCategoria) return;
+
+  // Extraer todas las categorías únicas de los productos existentes
+  const categoriasUnicas = new Set();
+  productos.forEach(producto => {
+    if (producto.categorias && Array.isArray(producto.categorias)) {
+      producto.categorias.forEach(categoria => {
+        if (categoria && typeof categoria === 'string') {
+          categoriasUnicas.add(categoria.trim());
+        }
+      });
+    }
+  });
+
+  // Limpiar opciones existentes (mantener solo "Todas las categorías")
+  filtroCategoria.innerHTML = '<option value="">Todas las categorías</option>';
+
+  // Agregar categorías dinámicas ordenadas alfabéticamente
+  Array.from(categoriasUnicas).sort().forEach(categoria => {
+    const option = document.createElement('option');
+    option.value = categoria;
+    option.textContent = categoria;
+    filtroCategoria.appendChild(option);
+  });
+}
+
+// Función para actualizar categorías cuando se agregan nuevos productos
+function actualizarCategoriasDashboard() {
+  cargarCategoriasDinamicas();
+}
+
 // Funcionalidades del Dashboard
 function inicializarDashboard() {
   const buscarInput = document.getElementById('buscarProducto');
   const filtroCategoria = document.getElementById('filtroCategoria');
   const ordenarPor = document.getElementById('ordenarPor');
+
+  // Cargar categorías dinámicas
+  cargarCategoriasDinamicas();
 
   // Búsqueda en tiempo real
   buscarInput.addEventListener('input', filtrarProductos);
