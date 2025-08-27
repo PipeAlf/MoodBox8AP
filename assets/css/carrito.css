@@ -158,7 +158,6 @@
   display: block;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .cart-panel {
     width: 100%;

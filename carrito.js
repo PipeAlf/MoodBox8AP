@@ -1,5 +1,5 @@
 // ========================================
-// SCRIPT DEL CARRITO DE COMPRAS - DEPURADO
+// SCRIPT DEL CARRITO DE COMPRAS
 // ========================================
 
 // Variables globales
