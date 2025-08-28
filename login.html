@@ -43,24 +43,34 @@
     </nav>
 
     
-    <div class="auth-container">
-      <!-- LOGIN -->
-      <div id="loginForm" class="auth-box active">
-        <h2>Iniciar Sesión</h2>
-        <form>
-          <label>Email</label>
-          <input type="email" id="loginEmail" required />
-          <label>Contraseña</label>
-          <input type="password" id="loginPassword" required />
-          <button type="button" id="btnLogin">Ingresar</button>
-        </form>
-        <p class="switch-msg">
-          ¿No tienes cuenta?
-          <a href="./register.html">Regístrate aquí</a>
-        </p>
-      </div>
+    <main class="contenedor-login">
+  <!-- Hero lateral -->
+  <div class="hero-login">
+    <img src="./assets/imagenes/Cajita.png" alt="MoodBox" class="hero-logo">
+    <h1 class="hero-title">Bienvenido de nuevo</h1>
+    <p class="hero-subtitle">Accede a tu cuenta y disfruta de productos únicos</p>
+  </div>
 
-    </div>
+  <!-- Formulario -->
+  <div class="card-form">
+    <h2>Iniciar Sesión</h2>
+    <form id="loginForm">
+      <div class="campo">
+        <label for="loginEmail">Correo electrónico</label>
+        <input type="email" id="loginEmail" required>
+      </div>
+      <div class="campo">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button type="submit" class="btn">Entrar</button>
+    </form>
+    <p class="texto-secundario">
+      ¿No tienes cuenta?
+      <a href="register.html">Regístrate aquí</a>
+    </p>
+  </div>
+</main>
 
 
       <!-- Footer -->
