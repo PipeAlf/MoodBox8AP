@@ -1311,6 +1311,39 @@ body {
 .btn-navigation.btn-dashboard {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
+ 
+.btn-navigation.btn-dashboard:hover::before {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1); /* tonos más intensos del azul-violeta */
+}
+ 
+.btn-navigation.btn-agregar {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+ 
+.btn-navigation.btn-agregar:hover::before {
+  background: linear-gradient(135deg, #218838, #17a2b8); /* verde más profundo y turquesa */
+}
+ 
+.btn-navigation.btn-usuarios {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+}
+ 
+.btn-navigation.btn-usuarios:hover::before {
+  background: linear-gradient(135deg, #e0a800, #d39e00); /* dorado más cálido */
+}
+ 
+.btn-navigation.btn-compras {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+ 
+.btn-navigation.btn-compras:hover::before {
+  background: linear-gradient(135deg, #bd2130, #a71d2a); /* rojo más oscuro */
+}
+ 
+.btn-navigation:hover {
+  color: white;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+}
 
 .btn-navigation.btn-dashboard::before {
   background: linear-gradient(135deg, #f74380, #ff6b9d);

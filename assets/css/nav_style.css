@@ -1,19 +1,25 @@
+/* Estilos de Navegación - Navbar Responsive */
+
+/* Ajuste del body para el navbar fijo */
 body {
     padding-top: 7vh;
     font-family: 'Inria Sans', sans-serif !important;
 }
+
 /* Pantallas medianas (tablet horizontal y portátiles pequeños) */
 @media (max-width: 991px) and (min-width: 768px) {
     body {
         padding-top: 70px; /* valor fijo que se ajusta mejor */
     }
 }
+
 /* Pantallas pequeñas (móvil) */
 @media (max-width: 768px) {
     body {
         padding-top: 7vh; /* sigue siendo relativo */
     }
 }
+
 /* Móviles muy pequeños (320px aprox) */
 @media (max-width: 300px) {
     body {
@@ -21,8 +27,7 @@ body {
     }
 }
 
-/* Navar -- estilos  */
-/* Fondo con degradado y sombra */
+/* Navbar -- estilos principales */
 .navbar {
     background: linear-gradient(135deg, #acf3f3, #f8d1f1);
     background-size: 600% 600%;
@@ -38,7 +43,16 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Logo con efecto suave */ .navbar-brand .nombre { transition: transform 0.3s ease; } .navbar-brand:hover .nombre { transform: scale(0.95); } .navbar-brand .logo { transition: transform 0.3s ease; } .navbar-brand:hover .logo { transform: scale(0.95); }
+/* Logo con efecto suave */
+.navbar-brand .nombre,
+.navbar-brand .logo {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover .nombre,
+.navbar-brand:hover .logo {
+    transform: scale(0.95);
+}
 
 /* Links del menú */
 .navbar-nav .nav-link {
@@ -48,8 +62,6 @@ body {
     transition: color 0.3s ease;
     font-family: 'Inria Sans', sans-serif;
     font-size: 18px;
-    font-weight: bold;
-    font-size: 20px;
 }
 
 /* Subrayado animado */
@@ -75,28 +87,7 @@ body {
 /* Botón hamburguesa */
 .navbar-toggler {
     border: none;
-}
-
-.navbar-toggler:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-/* Logo responsive */
-.logo {
-    max-width: 10vw;
-    height: auto;
-    min-width: 35px;
-}
-
-.nombre {
-    max-height: 5vh;
-    height: auto;
-}
-
-/* Botón hamburguesa */
-.navbar-toggler {
-    border: none;
+    margin-left: auto; /* fuerza el botón a ir a la derecha */
 }
 
 .navbar-toggler:focus {
@@ -108,6 +99,7 @@ body {
 .logo {
     max-width: 40px;
     height: auto;
+    min-width: 35px;
 }
 
 .nombre {
@@ -115,34 +107,57 @@ body {
     height: auto;
 }
 
-.navbar-toggler {
-    margin-left: auto; /* fuerza el botón a ir a la derecha */
-    border:none;
-}
-
-/* Menú desplegable flotante 
-.navbar-collapse {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-
-    box-shadow: 0 0 10px #261E45;
-}
-*/
-/* Alinear opciones a la derecha */
-.navbar-nav {
-    text-align: right;
-}
-@media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
-    .navbar-collapse {
-        justify-content: flex-end !important; /* empuja el menú a la derecha */
-    }
-}
 /* Tamaño base del logo */
 .navbar-brand img {
     max-height: 50px;
     height: auto;
     width: auto;
+}
+
+/* Icono Usuario */
+
+.navbar .nav-link i {
+  font-size: 1.6rem;       /* tamaño */
+  line-height: 1;          /* evita que “baje” por la altura de línea */
+  vertical-align: middle;  /* centra con el texto */
+  margin-top: 3px;        /* ajuste fino para centrar */
+}
+
+/* Hover rosado en el icono de perfil */
+.navbar .nav-link:hover i {
+    color: #ff6f61  ;
+}
+
+.navbar .nav-link {
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Quitar la flecha rosada del dropdown */
+.navbar .dropdown-toggle::after {
+  display: none !important;
+}
+
+/* Dropdown moderno */
+.dropdown-menu {
+  border-radius: 10px;
+  border: 1px solid #e6e6ef;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 8px 0;
+}
+
+.dropdown-menu .dropdown-item {
+  font-weight: 500;
+  padding: 10px 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background: #08E2E3;
+  color: #261E45;
+  border-radius: 6px;
 }
 
 /* Tablet y móvil mediano */
@@ -156,5 +171,16 @@ body {
 @media (max-width: 400px) {
     .navbar-brand img {
         max-height: 30px; /* aún más pequeño */
+    }
+}
+
+/* Alinear opciones a la derecha */
+.navbar-nav {
+    text-align: right;
+}
+
+@media (max-width: 991px) { /* tamaño antes del colapso en Bootstrap */
+    .navbar-collapse {
+        justify-content: flex-end !important; /* empuja el menú a la derecha */
     }
 }

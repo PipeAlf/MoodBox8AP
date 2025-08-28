@@ -36,14 +36,24 @@
             <!-- Menú de navegación -->
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="./index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="catalogo.html">Catalogo</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="perfilMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" id="perfilOpciones">
+                        <script src="script_session.js"></script>
+                    </ul>
+                  </li>
                 </ul>
             </div>
+
+            
         </div>
     </nav>
-
 
 
     <main class="container contenedorCatalogo mt-4" style="padding-top:72px;">
@@ -56,16 +66,36 @@
           <h2 class="tituloPanel">Filtros del catálogo</h2>
 
           <form class="formFiltros" aria-label="Filtros del catálogo">
+            
+            <!-- Barra de búsqueda -->
+            <div class="bloqueFiltro">
+              <div class="tituloFiltro">Buscar productos</div>
+              <div class="contenidoFiltro">
+                <div class="search-container">
+                  <input 
+                    type="text" 
+                    id="searchProducts" 
+                    class="search-input" 
+                    placeholder="Buscar por nombre..."
+                    aria-label="Buscar productos por nombre"
+                  >
+                  <button type="button" id="clearSearch" class="clear-search-btn" title="Limpiar búsqueda">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <details class="bloqueFiltro">
-              <summary class="tituloFiltro">Etiquetas</summary>
+              <summary class="tituloFiltro">Categorías</summary>
               <div class="contenidoFiltro">
-                <ul class="listaOpciones">
-                  <li class="itemOpcion"><input type="checkbox" id="tematicaPeliculas" /> <label for="tematicaPeliculas">Películas</label></li>
-                  <li class="itemOpcion"><input type="checkbox" id="tematicaAnime" /> <label for="tematicaAnime">Anime</label></li>
-                  <li class="itemOpcion"><input type="checkbox" id="tematicaSeries" /> <label for="tematicaSeries">Series</label></li>
-                  <li class="itemOpcion"><input type="checkbox" id="tematicaMusica" /> <label for="tematicaMusica">Música</label></li>
-                </ul>
+                <div id="categoriasDinamicas" class="categorias-dinamicas">
+                  <!-- Las categorías se cargarán dinámicamente aquí -->
+                  <div class="text-center text-muted py-3">
+                    <i class="bi bi-tags" style="font-size: 1.5rem;"></i>
+                    <p class="mt-2 mb-0">Cargando categorías...</p>
+                  </div>
+                </div>
               </div>
             </details>
 
@@ -116,7 +146,11 @@
 
    
 <!-- Botón flotante para abrir el carrito -->
-<button id="toggleCartBtn" class="btn-cart-toggle"><i class="bi bi-cart3"></i></button>
+<button id="toggleCartBtn" class="btn-cart-toggle" title="Abrir carrito de compras" aria-label="Abrir carrito de compras">
+  <i class="bi bi-cart3" aria-hidden="true"></i>
+  <span class="cart-badge" id="cartBadge">0</span>
+  <span class="visually-hidden">Carrito</span>
+</button>
 
 <!-- Panel lateral del carrito -->
 <div id="cartPanel" class="cart-panel">
@@ -179,6 +213,7 @@
     </footer>
     
 
+    <script src="config.js"></script>
     <script src="script.js"></script>
     <script src="scriptCatalogo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
