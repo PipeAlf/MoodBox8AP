@@ -1,0 +1,83 @@
+.contenedor-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 90vh;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+ 
+/* Hero lateral */
+.hero-login {
+  background: linear-gradient(135deg, #08E2E3, #261E45);
+  color: #fff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+ 
+.hero-login .hero-logo {
+  width: 120px;
+  margin-bottom: 20px;
+}
+ 
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+ 
+.hero-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+ 
+/* Card formulario */
+.card-form {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+ 
+.card-form h2 {
+  color: #261E45;
+  margin-bottom: 20px;
+}
+ 
+.card-form .btn {
+  background-color: #F74380;
+  border: none;
+  font-weight: 600;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+ 
+.card-form a {
+  color: #08E2E3;
+  font-weight: 600;
+  text-decoration: none;
+}
+ 
+.card-form a:hover {
+  text-decoration: underline;
+}
+ 
+/* Responsive */
+@media (max-width: 768px) {
+  .contenedor-login {
+    grid-template-columns: 1fr;
+  }
+  .hero-login {
+    align-items: center;
+    text-align: center;
+  }
+}

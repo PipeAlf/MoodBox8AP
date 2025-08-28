@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - MoodBox</title>
+    <link rel="stylesheet" href="./assets/css/login_style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./assets/css/nav_style.css">
+    <link rel="stylesheet" href="./assets/css/footer_style.css">
+    <link rel="stylesheet" href="./assets/css/index_style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&family=Inria+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/imagenes/Cajita.png" type="image/png">
+  </head>
+  <body>
+
+     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img class="logo me-2" src="./assets/imagenes/Cajita.png" alt="logo" width="40" height="40">
+                <img class="nombre" src="./assets/imagenes/Nombre_MoodBox.png" alt="nombre" height="40">
+            </a>
+
+            <!-- Botón hamburguesa -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menú de navegación -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="./index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="auth-container">
+      <!-- LOGIN -->
+      <div id="loginForm" class="auth-box active">
+        <h2>Iniciar Sesión</h2>
+        <form>
+          <label>Email</label>
+          <input type="email" id="loginEmail" required />
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required />
+          <button type="button" id="btnLogin">Ingresar</button>
+        </form>
+        <p class="switch-msg">
+          ¿No tienes cuenta?
+          <a href="./register.html">Regístrate aquí</a>
+        </p>
+      </div>
+
+    </div>
+
+
+      <!-- Footer -->
+    <footer class="text-white text-left py-4 mt-5 position-relative">
+        <div class="container-fluid px-4">
+            <div class="footer-wave">
+                <svg viewBox="0 0 1440 150" preserveAspectRatio="none" class="wave-svg">
+                    <path fill="#F74380"
+                        d="M0,96C120,64,240,32,360,48C480,64,600,128,720,128C840,128,960,64,1080,48C1200,32,1320,64,1440,96L1440,0L0,0Z">
+                    </path>
+                </svg>
+            </div>
+            <div class="footer-content position-relative z-1">            
+                <p class="footer-copy">© 2025 Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script_user.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
