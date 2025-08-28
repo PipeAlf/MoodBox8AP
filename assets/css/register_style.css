@@ -113,6 +113,28 @@
   text-decoration: underline;
 }
 
+/* Mensajes de error */
+
+.campo small.error {
+  color: #F74380;   /* rojo de tu paleta */
+  font-size: 0.85rem;
+  display: block;
+  margin-top: 4px;
+  visibility: hidden;
+}
+
+.campo input.invalid {
+  border-color: #F74380;
+}
+
+.campo input.valid {
+  border-color: #08E2E3;
+}
+
+.campo small.error.visible {
+  visibility: visible;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .contenedor-login {

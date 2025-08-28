@@ -115,6 +115,31 @@
   text-decoration: underline;
 }
 
+/* Mensaje Error */
+
+.error-text {
+  color: #F74380;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Colores más simples sin parecer botones */
+.form-message.error {
+  color: #d6003d;
+}
+
+.form-message.success {
+  color: #008060;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .contenedor-login {
