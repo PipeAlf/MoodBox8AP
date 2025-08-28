@@ -303,4 +303,3 @@ function updateCartBadge() {
     cartBadge.classList.add("hidden");
   }
 }
-
