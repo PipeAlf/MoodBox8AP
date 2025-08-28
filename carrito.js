@@ -60,6 +60,11 @@ function setupCartEventListeners() {
   
   // Abrir carrito
   toggleCartBtn.addEventListener("click", () => {
+    const usuarioActivo = localStorage.getItem("usuarioActivo");
+    if (usuarioActivo !== "true") {
+      window.location.href = "login.html"; // 🔒 Redirigir a login
+      return;
+    }
     cartPanel?.classList.add("open");
     cartOverlay?.classList.add("show");
     renderCart();
@@ -181,6 +186,15 @@ function closeCart() {
 function handleProductClick(e) {
   if (e.target.classList.contains("add-to-cart")) {
     const btn = e.target;
+
+    // 🔑 Validar si hay usuario logueado
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+    if (!usuarioActivo) {
+      // Si no hay sesión → redirigir a login
+      window.location.href = "login.html";
+      return;
+    }
+
     const product = {
       id: btn.dataset.id || btn.dataset.name,
       name: btn.dataset.name,
@@ -268,6 +282,12 @@ function autoHideAlert(alert) {
 function updateCartBadge() {
   const cartBadge = document.getElementById("cartBadge");
   if (!cartBadge) return;
+
+  const usuarioActivo = localStorage.getItem("usuarioActivo");
+  if (usuarioActivo !== "true") {
+    cartBadge.classList.add("hidden"); // 🔒 Ocultar badge
+    return;
+  }
   
   const totalItems = cart.reduce((total, item) => total + item.qty, 0);
   
