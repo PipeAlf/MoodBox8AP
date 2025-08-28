@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailInput = document.getElementById("loginEmail");
     const passwordInput = document.getElementById("loginPassword");
 
-    // --- Crear mensajes de error dinámicos ---
+    // Crear mensajes de error dinámicos
     const emailError = document.createElement("small");
     emailError.className = "error-text";
     emailInput.insertAdjacentElement("afterend", emailError);
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loginMessage.className = "form-message";
     loginForm.appendChild(loginMessage);
 
-    // --- Validación de correo en vivo ---
+    // Validación de correo en vivo
     emailInput.addEventListener("input", () => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(emailInput.value.trim())) {

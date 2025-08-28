@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
 // Modal Perfil
 function inicializarPerfilUsuario() {
   const fotoPerfil = document.getElementById("fotoPerfil");
