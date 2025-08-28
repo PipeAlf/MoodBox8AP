@@ -1,0 +1,152 @@
+.contenedor-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+  max-width: 1000px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    gap: 30px;
+}
+
+/* --- Hero lateral --- */
+.hero-login {
+  background: linear-gradient(135deg, #acf3f3, #f8d1f1); /* tonos suaves que combinan */
+  color: #2C003E;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-logo {
+  width: 140px;
+  margin-bottom: 20px;
+
+
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #261E45;
+  opacity: 0.9;
+  max-width: 280px;
+}
+
+/* --- Formulario --- */
+.card-form {
+  background: #fff;  /* mantiene fondo blanco */
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2C003E;
+}
+
+.campo {
+  margin-bottom: 16px;
+}
+
+.campo label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #261E45;
+}
+
+.campo input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e6e6ef;
+  border-radius: 8px;
+  outline: none;
+}
+
+.campo input:focus {
+  border-color: #08E2E3;
+  box-shadow: 0 0 0 4px rgba(8, 226, 227, 0.1);
+}
+
+.card-form .btn {
+  background-color: #F74380 !important;
+  color: #fff !important;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card-form .btn:hover {
+  background-color: #08E2E3 !important;
+  color: #261E45 !important;
+}
+
+.texto-secundario {
+  text-align: center;
+  margin-top: 16px;
+  color: #616b7a;
+}
+
+.texto-secundario a {
+  color: #F74380;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.texto-secundario a:hover {
+  text-decoration: underline;
+}
+
+/* Mensaje Error */
+
+.error-text {
+  color: #F74380;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Colores más simples sin parecer botones */
+.form-message.error {
+  color: #d6003d;
+}
+
+.form-message.success {
+  color: #008060;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .contenedor-login {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-login {
+    padding: 30px;
+  }
+}

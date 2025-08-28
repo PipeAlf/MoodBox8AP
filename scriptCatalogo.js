@@ -2,9 +2,8 @@
 (function () {
   "use strict";
 
-  // -------------------------------
+  
   // Utilidades
-  // -------------------------------
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
 
   // -------------------------------

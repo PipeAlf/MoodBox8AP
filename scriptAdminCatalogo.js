@@ -11,9 +11,6 @@ let categoriasSeleccionadas = [];
 // Referencias DOM
 const form = document.getElementById("formProducto");
 
-// ========================================
-// INICIALIZACIÓN
-// ========================================
 
 document.addEventListener("DOMContentLoaded", () => {
   // Inicializar navegación por secciones
