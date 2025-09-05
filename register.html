@@ -45,38 +45,45 @@
         <p class="hero-subtitle">Únete a MoodBox y personaliza tu experiencia</p>
       </div>
 
-      <!-- Formulario -->
-      <div class="card-form">
-        <h2>Registro</h2>
-        <form id="registroForm">
-          <div class="campo">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" id="nombre" required>
+    <!-- Formulario -->
+    <div class="card-form">
+      <h2>Registro</h2>
+      <form id="registroForm">
+        <div class="campo">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" required placeholder="Ej: Ana Gómez" />
+          <small class="error"></small>
+        </div>
+        <div class="campo">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" required placeholder="Ej: 3123456789" />
+          <small class="error"></small>
+        </div>
+        <div class="campo">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" required placeholder="Ej: ejemplo@correo.com" />
+          <small class="error"></small>
+        </div>
+        <div class="campo">
+          <label for="password">Contraseña</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" required placeholder="Mínimo 6 caracteres (ej: S3gura!)" />
+            <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
+              <i class="bi bi-eye"></i>
+            </button>
             <small class="error"></small>
           </div>
-          <div class="campo">
-            <label for="telefono">Teléfono</label>
-            <input type="tel" id="telefono" required>
-            <small class="error"></small>
-          </div>
-          <div class="campo">
-            <label for="email">Correo electrónico</label>
-            <input type="email" id="email" required>
-            <small class="error"></small>
-          </div>
-          <div class="campo">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" required>
-            <small class="error"></small>
-          </div>
-          <button type="submit" class="btn">Registrarse</button>
-        </form>
-        <p class="texto-secundario">
-          ¿Ya tienes cuenta?
-          <a href="login.html">Inicia sesión aquí</a>
-        </p>
-      </div>
-    </main>
+          
+        </div>
+        <button type="submit" class="btn">Registrarse</button>
+      </form>
+
+      <p class="texto-secundario">
+        ¿Ya tienes cuenta?
+        <a href="login.html">Inicia sesión aquí</a>
+      </p>
+    </div>
+  </main>
 
     <!-- Footer -->
     <footer class="text-white text-left py-4 mt-5 position-relative">

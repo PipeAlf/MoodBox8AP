@@ -1,5 +1,19 @@
 // ========================================
-// SCRIPT ADMIN CATÁLOGO - DEPURADO
+// PROTECCIÓN SOLO ADMIN
+// ========================================
+document.addEventListener("DOMContentLoaded", () => {
+  const adminActivo = localStorage.getItem("adminActivo");
+
+  if (adminActivo !== "true") {
+    alert("Acceso denegado");
+    window.location.href = "index.html"; // Redirige fuera
+    return; // 👈 Detiene ejecución del script admin
+  }
+});
+
+
+// ========================================
+// SCRIPT ADMIN CATÁLOGO
 // ========================================
 
 // Variables globales

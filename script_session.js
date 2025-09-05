@@ -3,11 +3,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const perfilOpciones = document.getElementById("perfilOpciones");
   const usuario = JSON.parse(localStorage.getItem("usuario"));
   const usuarioActivo = localStorage.getItem("usuarioActivo");
+  const adminActivo = localStorage.getItem("adminActivo");
 
   perfilOpciones.innerHTML = "";
 
-  if (usuario && usuarioActivo === "true") {
-    // Usuario logueado
+  // 🔹 Caso: Admin
+  if (adminActivo === "true") {
+    perfilOpciones.innerHTML = `
+      <li><span class="dropdown-item-text">Hola, Admin</span></li>
+      <li><a class="dropdown-item" href="adminview.html">Vista Administrador</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
+    `;
+
+    document.getElementById("cerrarSesion").addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.setItem("adminActivo", "false");
+      localStorage.setItem("usuarioActivo", "false");
+      window.location.href = "index.html"; // 🔹 redirigir al inicio
+    });
+
+  // 🔹 Caso: Usuario normal
+  } else if (usuario && usuarioActivo === "true") {
     perfilOpciones.innerHTML = `
       <li><span class="dropdown-item-text">Hola, ${usuario.nombre}</span></li>
       <li><a class="dropdown-item" href="#" id="abrirPerfil">Perfil</a></li>
@@ -15,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
     `;
 
-    // Evento para abrir modal de perfil
     const abrirPerfilBtn = document.getElementById("abrirPerfil");
     if (abrirPerfilBtn) {
       abrirPerfilBtn.addEventListener("click", (e) => {
@@ -25,14 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Evento para cerrar sesión
     document.getElementById("cerrarSesion").addEventListener("click", (e) => {
       e.preventDefault();
       localStorage.setItem("usuarioActivo", "false");
-      window.location.reload();
+      localStorage.setItem("adminActivo", "false"); 
+      window.location.href = "index.html"; // 🔹 redirigir al inicio
     });
+
+  // 🔹 Caso: No hay sesión
   } else {
-    // No hay sesión
     perfilOpciones.innerHTML = `
       <li><a class="dropdown-item" href="login.html">Iniciar sesión</a></li>
       <li><a class="dropdown-item" href="register.html">Registrarse</a></li>
@@ -40,7 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Modal Perfil
+
+
+// Modal Perfil (solo aplica para usuario normal)
 function inicializarPerfilUsuario() {
   const fotoPerfil = document.getElementById("fotoPerfil");
   const inputNombre = document.getElementById("inputNombre");
@@ -51,11 +70,16 @@ function inicializarPerfilUsuario() {
 
   if (!guardarBtn) return;
 
-  // Obtener datos de usuario logueado
+  // Evitar abrir modal en caso de admin
+  const adminActivo = localStorage.getItem("adminActivo");
+  if (adminActivo === "true") {
+    return;
+  }
+
+  // Obtener datos usuario
   let usuario = JSON.parse(localStorage.getItem("usuario")); 
   let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-  // Validar que haya un usuario activo
   const usuarioActivoFlag = localStorage.getItem("usuarioActivo");
   if (!usuario || usuarioActivoFlag !== "true") {
     console.warn("No hay usuario activo logueado");
@@ -74,12 +98,10 @@ function inicializarPerfilUsuario() {
     const nuevaPassword = inputPassword.value.trim();
     const nuevaFoto = inputFoto.files[0];
 
-    // Actualizar datos en el objeto usuario
     usuario.nombre = nuevoNombre;
     usuario.email = nuevoEmail;
     if (nuevaPassword) usuario.password = nuevaPassword;
 
-    // Si cambia la foto
     if (nuevaFoto) {
       const lector = new FileReader();
       lector.onload = function (e) {
@@ -92,23 +114,19 @@ function inicializarPerfilUsuario() {
       actualizarUsuario(usuario, usuarios);
     }
 
-    // Cerrar modal
     const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
     if (modal) modal.hide();
   });
 }
 
 function actualizarUsuario(usuario, usuarios) {
-  // Buscar índice en la lista de usuarios por email
   const index = usuarios.findIndex(u => u.email === usuario.email);
   if (index !== -1) {
     usuarios[index] = usuario;
   }
 
-  // Guardar cambios
   localStorage.setItem("usuarios", JSON.stringify(usuarios));
   localStorage.setItem("usuario", JSON.stringify(usuario));
-
   console.log("Perfil actualizado:", usuario);
 }
 
