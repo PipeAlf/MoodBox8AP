@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const value = input.value.trim();
       const validacion = validators[input.id](value);
 
-      const errorElement = input.parentElement.querySelector(".error");
+      const errorElement = input.closest(".campo").querySelector(".error");
+
       if (validacion === true) {
         input.classList.remove("invalid");
         input.classList.add("valid");
@@ -73,10 +74,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const usuario = {
           nombre: nombre.value.trim(),
           telefono: telefono.value.trim(),
-          email: email.value.trim(),
+          correo: email.value.trim(),  // 👈 usamos "correo" para ser consistente
           password: password.value.trim()
         };
+
+        // Recuperar lista de usuarios existentes o crear array vacío
+        let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+        // Verificar si ya existe un usuario con ese correo
+        const existe = usuarios.some(u => u.correo === usuario.correo);
+        if (existe) {
+          alert("⚠️ Este correo ya está registrado. Inicia sesión o usa otro correo.");
+          return;
+        }
+
+        // Guardar el nuevo usuario
+        usuarios.push(usuario);
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+        // Guardar como último usuario registrado (para compatibilidad)
         localStorage.setItem("usuario", JSON.stringify(usuario));
+
         alert("✅ Registro exitoso. Ahora puedes iniciar sesión.");
         window.location.href = "login.html";
       }

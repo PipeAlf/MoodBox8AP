@@ -53,28 +53,31 @@ document.addEventListener("DOMContentLoaded", () => {
       // 🔹 Validación de Admin por defecto
       if (email === "admin@moodbox.com" && password === "admin123") {
         localStorage.setItem("adminActivo", "true");
-        localStorage.setItem("usuarioActivo", "false"); // evitar conflicto
+        localStorage.setItem("usuarioActivo", "false");
 
         loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
         loginMessage.className = "form-message success";
 
         setTimeout(() => {
-          window.location.href = "adminview.html"; // página especial admin
+          window.location.href = "adminview.html";
         }, 1500);
-        return; // 👈 salimos para no seguir validando
-      }
-
-      // 🔹 Validación de usuario normal
-      const usuario = JSON.parse(localStorage.getItem("usuario"));
-      if (!usuario) {
-        loginMessage.textContent = "No hay usuarios registrados. Regístrate primero.";
-        loginMessage.className = "form-message error";
         return;
       }
 
-      if (usuario.email === email && usuario.password === password) {
+      // 🔹 Validación de usuarios registrados
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+      // Buscar usuario que coincida con correo + contraseña
+      const usuario = usuarios.find(
+        (u) =>
+          (u.correo === email || u.email === email) && // soporte a "correo" y "email"
+          u.password === password
+      );
+
+      if (usuario) {
         localStorage.setItem("usuarioActivo", "true");
         localStorage.setItem("adminActivo", "false");
+        localStorage.setItem("usuario", JSON.stringify(usuario)); // guardamos usuario actual
 
         loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
         loginMessage.className = "form-message success";
