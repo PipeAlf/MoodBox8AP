@@ -1,7 +1,7 @@
-//script_session.js
+// script_session.js
 document.addEventListener("DOMContentLoaded", () => {
   const perfilOpciones = document.getElementById("perfilOpciones");
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const usuario = JSON.parse(localStorage.getItem("usuario")); // usuario actual logueado
   const usuarioActivo = localStorage.getItem("usuarioActivo");
   const adminActivo = localStorage.getItem("adminActivo");
 
@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       localStorage.setItem("adminActivo", "false");
       localStorage.setItem("usuarioActivo", "false");
-      window.location.href = "index.html"; // 🔹 redirigir al inicio
+      localStorage.removeItem("usuario");
+      window.location.href = "index.html";
     });
 
   // 🔹 Caso: Usuario normal
@@ -44,8 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cerrarSesion").addEventListener("click", (e) => {
       e.preventDefault();
       localStorage.setItem("usuarioActivo", "false");
-      localStorage.setItem("adminActivo", "false"); 
-      window.location.href = "index.html"; // 🔹 redirigir al inicio
+      localStorage.setItem("adminActivo", "false");
+      localStorage.removeItem("usuario");
+      window.location.href = "index.html";
     });
 
   // 🔹 Caso: No hay sesión
@@ -56,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 });
-
 
 
 // Modal Perfil (solo aplica para usuario normal)
@@ -72,12 +73,10 @@ function inicializarPerfilUsuario() {
 
   // Evitar abrir modal en caso de admin
   const adminActivo = localStorage.getItem("adminActivo");
-  if (adminActivo === "true") {
-    return;
-  }
+  if (adminActivo === "true") return;
 
-  // Obtener datos usuario
-  let usuario = JSON.parse(localStorage.getItem("usuario")); 
+  // Obtener datos usuario actual
+  let usuario = JSON.parse(localStorage.getItem("usuario"));
   let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
   const usuarioActivoFlag = localStorage.getItem("usuarioActivo");
@@ -88,7 +87,7 @@ function inicializarPerfilUsuario() {
 
   // Mostrar datos actuales en el modal
   inputNombre.value = usuario.nombre || "";
-  inputEmail.value = usuario.email || "";
+  inputEmail.value = usuario.email || usuario.correo || "";
   fotoPerfil.src = usuario.foto || "./assets/imagenes/user.png";
 
   // Guardar cambios
@@ -99,7 +98,7 @@ function inicializarPerfilUsuario() {
     const nuevaFoto = inputFoto.files[0];
 
     usuario.nombre = nuevoNombre;
-    usuario.email = nuevoEmail;
+    usuario.email = nuevoEmail;  // normalizamos siempre a "email"
     if (nuevaPassword) usuario.password = nuevaPassword;
 
     if (nuevaFoto) {
@@ -120,7 +119,11 @@ function inicializarPerfilUsuario() {
 }
 
 function actualizarUsuario(usuario, usuarios) {
-  const index = usuarios.findIndex(u => u.email === usuario.email);
+  // Buscar usuario por correo/email
+  const index = usuarios.findIndex(
+    (u) => (u.email || u.correo) === (usuario.email || usuario.correo)
+  );
+
   if (index !== -1) {
     usuarios[index] = usuario;
   }
