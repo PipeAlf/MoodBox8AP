@@ -1,3 +1,4 @@
+//script_session.js
 document.addEventListener("DOMContentLoaded", () => {
   const perfilOpciones = document.getElementById("perfilOpciones");
   const usuario = JSON.parse(localStorage.getItem("usuario"));
