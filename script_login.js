@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailInput = document.getElementById("loginEmail");
     const passwordInput = document.getElementById("loginPassword");
 
-    // Placeholders (por si no están en el HTML)
+    // Placeholders por si no están en el HTML
     if (emailInput) emailInput.placeholder = emailInput.placeholder || "ej. usuario@correo.com";
     if (passwordInput) passwordInput.placeholder = passwordInput.placeholder || "Ej: M1Contra!";
 
@@ -50,9 +50,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
 
-      // Recuperar usuario del localStorage
-      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      // 🔹 Validación de Admin por defecto
+      if (email === "admin@moodbox.com" && password === "admin123") {
+        localStorage.setItem("adminActivo", "true");
+        localStorage.setItem("usuarioActivo", "false"); // evitar conflicto
 
+        loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
+        loginMessage.className = "form-message success";
+
+        setTimeout(() => {
+          window.location.href = "adminview.html"; // página especial admin
+        }, 1500);
+        return; // 👈 salimos para no seguir validando
+      }
+
+      // 🔹 Validación de usuario normal
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
       if (!usuario) {
         loginMessage.textContent = "No hay usuarios registrados. Regístrate primero.";
         loginMessage.className = "form-message error";
@@ -60,8 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (usuario.email === email && usuario.password === password) {
-        // Guardar estado de sesión
         localStorage.setItem("usuarioActivo", "true");
+        localStorage.setItem("adminActivo", "false");
 
         loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
         loginMessage.className = "form-message success";
