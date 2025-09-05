@@ -6,27 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
 
-    // Placeholders (por si no están en el HTML)
-    if (nombre) nombre.placeholder = nombre.placeholder || "Ej: Ana Gómez";
-    if (telefono) telefono.placeholder = telefono.placeholder || "Ej: 3123456789";
-    if (email) email.placeholder = email.placeholder || "Ej: ejemplo@correo.com";
-    if (password) password.placeholder = password.placeholder || "Mínimo 6 caracteres (ej: S3gura!)";
-
-    // Toggle password (ojito)
-    const toggleBtn = registroForm.querySelector(".toggle-password");
-    if (toggleBtn && password) {
-      toggleBtn.addEventListener("click", () => {
-        const type = password.type === "password" ? "text" : "password";
-        password.type = type;
-        const icon = toggleBtn.querySelector("i");
-        if (icon) {
-          icon.classList.toggle("bi-eye");
-          icon.classList.toggle("bi-eye-slash");
-        }
-        toggleBtn.setAttribute("aria-label", type === "text" ? "Ocultar contraseña" : "Mostrar contraseña");
-      });
-    }
-
     // Validadores
     const validators = {
       nombre: (v) => v.trim().length >= 3 || "Debe tener al menos 3 caracteres.",

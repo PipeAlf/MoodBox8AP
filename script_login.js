@@ -5,10 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailInput = document.getElementById("loginEmail");
     const passwordInput = document.getElementById("loginPassword");
 
-    // Placeholders (por si no están en el HTML)
-    if (emailInput) emailInput.placeholder = emailInput.placeholder || "ej. usuario@correo.com";
-    if (passwordInput) passwordInput.placeholder = passwordInput.placeholder || "Ej: M1Contra!";
-
     // Crear mensajes de error dinámicos
     const emailError = document.createElement("small");
     emailError.className = "error-text";
@@ -17,21 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginMessage = document.createElement("div");
     loginMessage.className = "form-message";
     loginForm.appendChild(loginMessage);
-
-    // Toggle password (ojito)
-    const toggleBtn = loginForm.querySelector(".toggle-password");
-    if (toggleBtn && passwordInput) {
-      toggleBtn.addEventListener("click", () => {
-        const type = passwordInput.type === "password" ? "text" : "password";
-        passwordInput.type = type;
-        const icon = toggleBtn.querySelector("i");
-        if (icon) {
-          icon.classList.toggle("bi-eye");
-          icon.classList.toggle("bi-eye-slash");
-        }
-        toggleBtn.setAttribute("aria-label", type === "text" ? "Ocultar contraseña" : "Mostrar contraseña");
-      });
-    }
 
     // Validación de correo en vivo
     emailInput.addEventListener("input", () => {
