@@ -140,6 +140,46 @@
   color: #008060;
 }
 
+/* styles para el ojo dentro del input */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 50px; /* un poco más de espacio para el ojito */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px; /* más padding hacia la derecha */
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+  color: #6c757d; /* gris Bootstrap */
+  transition: color 0.2s ease-in-out;
+}
+
+.toggle-password:hover i {
+  color: #495057; /* un gris más oscuro al pasar el mouse */
+}
+
+.toggle-password:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.toggle-password i {
+  pointer-events: none; /* que el clic lo reciba el botón */
+  font-size: 1.15rem;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .contenedor-login {
