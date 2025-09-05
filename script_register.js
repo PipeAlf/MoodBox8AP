@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       password: (v) => v.length >= 6 || "La contraseña debe tener mínimo 6 caracteres."
     };
 
-    // Función para validar un campo
+    // Función para validar un campo 
     function validarCampo(input) {
       const value = input.value.trim();
       const validacion = validators[input.id](value);
