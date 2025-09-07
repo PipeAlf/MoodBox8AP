@@ -789,57 +789,85 @@ function inicializarPerfil() {
   const inputPassword = document.getElementById("inputPassword");
   const inputFoto = document.getElementById("inputFoto");
   const guardarBtn = document.getElementById("guardarCambios");
- 
-  if (!guardarBtn) return;
 
-  // Cargar datos guardados
-  if (localStorage.getItem("nombre") && nombreSidebar && inputNombre) {
-    inputNombre.value = localStorage.getItem("nombre");
-    nombreSidebar.textContent = localStorage.getItem("nombre");
+  let adminData = JSON.parse(localStorage.getItem("admin")) || {};
+
+  // 🔹 Cargar datos al abrir
+  inputNombre.value = adminData.nombre || "Admin";
+  inputCorreo.value = adminData.correo || "admin@moodbox.com";
+  fotoPerfil.src = adminData.foto || "./assets/imagenes/user.png";
+  if (nombreSidebar) nombreSidebar.textContent = adminData.nombre || "Admin";
+  if (fotoSidebar) fotoSidebar.src = adminData.foto || "./assets/imagenes/user.png";
+
+guardarBtn.addEventListener("click", function () {
+  const nuevoNombre = inputNombre?.value || '';
+  const nuevoCorreo = inputCorreo?.value || '';
+  const nuevaPassword = inputPassword?.value || '';
+  const nuevaFoto = inputFoto?.files[0];
+
+  // Actualizar datos del admin en localStorage
+  let adminData = JSON.parse(localStorage.getItem("admin")) || {};
+  adminData.nombre = nuevoNombre;
+  adminData.correo = nuevoCorreo;
+  if (nuevaPassword.trim() !== "") {
+    adminData.password = nuevaPassword;
   }
-  
-  if (localStorage.getItem("correo") && inputCorreo) {
-    inputCorreo.value = localStorage.getItem("correo");
+
+  // Si cambia la foto
+  if (nuevaFoto) {
+    const lector = new FileReader();
+    lector.onload = function (e) {
+      adminData.foto = e.target.result;
+      fotoPerfil.src = e.target.result;
+      fotoSidebar.src = e.target.result;
+
+      localStorage.setItem("admin", JSON.stringify(adminData));
+
+      // 🔹 Refrescar nav inmediatamente
+      actualizarNavAdmin(adminData);
+    };
+    lector.readAsDataURL(nuevaFoto);
+  } else {
+    localStorage.setItem("admin", JSON.stringify(adminData));
+
+    // 🔹 Refrescar nav inmediatamente
+    actualizarNavAdmin(adminData);
   }
-  
-  if (localStorage.getItem("foto") && fotoPerfil && fotoSidebar) {
-    fotoPerfil.src = localStorage.getItem("foto");
-    fotoSidebar.src = localStorage.getItem("foto");
+
+  // Sidebar nombre
+  if (nombreSidebar) {
+    nombreSidebar.textContent = nuevoNombre;
   }
- 
-  // Evento guardar cambios
-  guardarBtn.addEventListener("click", function () {
-    const nuevoNombre = inputNombre?.value || '';
-    const nuevoCorreo = inputCorreo?.value || '';
-    const nuevaPassword = inputPassword?.value || '';
-    const nuevaFoto = inputFoto?.files[0];
- 
-    if (nombreSidebar) {
-      nombreSidebar.textContent = nuevoNombre;
-    }
- 
-    // Guardar en localStorage
-    localStorage.setItem("nombre", nuevoNombre);
-    localStorage.setItem("correo", nuevoCorreo);
-    if (nuevaPassword.trim() !== "") {
-      localStorage.setItem("password", nuevaPassword); 
-    }
- 
-    // Guardar foto si se subió
-    if (nuevaFoto && fotoPerfil && fotoSidebar) {
-      const lector = new FileReader();
-      lector.onload = function (e) {
-        fotoPerfil.src = e.target.result;
-        fotoSidebar.src = e.target.result;
-        localStorage.setItem("foto", e.target.result);
-      };
-      lector.readAsDataURL(nuevaFoto);
-    }
- 
-    console.log("Perfil actualizado:", { nombre: nuevoNombre, correo: nuevoCorreo });
- 
-    // Cerrar modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
-    if (modal) modal.hide();
-  });
+
+  console.log("Perfil actualizado:", adminData);
+
+  // Cerrar modal
+  const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
+  if (modal) modal.hide();
+});
+}
+function actualizarNavAdmin(adminData) {
+  const navFotoPerfil = document.getElementById("navFotoPerfil");
+  const perfilOpciones = document.getElementById("perfilOpciones");
+
+  if (navFotoPerfil) {
+    navFotoPerfil.src = adminData.foto || "./assets/imagenes/user.png";
+  }
+
+  if (perfilOpciones) {
+    perfilOpciones.innerHTML = `
+      <li><span class="dropdown-item-text">Hola, ${adminData.nombre}</span></li>
+      <li><a class="dropdown-item" href="adminview.html">Vista Administrador</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
+    `;
+
+    document.getElementById("cerrarSesion").addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.setItem("adminActivo", "false");
+      localStorage.setItem("usuarioActivo", "false");
+      localStorage.removeItem("usuario");
+      window.location.href = "index.html";
+    });
+  }
 }

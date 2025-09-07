@@ -6,8 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("loginPassword");
 
     // Placeholders por si no están en el HTML
-    if (emailInput) emailInput.placeholder = emailInput.placeholder || "ej. usuario@correo.com";
-    if (passwordInput) passwordInput.placeholder = passwordInput.placeholder || "Ej: M1Contra!";
+    if (emailInput)
+      emailInput.placeholder =
+        emailInput.placeholder || "ej. usuario@correo.com";
+    if (passwordInput)
+      passwordInput.placeholder = passwordInput.placeholder || "Ej: M1Contra!";
 
     // Crear mensajes de error dinámicos
     const emailError = document.createElement("small");
@@ -29,7 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
           icon.classList.toggle("bi-eye");
           icon.classList.toggle("bi-eye-slash");
         }
-        toggleBtn.setAttribute("aria-label", type === "text" ? "Ocultar contraseña" : "Mostrar contraseña");
+        toggleBtn.setAttribute(
+          "aria-label",
+          type === "text" ? "Ocultar contraseña" : "Mostrar contraseña"
+        );
       });
     }
 
@@ -50,19 +56,48 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
 
-      // 🔹 Validación de Admin por defecto
-      if (email === "admin@moodbox.com" && password === "admin123") {
-        localStorage.setItem("adminActivo", "true");
-        localStorage.setItem("usuarioActivo", "false");
+      // ==========================
+// Validación de Admin
+// ==========================
+const adminGuardado = JSON.parse(localStorage.getItem("admin"));
 
-        loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
-        loginMessage.className = "form-message success";
+if (adminGuardado) {
+  // 🔹 Si ya existe admin en localStorage, validar con esos datos
+  if (email === adminGuardado.correo && password === adminGuardado.password) {
+    localStorage.setItem("adminActivo", "true");
+    localStorage.setItem("usuarioActivo", "false");
 
-        setTimeout(() => {
-          window.location.href = "adminview.html";
-        }, 1500);
-        return;
-      }
+    loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
+    loginMessage.className = "form-message success";
+
+    setTimeout(() => {
+      window.location.href = "adminview.html";
+    }, 1500);
+    return;
+  }
+} else {
+  // 🔹 Si no existe aún, validar con credenciales por defecto
+  if (email === "admin@moodbox.com" && password === "admin123") {
+    const adminData = {
+      nombre: "Admin",
+      correo: "admin@moodbox.com",
+      password: "admin123",
+      foto: "./assets/imagenes/user.png"
+    };
+    localStorage.setItem("admin", JSON.stringify(adminData));
+
+    localStorage.setItem("adminActivo", "true");
+    localStorage.setItem("usuarioActivo", "false");
+
+    loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
+    loginMessage.className = "form-message success";
+
+    setTimeout(() => {
+      window.location.href = "adminview.html";
+    }, 1500);
+    return;
+  }
+}
 
       // 🔹 Validación de usuarios registrados
       const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];

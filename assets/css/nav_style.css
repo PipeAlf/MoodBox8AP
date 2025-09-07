@@ -160,6 +160,18 @@ body {
   border-radius: 6px;
 }
 
+#navFotoPerfil {
+  object-fit: cover;
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+#navFotoPerfil:hover {
+  transform: scale(1.1);   /* efecto de zoom suave */
+}
+
+
 /* Tablet y móvil mediano */
 @media (max-width: 991px) {
     .navbar-brand img {

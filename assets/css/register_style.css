@@ -175,6 +175,21 @@
   font-size: 1.15rem;
 }
 
+.form-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.form-message.error {
+  color: #d6003d;
+}
+
+.form-message.success {
+  color: #008060;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .contenedor-login {

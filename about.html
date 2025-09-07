@@ -21,7 +21,7 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand" href="#">
@@ -43,13 +43,25 @@
                     <li class="nav-item"><a class="nav-link" href="about.html">Equipo</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contáctanos</a></li>
                     <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="perfilMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-circle"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" id="perfilOpciones">
-                        <script src="script_session.js"></script>
-                    </ul>
-                  </li> 
+                     <a
+                     class="nav-link dropdown-toggle d-flex align-items-center"
+                     href="#"
+                     id="perfilDropdown"
+                     role="button"
+                     data-bs-toggle="dropdown"
+                     aria-expanded="false"
+                      >
+                     <img 
+                     id="navFotoPerfil" 
+                     src="./assets/imagenes/user.png" 
+                     alt="Perfil" 
+                     class="rounded-circle" 
+                     width="32" 
+                     height="32"
+                    />
+                      </a>
+                    <ul class="dropdown-menu dropdown-menu-end" id="perfilOpciones"></ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -345,7 +357,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script> </script>
+  <script src="script_session.js"></script>
 </body>
 
 </html>

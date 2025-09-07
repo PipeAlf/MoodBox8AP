@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
 
+    // Mensaje general de formulario
+    const registerMessage = document.createElement("div");
+    registerMessage.className = "form-message";
+    registroForm.appendChild(registerMessage);
+
     // Placeholders (por si no están en el HTML)
     if (nombre) nombre.placeholder = nombre.placeholder || "Ej: Ana Gómez";
     if (telefono) telefono.placeholder = telefono.placeholder || "Ej: 3123456789";
@@ -35,11 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
       password: (v) => v.length >= 6 || "La contraseña debe tener mínimo 6 caracteres."
     };
 
-    // Función para validar un campo 
     function validarCampo(input) {
       const value = input.value.trim();
       const validacion = validators[input.id](value);
-
       const errorElement = input.closest(".campo").querySelector(".error");
 
       if (validacion === true) {
@@ -62,9 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
       input.addEventListener("input", () => validarCampo(input));
     });
 
-    // Validar todo al enviar
+    // Enviar formulario
     registroForm.addEventListener("submit", (e) => {
       e.preventDefault();
+
       const validNombre = validarCampo(nombre);
       const validTel = validarCampo(telefono);
       const validEmail = validarCampo(email);
@@ -74,29 +78,36 @@ document.addEventListener("DOMContentLoaded", () => {
         const usuario = {
           nombre: nombre.value.trim(),
           telefono: telefono.value.trim(),
-          correo: email.value.trim(),  // 👈 usamos "correo" para ser consistente
+          correo: email.value.trim(), // 👈 usamos "correo"
           password: password.value.trim()
         };
 
-        // Recuperar lista de usuarios existentes o crear array vacío
         let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-        // Verificar si ya existe un usuario con ese correo
-        const existe = usuarios.some(u => u.correo === usuario.correo);
+        // Verificar duplicado
+        const existe = usuarios.some(
+          (u) => (u.correo || u.email) === usuario.correo
+        );
         if (existe) {
-          alert("⚠️ Este correo ya está registrado. Inicia sesión o usa otro correo.");
+          registerMessage.textContent = "Este correo ya está registrado. Inicia sesión o usa otro.";
+          registerMessage.className = "form-message error";
           return;
         }
 
-        // Guardar el nuevo usuario
+        // Guardar usuario
         usuarios.push(usuario);
         localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-        // Guardar como último usuario registrado (para compatibilidad)
         localStorage.setItem("usuario", JSON.stringify(usuario));
 
-        alert("✅ Registro exitoso. Ahora puedes iniciar sesión.");
-        window.location.href = "login.html";
+        registerMessage.textContent = "Registro exitoso. Redirigiendo a inicio de sesión...";
+        registerMessage.className = "form-message success";
+
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+      } else {
+        registerMessage.textContent = "Corrige los errores antes de continuar.";
+        registerMessage.className = "form-message error";
       }
     });
   }
