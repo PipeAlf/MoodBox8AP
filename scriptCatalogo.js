@@ -14,6 +14,146 @@
   let categoriasDisponibles = new Set();
   let categoriasSeleccionadas = new Set();
 
+
+  const productosPreCargados = [
+    {
+      id: Date.now(),
+      nombre: "Camiseta MoodBox",
+      precio: 25.99,
+      descripcion: "Camiseta de algodón con diseño exclusivo de Moodbox",
+      stock: 50,
+      codigo: "MBX001",
+      categorias: ["Ropa", "Algodón"],
+      imagen: "./assets/imagenes_catalogo/camiseta.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Mug Personalizado",
+      precio: 15.50,
+      descripcion: "Taza de cerámica con logo de MoodBox.",
+      stock: 30,
+      codigo: "MBX002",
+      categorias: ["Hogar", "Cerámica"],
+      imagen: "./assets/imagenes_catalogo/mug.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Llavero LED",
+      precio: 8.99,
+      descripcion: "Llavero con luz LED y diseño de MoodBox.",
+      stock: 10,
+      codigo: "MBX003",
+      categorias: ["Accesorios", "Electrónica"],
+      imagen: "./assets/imagenes_catalogo/llavero.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Bolsa Hogwarts",
+      precio: 6.99,
+      descripcion: "Bolsa de tela con tematica de Harry Potter y su escuela Hogwarts.",
+      stock: 100,
+      codigo: "MBX004",
+      categorias: ["Accesorios", "Hogar"],
+      imagen: "./assets/imagenes_catalogo/bolsa.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Botilito día de la madre",
+      precio: 10.99,
+      descripcion: "Botilito para frio/caliente con diseño para el día de la madre y capacidad de 300mL.",
+      stock: 30,
+      codigo: "MBX005",
+      categorias: ["Accesorios", "Hogar"],
+      imagen: "./assets/imagenes_catalogo/botilito.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Cojín Minecraft",
+      precio: 7.99,
+      descripcion: "Cojín de sofá con diseño de Minecraft.",
+      stock: 40,
+      codigo: "MBX006",
+      categorias: ["Accesorios", "Hogar", "Anime"],
+      imagen: "./assets/imagenes_catalogo/cojin.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Case de celular para papá",
+      precio: 4.99,
+      descripcion: "Case de celular para papá.",
+      stock: 10,
+      codigo: "MBX007",
+      categorias: ["Hogar", "Accesorios"],
+      imagen: "./assets/imagenes_catalogo/fundacel.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Gorra de dragón",
+      precio: 5.99,
+      descripcion: "Gorra negra con estampado de dragón rojo.",
+      stock: 30,
+      codigo: "MBX008",
+      categorias: ["Accesorios", "Hogar", "Ropa"],
+      imagen: "./assets/imagenes_catalogo/gorra.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "Morral Superman",
+      precio: 15.99,
+      descripcion: "Morral negro con logo de Superman.",
+      stock: 30,
+      codigo: "MBX009",
+      categorias: ["Accesorios", "Ropa"],
+      imagen: "./assets/imagenes_catalogo/morral.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    },
+    {
+      id: Date.now() + 1,
+      nombre: "PADMouse de Rick & Morty",
+      precio: 4.99,
+      descripcion: "PADMouse con estampado de Rick & Morty en un portal.",
+      stock: 30,
+      codigo: "MBX010",
+      categorias: ["Accesorios", "Anime"],
+      imagen: "./assets/imagenes_catalogo/padmouse.png",
+      activo: true,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    }
+    // ...agrega más productos si quieres...
+  ];
+  // Solo inicializa si no existen productos en localStorage
+  if (!localStorage.getItem("productos")) {
+    localStorage.setItem("productos", JSON.stringify(productosPreCargados));
+  }
+
+
   function cargarProductos() {
     try {
       const arr = JSON.parse(localStorage.getItem("productos")) || [];
