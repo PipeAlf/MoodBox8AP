@@ -6,16 +6,7 @@
   // Utilidades
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
 
-  // -------------------------------
-  // Estado
-  // -------------------------------
-  let productos = [];
-  let filtrosActivos = false;
-  let categoriasDisponibles = new Set();
-  let categoriasSeleccionadas = new Set();
-
-
-  const productosPreCargados = [
+    const productosPreCargados = [
     {
       id: Date.now(),
       nombre: "Camiseta MoodBox",
@@ -152,6 +143,16 @@
   if (!localStorage.getItem("productos")) {
     localStorage.setItem("productos", JSON.stringify(productosPreCargados));
   }
+  // -------------------------------
+  // Estado
+  // -------------------------------
+  let productos = [];
+  let filtrosActivos = false;
+  let categoriasDisponibles = new Set();
+  let categoriasSeleccionadas = new Set();
+
+
+
 
 
   function cargarProductos() {
