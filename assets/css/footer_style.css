@@ -78,3 +78,15 @@ footer ul li:hover i {
     margin: 0;
     padding: 0;
 }
+@media (max-width: 768px) {
+      /* Mejorar responsive del footer */
+  .footer-content {
+    text-align: center;
+  }
+  
+  .footer-content ul {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}

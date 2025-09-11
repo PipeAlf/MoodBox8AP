@@ -175,20 +175,18 @@
   position: relative;
 }
 
+.search-input.form-control {
+  padding-left: 2.5rem !important; /* fuerza el espacio */
+}
+
 .search-icon {
   position: absolute;
-  left: 1rem;
+  left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
   color: #6c757d;
-  z-index: 10;
-}
-
-.search-input {
-  padding-left: 3rem;
-  border: 2px solid #e9ecef;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
+  z-index: 2;
+  pointer-events: none; /* evita bloquear el input */
 }
 
 .search-input:focus {
@@ -929,12 +927,12 @@
   }
   
   .navbar-brand img {
-    width: 30px;
-    height: 30px;
+  width: clamp(50px, 8vw, 70px); /* mínimo 40px, máximo 60px */
+  height: auto; /* mantiene proporción */
   }
   
   .navbar-brand .nombre {
-    height: 30px;
+    font-size: clamp(14px, 4vw, 20px);
   }
   
   /* Mejorar responsive del footer */
