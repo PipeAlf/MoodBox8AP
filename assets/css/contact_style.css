@@ -257,3 +257,21 @@ textarea {
 .accordion-button.custom:focus {
     box-shadow: 0 0 0 0.25rem rgba(8, 226, 227, 0.5);
 }
+
+#contador-caracteres {
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+#contador-caracteres.verde {
+    color: green;
+}
+
+#contador-caracteres.amarillo {
+    color: orange;
+}
+
+#contador-caracteres.rojo {
+    color: red;
+}
