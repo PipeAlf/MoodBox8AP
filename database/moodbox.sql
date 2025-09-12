@@ -130,7 +130,7 @@ INSERT INTO `venta` (`id_venta`, `id_usuario`, `fecha_venta`, `total`, `estado`,
 (5, 4, '2025-09-12 11:57:21', 199.99, 'pagada', 'efectivo');
 
 --
--- Índices para tablas volcadas
+-- Índices para tablas volcadas 
 --
 
 --
