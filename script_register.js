@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Enviar formulario
     registroForm.addEventListener("submit", (e) => {
       e.preventDefault();
+        console.log("🚀 Formulario enviado");
 
       const validNombre = validarCampo(nombre);
       const validTel = validarCampo(telefono);
@@ -75,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const validPass = validarCampo(password);
 
       if (validNombre && validTel && validEmail && validPass) {
+          console.log("✅ Pasó validación, enviando fetch...");
         const usuario = {
           nombre: nombre.value.trim(),
           telefono: telefono.value.trim(),
@@ -95,16 +97,36 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Guardar usuario
-        usuarios.push(usuario);
-        localStorage.setItem("usuarios", JSON.stringify(usuarios));
-        localStorage.setItem("usuario", JSON.stringify(usuario));
 
-        registerMessage.textContent = "Registro exitoso. Redirigiendo a inicio de sesión...";
-        registerMessage.className = "form-message success";
+        // Guardar usuario en el backend
+        fetch("http://localhost:8080/api/usuarios", {
+          
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(usuario)
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("Error en el registro");
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Usuario registrado en BD:", data);
 
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1500);
+            // ✅ Guardar en localStorage solo si fue exitoso
+            usuarios.push(usuario);
+            localStorage.setItem("usuarios", JSON.stringify(usuarios));
+            localStorage.setItem("usuario", JSON.stringify(usuario));
+
+            registerMessage.textContent = "Registro exitoso. Redirigiendo a inicio de sesión...";
+            registerMessage.className = "form-message success";
+
+           // setTimeout(() => (window.location.href = "login.html"), 1500);
+          })
+          .catch((error) => {
+            console.error(error);
+            registerMessage.textContent = "Hubo un error en el servidor. Intenta más tarde.";
+            registerMessage.className = "form-message error";
+          });
       } else {
         registerMessage.textContent = "Corrige los errores antes de continuar.";
         registerMessage.className = "form-message error";
