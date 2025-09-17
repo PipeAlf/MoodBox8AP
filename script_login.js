@@ -3,13 +3,24 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginForm) {
     const correoInput = document.getElementById("loginEmail");
     const passwordInput = document.getElementById("loginPassword");
+    const toggleBtn = loginForm.querySelector(".toggle-password");
     const loginMessage = document.createElement("div");
     loginMessage.className = "form-message";
     loginForm.appendChild(loginMessage);
 
-    // Placeholders por si no están en el HTML
-    if (correoInput) correoInput.placeholder = correoInput.placeholder || "Ej: ejemplo@correo.com";
-    if (passwordInput) passwordInput.placeholder = passwordInput.placeholder || "Tu contraseña";
+    // Mostrar/ocultar contraseña con el ojito
+    if (toggleBtn && passwordInput) {
+      toggleBtn.addEventListener("click", () => {
+        const type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+        const icon = toggleBtn.querySelector("i");
+        if (icon) {
+          icon.classList.toggle("bi-eye");
+          icon.classList.toggle("bi-eye-slash");
+        }
+        toggleBtn.setAttribute("aria-label", type === "text" ? "Ocultar contraseña" : "Mostrar contraseña");
+      });
+    }
 
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -34,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.ok) {
           const usuario = await response.json();
           localStorage.setItem("usuario", JSON.stringify(usuario));
+          localStorage.setItem("sesionIniciada", "true"); // Marca sesión activa
           loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
           loginMessage.className = "form-message success";
           setTimeout(() => window.location.href = "catalogo.html", 1500);
