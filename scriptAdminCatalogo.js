@@ -9,6 +9,50 @@ const API_BASE = "http://localhost:8080/api"; // <- ajusta si tu base difiere
 const PRODUCTOS_ENDPOINT = `${API_BASE}/productos`;
 
 // ========================================
+// HELPER: Peticiones autenticadas
+// ========================================
+
+function getAuthHeaders() {
+  const token = localStorage.getItem('accessToken');
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` })
+  };
+}
+
+async function makeAuthenticatedRequest(url, options = {}) {
+  const defaultOptions = {
+    headers: getAuthHeaders(),
+    ...options
+  };
+  
+  console.log(`🌐 Making request to: ${url}`, defaultOptions);
+  
+  try {
+    const response = await fetch(url, defaultOptions);
+    
+    if (response.status === 401) {
+      console.error('❌ Unauthorized - Token may be invalid or expired');
+      mostrarNotificacion('Sesión expirada. Por favor, inicia sesión nuevamente.', 'danger');
+      // Opcional: redirigir al login
+      // window.location.href = 'login.html';
+      return null;
+    }
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Request failed:', error);
+    mostrarNotificacion(`Error de conexión: ${error.message}`, 'danger');
+    throw error;
+  }
+}
+
+// ========================================
 // PROTECCIÓN SOLO ADMIN
 // ========================================
 
@@ -137,33 +181,30 @@ document.addEventListener("DOMContentLoaded", () => {
 /**
  * Carga productos desde backend y los renderiza
  */
-function cargarProductos() {
+async function cargarProductos() {
   const listaContainer = document.getElementById("listaProductos");
   if (listaContainer) showLoading(listaContainer);
 
-  fetch(PRODUCTOS_ENDPOINT)
-    .then(res => {
-      if (!res.ok) throw new Error(`Error al cargar productos: ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      // data puede ser array de productos o un wrapper -> asumimos array
-      const arr = Array.isArray(data) ? data : (data.content ?? data.items ?? []);
-      productos = arr.map(normalizeProducto);
-      renderizarProductos();
-      actualizarContadores();
-      actualizarCategoriasDashboard();
-    })
-    .catch(err => {
-      console.error("Error cargando productos:", err);
-      mostrarNotificacion("No se pudieron cargar los productos. Revisa el backend.", "danger");
-      // fallback: mantener array vacío
-      productos = [];
-      renderizarProductos();
-    })
-    .finally(() => {
-      if (listaContainer) hideLoading(listaContainer);
-    });
+  try {
+    const response = await makeAuthenticatedRequest(PRODUCTOS_ENDPOINT);
+    if (!response) return; // Error de autenticación
+    
+    const data = await response.json();
+    // data puede ser array de productos o un wrapper -> asumimos array
+    const arr = Array.isArray(data) ? data : (data.content ?? data.items ?? []);
+    productos = arr.map(normalizeProducto);
+    renderizarProductos();
+    actualizarContadores();
+    actualizarCategoriasDashboard();
+  } catch (err) {
+    console.error("Error cargando productos:", err);
+    mostrarNotificacion("No se pudieron cargar los productos. Revisa el backend.", "danger");
+    // fallback: mantener array vacío
+    productos = [];
+    renderizarProductos();
+  } finally {
+    if (listaContainer) hideLoading(listaContainer);
+  }
 }
 
 // ========================================
@@ -210,7 +251,7 @@ function handleFormSubmit(e) {
   }
 }
 
-function guardarProductoAlBackend(nuevoProductoFront) {
+async function guardarProductoAlBackend(nuevoProductoFront) {
   // Construir payload que entiende backend.
   // Intentamos enviar un objeto flexible: nombre, descripcion, precio, stock, codigo, categorias (array), imagen (base64 o url), activo
   const payload = {
@@ -231,43 +272,29 @@ function guardarProductoAlBackend(nuevoProductoFront) {
   }
 
   // Si estamos editando -> PUT, si no -> POST
-  if (editando && productoEditandoId) {
-    const id = productoEditandoId;
-    const url = `${PRODUCTOS_ENDPOINT}/${id}`;
-    fetch(url, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`Error al actualizar producto: ${res.statusText}`);
-        return res.json();
-      })
-      .then(data => {
+  try {
+    let response;
+    if (editando && productoEditandoId) {
+      const id = productoEditandoId;
+      const url = `${PRODUCTOS_ENDPOINT}/${id}`;
+      response = await makeAuthenticatedRequest(url, {
+        method: "PUT",
+        body: JSON.stringify(payload)
+      });
+      
+      if (response) {
         mostrarNotificacion(`Producto "${payload.nombre}" actualizado exitosamente`, "success");
-        // refrescar desde backend
         cargarProductos();
         cancelarEdicion();
-      })
-      .catch(err => {
-        console.error("Error actualizando producto:", err);
-        mostrarNotificacion("No se pudo actualizar el producto", "danger");
-      })
-      .finally(() => {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto'; }
+      }
+    } else {
+      // crear
+      response = await makeAuthenticatedRequest(PRODUCTOS_ENDPOINT, {
+        method: "POST",
+        body: JSON.stringify(payload)
       });
-  } else {
-    // crear
-    fetch(PRODUCTOS_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`Error al guardar producto: ${res.statusText}`);
-        return res.json();
-      })
-      .then(data => {
+      
+      if (response) {
         mostrarNotificacion(`Producto "${payload.nombre}" agregado exitosamente`, "success");
         cargarProductos();
         form.reset();
@@ -276,14 +303,16 @@ function guardarProductoAlBackend(nuevoProductoFront) {
         // Reset UI
         const imagePreview = document.getElementById("imagePreview");
         if (imagePreview) imagePreview.innerHTML = '<i class="bi bi-image text-muted"></i><p class="text-muted">Vista previa de imagen</p>';
-      })
-      .catch(err => {
-        console.error("Error guardando producto:", err);
-        mostrarNotificacion("No se pudo guardar el producto", "danger");
-      })
-      .finally(() => {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto'; }
-      });
+      }
+    }
+  } catch (err) {
+    console.error("Error guardando producto:", err);
+    mostrarNotificacion("No se pudo guardar el producto", "danger");
+  } finally {
+    if (submitBtn) { 
+      submitBtn.disabled = false; 
+      submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto'; 
+    }
   }
 }
 
@@ -392,101 +421,99 @@ function eliminarProducto(id) {
 }
 
 // Acción al confirmar eliminación
-document.getElementById('btnConfirmarEliminar').addEventListener('click', () => {
+document.getElementById('btnConfirmarEliminar').addEventListener('click', async () => {
   if (!productoAEliminar) return;
 
-  fetch(`${PRODUCTOS_ENDPOINT}/${productoAEliminar}`, { method: "DELETE" })
-    .then(res => {
-      if (!res.ok) throw new Error(`Error eliminando: ${res.status}`);
+  try {
+    const response = await makeAuthenticatedRequest(`${PRODUCTOS_ENDPOINT}/${productoAEliminar}`, { 
+      method: "DELETE" 
+    });
+    
+    if (response) {
       mostrarNotificacion("Producto eliminado", "success");
       cargarProductos();
-    })
-    .catch(err => {
-      console.error("Error eliminando producto:", err);
-      mostrarNotificacion("No se pudo eliminar el producto", "danger");
-    })
-    .finally(() => {
-      productoAEliminar = null;
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
-      modal.hide();
-    });
+    }
+  } catch (err) {
+    console.error("Error eliminando producto:", err);
+    mostrarNotificacion("No se pudo eliminar el producto", "danger");
+  } finally {
+    productoAEliminar = null;
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
+    modal.hide();
+  }
 });
 
 
-function toggleEstadoProducto(id) {
+async function toggleEstadoProducto(id) {
   const producto = productos.find(p => String(p.id) === String(id));
   if (!producto) return;
 
   const nuevoEstado = producto.estado === "activo" ? "inactivo" : "activo";
 
-  fetch(`${PRODUCTOS_ENDPOINT}/${id}/estado`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ estado: nuevoEstado })
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Error al cambiar estado");
-      return res.json();
-    })
-    .then(data => {
+  try {
+    const response = await makeAuthenticatedRequest(`${PRODUCTOS_ENDPOINT}/${id}/estado`, {
+      method: "PATCH",
+      body: JSON.stringify({ estado: nuevoEstado })
+    });
+    
+    if (response) {
+      const data = await response.json();
       console.log("Estado actualizado:", data);
       mostrarNotificacion(
         nuevoEstado === "activo" ? "Producto activado" : "Producto desactivado",
         nuevoEstado === "activo" ? "success" : "warning"
       );
       cargarProductos();
-    })
-    .catch(err => {
-      console.error("Error cambiando estado:", err);
-      mostrarNotificacion("No se pudo cambiar el estado del producto", "danger");
-    });
+    }
+  } catch (err) {
+    console.error("Error cambiando estado:", err);
+    mostrarNotificacion("No se pudo cambiar el estado del producto", "danger");
+  }
 }
 
 
 
-function editarProducto(id) {
+async function editarProducto(id) {
   // Abrir vista editar: debemos traer del backend el producto por id y prellenar form
-  fetch(`${PRODUCTOS_ENDPOINT}/${id}`)
-    .then(res => {
-      if (!res.ok) throw new Error("No se encontró el producto");
-      return res.json();
-    })
-    .then(raw => {
-      const producto = normalizeProducto(raw);
-      if (!producto) throw new Error("Producto inválido");
+  try {
+    const response = await makeAuthenticatedRequest(`${PRODUCTOS_ENDPOINT}/${id}`);
+    if (!response) return;
+    
+    const raw = await response.json();
+    const producto = normalizeProducto(raw);
+    if (!producto) throw new Error("Producto inválido");
 
-      // Llenar formulario
-      document.getElementById("nombreProducto").value = producto.nombre || '';
-      document.getElementById("precioProducto").value = producto.precio || '';
-      document.getElementById("descripcionProducto").value = producto.descripcion || "";
-      document.getElementById("stockProducto").value = producto.stock || 0;
-      document.getElementById("codigoProducto").value = producto.codigo || "";
-      document.getElementById("imagenArchivo").value = "";
-      document.getElementById("imagenUrl").value = producto.imagen || "";
+    // Llenar formulario
+    document.getElementById("nombreProducto").value = producto.nombre || '';
+    document.getElementById("precioProducto").value = producto.precio || '';
+    document.getElementById("descripcionProducto").value = producto.descripcion || "";
+    document.getElementById("stockProducto").value = producto.stock || 0;
+    document.getElementById("codigoProducto").value = producto.codigo || "";
+    document.getElementById("imagenArchivo").value = "";
+    document.getElementById("imagenUrl").value = producto.imagen || "";
 
-      // Configurar categorías
-      categoriasSeleccionadas = [...(producto.categorias || [])];
-      renderizarCategorias();
+    // Configurar categorías
+    categoriasSeleccionadas = [...(producto.categorias || [])];
+    renderizarCategorias();
 
-      // Vista previa
-      const imagePreview = document.getElementById("imagePreview");
-      if (producto.imagen && imagePreview) {
-        imagePreview.innerHTML = `<img src="${producto.imagen}" alt="Vista previa" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;">`;
-      }
+    // Vista previa
+    const imagePreview = document.getElementById("imagePreview");
+    if (producto.imagen && imagePreview) {
+      imagePreview.innerHTML = `<img src="${producto.imagen}" alt="Vista previa" style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;">`;
+    }
 
-      // Cambiar estado edición
-      const submitBtn = form.querySelector('button[type="submit"]');
-      if (submitBtn) submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Actualizar Producto';
+    // Cambiar estado edición
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Actualizar Producto';
 
-      editando = true;
-      productoEditandoId = producto.id;
-      mostrarSeccion('agregar');
-      document.getElementById("agregar").scrollIntoView({ behavior: 'smooth' });
-    })
-    .catch(err => {
-      console.error("Error al preparar edición:", err);
-      mostrarNotificacion("No se pudo cargar el producto para editar", "danger");
-    });
+    editando = true;
+    productoEditandoId = producto.id;
+    mostrarSeccion('agregar');
+    document.getElementById("agregar").scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    console.error("Error al preparar edición:", err);
+    mostrarNotificacion("No se pudo cargar el producto para editar", "danger");
+  }
 }
 
 function cancelarEdicion() {
