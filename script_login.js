@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Validación al enviar ---
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const email = emailInput.value.trim();
@@ -99,29 +99,43 @@ if (adminGuardado) {
   }
 }
 
-      // 🔹 Validación de usuarios registrados
-      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      // 🔹 Validación de usuarios registrados usando API REST
+      try {
+        const response = await fetch("http://localhost:8080/api/usuarios/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            correo: email,
+            password: password
+          })
+        });
 
-      // Buscar usuario que coincida con correo + contraseña
-      const usuario = usuarios.find(
-        (u) =>
-          (u.correo === email || u.email === email) && // soporte a "correo" y "email"
-          u.password === password
-      );
+        if (response.ok) {
+          const loginData = await response.json();
+          const { accessToken, usuario } = loginData;
 
-      if (usuario) {
-        localStorage.setItem("usuarioActivo", "true");
-        localStorage.setItem("adminActivo", "false");
-        localStorage.setItem("usuario", JSON.stringify(usuario)); // guardamos usuario actual
+          // Guardar token y datos del usuario
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("usuarioActivo", "true");
+          localStorage.setItem("adminActivo", "false");
+          localStorage.setItem("usuario", JSON.stringify(usuario));
 
-        loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
-        loginMessage.className = "form-message success";
+          loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
+          loginMessage.className = "form-message success";
 
-        setTimeout(() => {
-          window.location.href = "catalogo.html";
-        }, 1500);
-      } else {
-        loginMessage.textContent = "Correo o contraseña incorrectos.";
+          setTimeout(() => {
+            window.location.href = "catalogo.html";
+          }, 1500);
+        } else {
+          const errorText = await response.text();
+          loginMessage.textContent = "Correo o contraseña incorrectos.";
+          loginMessage.className = "form-message error";
+        }
+      } catch (error) {
+        console.error("Error en el login:", error);
+        loginMessage.textContent = "Error de conexión. Verifica que el servidor esté ejecutándose.";
         loginMessage.className = "form-message error";
       }
     });
