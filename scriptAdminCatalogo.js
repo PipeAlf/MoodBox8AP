@@ -5,7 +5,7 @@
 // CONFIG
 // ========================================
 
-const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+const BACK = "https://8mq33rknsp.us-east-1.awsapprunner.com";
  // <- ajusta si tu base difiere
 const PRODUCTOS_ENDPOINT = `${BACK}/productos`;
 

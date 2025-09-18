@@ -1,4 +1,4 @@
-const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+const BACK = "https://8mq33rknsp.us-east-1.awsapprunner.com";
 
 document.addEventListener("DOMContentLoaded", () => {
   const registroForm = document.getElementById("registroForm");
