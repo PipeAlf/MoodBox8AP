@@ -1,11 +1,14 @@
 // script_session.js
+
+const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const perfilOpciones = document.getElementById("perfilOpciones");
   const navFotoPerfil = document.getElementById("navFotoPerfil");
   const usuarioActivo = localStorage.getItem("usuarioActivo");
   const adminActivo = localStorage.getItem("adminActivo");
   const token = localStorage.getItem("accessToken");
-const usuario = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+const usuario = await fetch(`${BACK}/api/usuarios/${id}`, {
   headers: {
     "Authorization": `Bearer ${token}`
   }
@@ -157,7 +160,7 @@ async function actualizarUsuario(usuario, usuarios) {
   }
 
   localStorage.setItem("usuarios", JSON.stringify(usuarios));
-  await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+  await fetch(`${BACK}/api/usuarios/${id}`, {
   method: "PUT",
   headers: {
     "Content-Type": "application/json",

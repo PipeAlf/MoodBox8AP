@@ -1,3 +1,5 @@
+const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+
 document.addEventListener("DOMContentLoaded", () => {
   const registroForm = document.getElementById("registroForm");
   if (registroForm) {
@@ -92,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-          const response = await fetch("http://localhost:8080/api/usuarios", {
+          const response = await fetch(`${BACK}/api/usuarios`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(usuario)

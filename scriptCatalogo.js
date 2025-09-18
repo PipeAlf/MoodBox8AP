@@ -6,8 +6,9 @@
   // CONFIGURACIÓN API
   // ========================================
   
-  const API_BASE = "http://localhost:8080/api";
-  const PRODUCTOS_ENDPOINT = `${API_BASE}/productos`;
+const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+;
+  const PRODUCTOS_ENDPOINT = `${BACK}/productos`;
   
   // ========================================
   // UTILIDADES

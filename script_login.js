@@ -1,3 +1,5 @@
+const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
 
@@ -57,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const password = passwordInput.value.trim();
 
   try {
-    const response = await fetch("http://localhost:8080/api/usuarios/login", {
+    const response = await fetch(`${BACK}/api/usuarios/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -88,11 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1500);
     return;
   }
-}
+};
 
       // 🔹 Validación de usuarios registrados usando API REST
       try {
-        const response = await fetch("http://localhost:8080/api/usuarios/login", {
+        const response = await fetch(`${BACK}/api/usuarios/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

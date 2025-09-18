@@ -5,8 +5,9 @@
 // CONFIG
 // ========================================
 
-const API_BASE = "http://localhost:8080/api"; // <- ajusta si tu base difiere
-const PRODUCTOS_ENDPOINT = `${API_BASE}/productos`;
+const BACK = "jdbc:mysql://aurora-serverless-mysql-generation-instance-1.cf48okcygkvy.us-east-1.rds.amazonaws.com:3306/PawsloveFoundation?useSSL=false&serverTimezone=UTC";
+ // <- ajusta si tu base difiere
+const PRODUCTOS_ENDPOINT = `${BACK}/productos`;
 
 // ========================================
 // HELPER: Peticiones autenticadas
