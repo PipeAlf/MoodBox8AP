@@ -7,6 +7,9 @@
 
 const API_BASE = "http://localhost:8080/api"; // <- ajusta si tu base difiere
 const PRODUCTOS_ENDPOINT = `${API_BASE}/productos`;
+const token = localStorage.getItem("accessToken");
+const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
+
 
 // ========================================
 // PROTECCIÓN SOLO ADMIN
@@ -141,13 +144,19 @@ function cargarProductos() {
   const listaContainer = document.getElementById("listaProductos");
   if (listaContainer) showLoading(listaContainer);
 
-  fetch(PRODUCTOS_ENDPOINT)
+  const token = localStorage.getItem("accessToken");
+  const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
+
+  fetch(PRODUCTOS_ENDPOINT, {
+    headers: {
+      ...authHeaders
+    }
+  })
     .then(res => {
       if (!res.ok) throw new Error(`Error al cargar productos: ${res.status}`);
       return res.json();
     })
     .then(data => {
-      // data puede ser array de productos o un wrapper -> asumimos array
       const arr = Array.isArray(data) ? data : (data.content ?? data.items ?? []);
       productos = arr.map(normalizeProducto);
       renderizarProductos();
@@ -157,7 +166,6 @@ function cargarProductos() {
     .catch(err => {
       console.error("Error cargando productos:", err);
       mostrarNotificacion("No se pudieron cargar los productos. Revisa el backend.", "danger");
-      // fallback: mantener array vacío
       productos = [];
       renderizarProductos();
     })
@@ -165,6 +173,7 @@ function cargarProductos() {
       if (listaContainer) hideLoading(listaContainer);
     });
 }
+
 
 // ========================================
 // FUNCIONALIDADES DEL FORMULARIO (CREAR / EDITAR)
@@ -211,15 +220,16 @@ function handleFormSubmit(e) {
 }
 
 function guardarProductoAlBackend(nuevoProductoFront) {
-  // Construir payload que entiende backend.
-  // Intentamos enviar un objeto flexible: nombre, descripcion, precio, stock, codigo, categorias (array), imagen (base64 o url), activo
+  const token = localStorage.getItem("accessToken");
+  const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
+
   const payload = {
     nombre: nuevoProductoFront.nombre,
     descripcion: nuevoProductoFront.descripcion,
     precio: nuevoProductoFront.precio,
     stock: nuevoProductoFront.stock,
     codigo: nuevoProductoFront.codigo,
-    categoria: nuevoProductoFront.categorias.join(","), // backend idealmente acepta array; si no, lo convertimos en string (ver nota abajo)
+    categoria: nuevoProductoFront.categorias.join(","),
     imagen: nuevoProductoFront.imagen,
     activo: true
   };
@@ -230,13 +240,16 @@ function guardarProductoAlBackend(nuevoProductoFront) {
     submitBtn.innerHTML = 'Guardando...';
   }
 
-  // Si estamos editando -> PUT, si no -> POST
+  // Si estamos editando -> PUT
   if (editando && productoEditandoId) {
     const id = productoEditandoId;
     const url = `${PRODUCTOS_ENDPOINT}/${id}`;
     fetch(url, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders
+      },
       body: JSON.stringify(payload)
     })
       .then(res => {
@@ -245,7 +258,6 @@ function guardarProductoAlBackend(nuevoProductoFront) {
       })
       .then(data => {
         mostrarNotificacion(`Producto "${payload.nombre}" actualizado exitosamente`, "success");
-        // refrescar desde backend
         cargarProductos();
         cancelarEdicion();
       })
@@ -254,13 +266,20 @@ function guardarProductoAlBackend(nuevoProductoFront) {
         mostrarNotificacion("No se pudo actualizar el producto", "danger");
       })
       .finally(() => {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto'; }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto';
+        }
       });
+
   } else {
-    // crear
+    // Crear producto -> POST
     fetch(PRODUCTOS_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders
+      },
       body: JSON.stringify(payload)
     })
       .then(res => {
@@ -273,19 +292,25 @@ function guardarProductoAlBackend(nuevoProductoFront) {
         form.reset();
         categoriasSeleccionadas = [];
         renderizarCategorias();
-        // Reset UI
+
         const imagePreview = document.getElementById("imagePreview");
-        if (imagePreview) imagePreview.innerHTML = '<i class="bi bi-image text-muted"></i><p class="text-muted">Vista previa de imagen</p>';
+        if (imagePreview) {
+          imagePreview.innerHTML = '<i class="bi bi-image text-muted"></i><p class="text-muted">Vista previa de imagen</p>';
+        }
       })
       .catch(err => {
         console.error("Error guardando producto:", err);
         mostrarNotificacion("No se pudo guardar el producto", "danger");
       })
       .finally(() => {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto'; }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Guardar Producto';
+        }
       });
   }
 }
+
 
 // ========================================
 // RENDERIZADO DE PRODUCTOS
@@ -395,7 +420,15 @@ function eliminarProducto(id) {
 document.getElementById('btnConfirmarEliminar').addEventListener('click', () => {
   if (!productoAEliminar) return;
 
-  fetch(`${PRODUCTOS_ENDPOINT}/${productoAEliminar}`, { method: "DELETE" })
+  const token = localStorage.getItem("accessToken");
+  const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
+
+  fetch(`${PRODUCTOS_ENDPOINT}/${productoAEliminar}`, {
+    method: "DELETE",
+    headers: {
+      ...authHeaders
+    }
+  })
     .then(res => {
       if (!res.ok) throw new Error(`Error eliminando: ${res.status}`);
       mostrarNotificacion("Producto eliminado", "success");
@@ -413,15 +446,22 @@ document.getElementById('btnConfirmarEliminar').addEventListener('click', () => 
 });
 
 
+
 function toggleEstadoProducto(id) {
   const producto = productos.find(p => String(p.id) === String(id));
   if (!producto) return;
 
   const nuevoEstado = producto.estado === "activo" ? "inactivo" : "activo";
 
+  const token = localStorage.getItem("accessToken");
+  const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
+
   fetch(`${PRODUCTOS_ENDPOINT}/${id}/estado`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeaders
+    },
     body: JSON.stringify({ estado: nuevoEstado })
   })
     .then(res => {
@@ -444,9 +484,16 @@ function toggleEstadoProducto(id) {
 
 
 
+
 function editarProducto(id) {
-  // Abrir vista editar: debemos traer del backend el producto por id y prellenar form
-  fetch(`${PRODUCTOS_ENDPOINT}/${id}`)
+  const token = localStorage.getItem("accessToken");
+  const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
+
+  fetch(`${PRODUCTOS_ENDPOINT}/${id}`, {
+    headers: {
+      ...authHeaders
+    }
+  })
     .then(res => {
       if (!res.ok) throw new Error("No se encontró el producto");
       return res.json();
@@ -488,6 +535,7 @@ function editarProducto(id) {
       mostrarNotificacion("No se pudo cargar el producto para editar", "danger");
     });
 }
+
 
 function cancelarEdicion() {
   editando = false;
@@ -846,6 +894,7 @@ function actualizarNavAdmin(adminData) {
     `;
     document.getElementById("cerrarSesion").addEventListener("click", (e) => {
       e.preventDefault();
+      localStorage.removeItem("accessToken");
       localStorage.setItem("adminActivo", "false");
       localStorage.setItem("usuarioActivo", "false");
       localStorage.removeItem("usuario");

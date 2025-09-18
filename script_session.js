@@ -1,10 +1,16 @@
 // script_session.js
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const perfilOpciones = document.getElementById("perfilOpciones");
   const navFotoPerfil = document.getElementById("navFotoPerfil");
-  const usuario = JSON.parse(localStorage.getItem("usuario")); // usuario normal
   const usuarioActivo = localStorage.getItem("usuarioActivo");
   const adminActivo = localStorage.getItem("adminActivo");
+  const token = localStorage.getItem("accessToken");
+const usuario = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
+}).then(res => res.json());
+
 
   perfilOpciones.innerHTML = "";
 
@@ -25,6 +31,7 @@ if (adminActivo === "true") {
 
   document.getElementById("cerrarSesion").addEventListener("click", (e) => {
     e.preventDefault();
+    localStorage.removeItem("accessToken");
     localStorage.setItem("adminActivo", "false");
     localStorage.setItem("usuarioActivo", "false");
     window.location.href = "index.html";
@@ -55,6 +62,7 @@ if (adminActivo === "true") {
 
     document.getElementById("cerrarSesion").addEventListener("click", (e) => {
       e.preventDefault();
+      localStorage.removeItem("accessToken");
       localStorage.setItem("usuarioActivo", "false");
       localStorage.setItem("adminActivo", "false");
       localStorage.removeItem("usuario");
@@ -138,7 +146,7 @@ guardarBtn.addEventListener("click", function () {
 
 }
 
-function actualizarUsuario(usuario, usuarios) {
+async function actualizarUsuario(usuario, usuarios) {
   // Actualizar en la lista de usuarios
   const index = usuarios.findIndex(
     (u) => (u.email || u.correo) === (usuario.email || usuario.correo)
@@ -149,7 +157,15 @@ function actualizarUsuario(usuario, usuarios) {
   }
 
   localStorage.setItem("usuarios", JSON.stringify(usuarios));
-  localStorage.setItem("usuario", JSON.stringify(usuario));
+  await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify(usuarioActualizado)
+});
+
 
   // 🔹 Refrescar inmediatamente el nav
   const navFotoPerfil = document.getElementById("navFotoPerfil");
@@ -179,6 +195,7 @@ function actualizarUsuario(usuario, usuarios) {
 
     document.getElementById("cerrarSesion").addEventListener("click", (e) => {
       e.preventDefault();
+      localStorage.removeItem("accessToken");
       localStorage.setItem("usuarioActivo", "false");
       localStorage.setItem("adminActivo", "false");
       localStorage.removeItem("usuario");

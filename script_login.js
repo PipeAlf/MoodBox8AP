@@ -50,80 +50,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Validación al enviar ---
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
-      // ==========================
-// Validación de Admin
-// ==========================
-const adminGuardado = JSON.parse(localStorage.getItem("admin"));
-
-if (adminGuardado) {
-  // 🔹 Si ya existe admin en localStorage, validar con esos datos
-  if (email === adminGuardado.correo && password === adminGuardado.password) {
-    localStorage.setItem("adminActivo", "true");
-    localStorage.setItem("usuarioActivo", "false");
-
-    loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
-    loginMessage.className = "form-message success";
-
-    setTimeout(() => {
-      window.location.href = "adminview.html";
-    }, 1500);
-    return;
-  }
-} else {
-  // 🔹 Si no existe aún, validar con credenciales por defecto
-  if (email === "admin@moodbox.com" && password === "admin123") {
-    const adminData = {
-      nombre: "Admin",
-      correo: "admin@moodbox.com",
-      password: "admin123",
-      foto: "./assets/imagenes/user.png"
-    };
-    localStorage.setItem("admin", JSON.stringify(adminData));
-
-    localStorage.setItem("adminActivo", "true");
-    localStorage.setItem("usuarioActivo", "false");
-
-    loginMessage.textContent = "Bienvenido administrador. Redirigiendo...";
-    loginMessage.className = "form-message success";
-
-    setTimeout(() => {
-      window.location.href = "adminview.html";
-    }, 1500);
-    return;
-  }
-}
-
-      // 🔹 Validación de usuarios registrados
-      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-      // Buscar usuario que coincida con correo + contraseña
-      const usuario = usuarios.find(
-        (u) =>
-          (u.correo === email || u.email === email) && // soporte a "correo" y "email"
-          u.password === password
-      );
-
-      if (usuario) {
-        localStorage.setItem("usuarioActivo", "true");
-        localStorage.setItem("adminActivo", "false");
-        localStorage.setItem("usuario", JSON.stringify(usuario)); // guardamos usuario actual
-
-        loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
-        loginMessage.className = "form-message success";
-
-        setTimeout(() => {
-          window.location.href = "catalogo.html";
-        }, 1500);
-      } else {
-        loginMessage.textContent = "Correo o contraseña incorrectos.";
-        loginMessage.className = "form-message error";
-      }
+  try {
+    const response = await fetch("http://localhost:8080/api/usuarios/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ correo: email, password }),
     });
+
+    if (!response.ok) {
+      throw new Error("Credenciales inválidas");
+    }
+
+    const data = await response.json(); // LoginResponse: { accessToken, usuario }
+
+    const { accessToken, usuario } = data;
+
+    // Guardar en localStorage
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+    localStorage.setItem("usuarioActivo", "true");
+    localStorage.setItem("adminActivo", usuario.rol === "ADMIN");
+
+    loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
+    loginMessage.className = "form-message success";
+
+    // Redirigir según rol
+    setTimeout(() => {
+      window.location.href = usuario.rol === "ADMIN" ? "adminview.html" : "catalogo.html";
+    }, 1500);
+  } catch (error) {
+    loginMessage.textContent = error.message || "Error al iniciar sesión";
+    loginMessage.className = "form-message error";
+  }
+});
   }
 });
