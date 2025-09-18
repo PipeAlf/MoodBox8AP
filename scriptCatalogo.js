@@ -2,147 +2,79 @@
 (function () {
   "use strict";
 
+  // ========================================
+  // CONFIGURACIÓN API
+  // ========================================
   
-  // Utilidades
+  const API_BASE = "http://localhost:8080/api";
+  const PRODUCTOS_ENDPOINT = `${API_BASE}/productos`;
+  
+  // ========================================
+  // UTILIDADES
+  // ========================================
+  
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
 
-    const productosPreCargados = [
-    {
-      id: Date.now(),
-      nombre: "Camiseta MoodBox",
-      precio: 25.99,
-      descripcion: "Camiseta de algodón con diseño exclusivo de Moodbox",
-      stock: 50,
-      codigo: "MBX001",
-      categorias: ["Ropa", "Algodón"],
-      imagen: "./assets/imagenes_catalogo/camiseta.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Mug Personalizado",
-      precio: 15.50,
-      descripcion: "Taza de cerámica con logo de MoodBox.",
-      stock: 30,
-      codigo: "MBX002",
-      categorias: ["Hogar", "Cerámica"],
-      imagen: "./assets/imagenes_catalogo/mug.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Llavero LED",
-      precio: 8.99,
-      descripcion: "Llavero con luz LED y diseño de MoodBox.",
-      stock: 10,
-      codigo: "MBX003",
-      categorias: ["Accesorios", "Electrónica"],
-      imagen: "./assets/imagenes_catalogo/llavero.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Bolsa Hogwarts",
-      precio: 6.99,
-      descripcion: "Bolsa de tela con tematica de Harry Potter y su escuela Hogwarts.",
-      stock: 100,
-      codigo: "MBX004",
-      categorias: ["Accesorios", "Hogar"],
-      imagen: "./assets/imagenes_catalogo/bolsa.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Botilito día de la madre",
-      precio: 10.99,
-      descripcion: "Botilito para frio/caliente con diseño para el día de la madre y capacidad de 300mL.",
-      stock: 30,
-      codigo: "MBX005",
-      categorias: ["Accesorios", "Hogar"],
-      imagen: "./assets/imagenes_catalogo/botilito.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Cojín Minecraft",
-      precio: 7.99,
-      descripcion: "Cojín de sofá con diseño de Minecraft.",
-      stock: 40,
-      codigo: "MBX006",
-      categorias: ["Accesorios", "Hogar", "Anime"],
-      imagen: "./assets/imagenes_catalogo/cojin.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Case de celular para papá",
-      precio: 4.99,
-      descripcion: "Case de celular para papá.",
-      stock: 10,
-      codigo: "MBX007",
-      categorias: ["Hogar", "Accesorios"],
-      imagen: "./assets/imagenes_catalogo/fundacel.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Gorra de dragón",
-      precio: 5.99,
-      descripcion: "Gorra negra con estampado de dragón rojo.",
-      stock: 30,
-      codigo: "MBX008",
-      categorias: ["Accesorios", "Hogar", "Ropa"],
-      imagen: "./assets/imagenes_catalogo/gorra.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Morral Superman",
-      precio: 15.99,
-      descripcion: "Morral negro con logo de Superman.",
-      stock: 30,
-      codigo: "MBX009",
-      categorias: ["Accesorios", "Ropa"],
-      imagen: "./assets/imagenes_catalogo/morral.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "PADMouse de Rick & Morty",
-      precio: 4.99,
-      descripcion: "PADMouse con estampado de Rick & Morty en un portal.",
-      stock: 30,
-      codigo: "MBX010",
-      categorias: ["Accesorios", "Anime"],
-      imagen: "./assets/imagenes_catalogo/padmouse.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    }
-    // ...agrega más productos si quieres...
-  ];
-  // Solo inicializa si no existen productos en localStorage
-  if (!localStorage.getItem("productos")) {
-    localStorage.setItem("productos", JSON.stringify(productosPreCargados));
+  // Función helper para peticiones autenticadas
+  function getAuthHeaders() {
+    const token = localStorage.getItem('accessToken');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    };
   }
+
+  async function makeAuthenticatedRequest(url, options = {}) {
+    const defaultOptions = {
+      headers: getAuthHeaders(),
+      ...options
+    };
+    
+    try {
+      const response = await fetch(url, defaultOptions);
+      
+      if (response.status === 401) {
+        console.error('❌ Unauthorized - Token may be invalid or expired');
+        // Redirigir al login si no está autenticado
+        if (confirm('Tu sesión ha expirado. ¿Deseas iniciar sesión nuevamente?')) {
+          window.location.href = 'login.html';
+        }
+        return null;
+      }
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('❌ Request failed:', error);
+      throw error;
+    }
+  }
+
+  // Función para normalizar productos del backend
+  function normalizeProducto(raw) {
+    if (!raw) return null;
+    return {
+      id: raw.idProducto || raw.id,
+      nombre: raw.nombre || '',
+      descripcion: raw.descripcion || '',
+      precio: parseFloat(raw.precio) || 0,
+      stock: parseInt(raw.stock) || 0,
+      codigo: raw.codigo || '',
+      categorias: raw.categoria ? [raw.categoria] : [],
+      imagen: raw.imagen || './assets/imagenes/logo.png',
+      activo: raw.estado === 'activo',
+      fechaCreacion: raw.fechaCreacion || new Date().toISOString(),
+      fechaModificacion: new Date().toISOString()
+    };
+  }
+
+  // ========================================
+  // ESTADO GLOBAL
+  // ========================================
   // -------------------------------
   // Estado
   // -------------------------------
@@ -155,12 +87,40 @@
 
 
 
-  function cargarProductos() {
+  async function cargarProductos() {
     try {
-      const arr = JSON.parse(localStorage.getItem("productos")) || [];
-      productos = arr.filter((p) => p && p.activo !== false);
-    } catch {
+      console.log('🔄 Cargando productos desde API...');
+      const response = await makeAuthenticatedRequest(PRODUCTOS_ENDPOINT);
+      
+      if (!response) {
+        console.error('❌ No se pudo cargar productos - Sin autenticación');
+        productos = [];
+        return;
+      }
+      
+      const data = await response.json();
+      const arr = Array.isArray(data) ? data : [];
+      
+      // Normalizar productos del backend
+      productos = arr
+        .map(normalizeProducto)
+        .filter(p => p && p.activo !== false);
+        
+      console.log(`✅ Productos cargados: ${productos.length}`);
+    } catch (error) {
+      console.error('❌ Error cargando productos:', error);
       productos = [];
+      
+      // Mostrar mensaje de error al usuario
+      const grid = $("#productos-container");
+      if (grid) {
+        grid.innerHTML = `
+          <div class="col-12 text-center text-muted py-5">
+            <i class="bi bi-exclamation-triangle" style="font-size:2rem;"></i>
+            <p class="mt-2 mb-0">Error al cargar productos. Verifica tu conexión.</p>
+            <button class="btn btn-primary mt-3" onclick="location.reload()">Reintentar</button>
+          </div>`;
+      }
     }
   }
 
@@ -355,9 +315,19 @@
   // -------------------------------
   // Inicializar
   // -------------------------------
-  function inicializarCatalogo() {
+  async function inicializarCatalogo() {
     if (!el.grid || !el.selectCols) return;
-    cargarProductos();
+    
+    // Mostrar loading
+    el.grid.innerHTML = `
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando productos...</span>
+        </div>
+        <p class="mt-2 text-muted">Cargando productos...</p>
+      </div>`;
+    
+    await cargarProductos();
     applyColumns();
     el.selectCols?.addEventListener("change", applyColumns);
 
@@ -404,15 +374,6 @@
       }, 0);
     });
 
-    // Listener para cambios en localStorage (nuevos productos)
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'productos') {
-        cargarProductos();
-        renderizarCategoriasDinamicas();
-        renderProductos(filtrar());
-      }
-    });
-
     // Renderizar categorías dinámicas
     renderizarCategoriasDinamicas();
 
@@ -421,8 +382,10 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializarCatalogo);
+    document.addEventListener("DOMContentLoaded", () => {
+      inicializarCatalogo().catch(console.error);
+    });
   } else {
-    inicializarCatalogo();
+    inicializarCatalogo().catch(console.error);
   }
 })();

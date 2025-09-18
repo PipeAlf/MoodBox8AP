@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Validación al enviar ---
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
@@ -86,10 +86,49 @@ loginForm.addEventListener("submit", async (e) => {
     setTimeout(() => {
       window.location.href = usuario.rol === "ADMIN" ? "adminview.html" : "catalogo.html";
     }, 1500);
-  } catch (error) {
-    loginMessage.textContent = error.message || "Error al iniciar sesión";
-    loginMessage.className = "form-message error";
+    return;
   }
-});
+}
+
+      // 🔹 Validación de usuarios registrados usando API REST
+      try {
+        const response = await fetch("http://localhost:8080/api/usuarios/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            correo: email,
+            password: password
+          })
+        });
+
+        if (response.ok) {
+          const loginData = await response.json();
+          const { accessToken, usuario } = loginData;
+
+          // Guardar token y datos del usuario
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("usuarioActivo", "true");
+          localStorage.setItem("adminActivo", "false");
+          localStorage.setItem("usuario", JSON.stringify(usuario));
+
+          loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
+          loginMessage.className = "form-message success";
+
+          setTimeout(() => {
+            window.location.href = "catalogo.html";
+          }, 1500);
+        } else {
+          const errorText = await response.text();
+          loginMessage.textContent = "Correo o contraseña incorrectos.";
+          loginMessage.className = "form-message error";
+        }
+      } catch (error) {
+        console.error("Error en el login:", error);
+        loginMessage.textContent = "Error de conexión. Verifica que el servidor esté ejecutándose.";
+        loginMessage.className = "form-message error";
+      }
+    });
   }
 });
