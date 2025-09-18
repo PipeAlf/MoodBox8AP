@@ -75,6 +75,12 @@ function setupCartEventListeners() {
   
   // Cerrar carrito con overlay
   cartOverlay.addEventListener("click", closeCart);
+  
+  // Botón de finalizar compra
+  const finalizarBtn = document.querySelector('.btn-finalizar');
+  if (finalizarBtn) {
+    finalizarBtn.addEventListener("click", goToCheckout);
+  }
 }
 
 function setupProductEventListeners() {
@@ -302,4 +308,24 @@ function updateCartBadge() {
   } else {
     cartBadge.classList.add("hidden");
   }
+}
+
+// ========================================
+// FUNCIÓN DE CHECKOUT
+// ========================================
+
+function goToCheckout() {
+  if (cart.length === 0) {
+    showAlert("El carrito está vacío", "warning");
+    return;
+  }
+
+  const usuarioActivo = localStorage.getItem("usuarioActivo");
+  if (usuarioActivo !== "true") {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Redirigir al checkout
+  window.location.href = "checkout.html";
 }
