@@ -969,6 +969,15 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const cerrarSesionSidebar = document.getElementById("cerrarSesionSidebar");
+  if (cerrarSesionSidebar) {
+    cerrarSesionSidebar.addEventListener("click", (e) => {
+      e.preventDefault();
+      cerrarSesion(); // Reutiliza la función global
+    });
+  }
+});
 
 // ========================================
 // UTIL: seguridad y escape
