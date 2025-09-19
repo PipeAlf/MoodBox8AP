@@ -74,10 +74,20 @@ loginForm.addEventListener("submit", async (e) => {
     const { accessToken, usuario } = data;
 
     // Guardar en localStorage
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("usuario", JSON.stringify(usuario));
-    localStorage.setItem("usuarioActivo", "true");
-    localStorage.setItem("adminActivo", usuario.rol === "ADMIN");
+    console.log("🧪 Datos devueltos del backend:", data);
+
+localStorage.setItem("accessToken", accessToken);
+
+if (usuario.rol === "ADMIN") {
+  localStorage.setItem("admin", JSON.stringify(usuario));
+  localStorage.setItem("adminActivo", "true");
+  localStorage.setItem("usuarioActivo", "false");
+} else {
+  localStorage.setItem("usuario", JSON.stringify(usuario));
+  localStorage.setItem("usuarioActivo", "true");
+  localStorage.setItem("adminActivo", "false");
+}
+
 
     loginMessage.textContent = "Inicio de sesión exitoso. Redirigiendo...";
     loginMessage.className = "form-message success";

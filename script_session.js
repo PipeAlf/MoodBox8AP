@@ -1,80 +1,69 @@
-// script_session.js
 document.addEventListener("DOMContentLoaded", async () => {
   const perfilOpciones = document.getElementById("perfilOpciones");
   const navFotoPerfil = document.getElementById("navFotoPerfil");
-  const usuarioActivo = localStorage.getItem("usuarioActivo");
+  const accessToken = localStorage.getItem("accessToken");
   const adminActivo = localStorage.getItem("adminActivo");
-  const token = localStorage.getItem("accessToken");
-const usuario = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
-  headers: {
-    "Authorization": `Bearer ${token}`
-  }
-}).then(res => res.json());
+  const usuarioActivo = localStorage.getItem("usuarioActivo");
 
-
-  perfilOpciones.innerHTML = "";
-
- // 🔹 Caso: Admin
-if (adminActivo === "true") {
-  const adminData = JSON.parse(localStorage.getItem("admin")) || {};
-  
-  if (navFotoPerfil) {
-    navFotoPerfil.src = adminData.foto || "./assets/imagenes/user.png";
-  }
-
-  perfilOpciones.innerHTML = `
-    <li><span class="dropdown-item-text">Hola, ${adminData.nombre || "Admin"}</span></li>
-    <li><a class="dropdown-item" href="adminview.html">Vista Administrador</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
-  `;
-
-  document.getElementById("cerrarSesion").addEventListener("click", (e) => {
-    e.preventDefault();
-    localStorage.removeItem("accessToken");
-    localStorage.setItem("adminActivo", "false");
-    localStorage.setItem("usuarioActivo", "false");
-    window.location.href = "index.html";
-  });
-}
-
-  // 🔹 Caso: Usuario normal
-  else if (usuario && usuarioActivo === "true") {
+  // 👤 ADMIN
+  if (adminActivo === "true") {
+    const adminData = JSON.parse(localStorage.getItem("admin")) || {};
     if (navFotoPerfil) {
-      navFotoPerfil.src = usuario.foto || "./assets/imagenes/user.png";
+      navFotoPerfil.src = adminData.foto || "./assets/imagenes/user.png";
     }
-
     perfilOpciones.innerHTML = `
-      <li><span class="dropdown-item-text">Hola, ${usuario.nombre}</span></li>
-      <li><a class="dropdown-item" href="#" id="abrirPerfil">Perfil</a></li>
+      <li><span class="dropdown-item-text">Hola, ${adminData.nombre || "Admin"}</span></li>
+      <li><a class="dropdown-item" href="adminview.html">Vista Administrador</a></li>
       <li><hr class="dropdown-divider"></li>
       <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
     `;
+    document.getElementById("cerrarSesion").addEventListener("click", cerrarSesion);
+    return;
+  }
 
-    const abrirPerfilBtn = document.getElementById("abrirPerfil");
-    if (abrirPerfilBtn) {
-      abrirPerfilBtn.addEventListener("click", (e) => {
-        e.preventDefault();
+  // 👤 CLIENTE (obtener desde backend)
+  if (accessToken && usuarioActivo === "true") {
+    try {
+      const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
+      const id = usuarioGuardado?.idUsuario;
+
+      const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+
+      if (!response.ok) throw new Error("No se pudo cargar perfil");
+      const usuario = await response.json();
+
+      localStorage.setItem("usuario", JSON.stringify(usuario)); // Actualiza con versión más reciente
+
+      if (navFotoPerfil) {
+        navFotoPerfil.src = usuario.foto || "./assets/imagenes/user.png";
+      }
+
+      perfilOpciones.innerHTML = `
+        <li><span class="dropdown-item-text">Hola, ${usuario.nombre}</span></li>
+        <li><a class="dropdown-item" href="#" id="abrirPerfil">Perfil</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
+      `;
+
+      document.getElementById("abrirPerfil").addEventListener("click", () => {
+        inicializarPerfilModal(usuario);
         const modal = new bootstrap.Modal(document.getElementById("perfilModal"));
         modal.show();
       });
+
+      document.getElementById("cerrarSesion").addEventListener("click", cerrarSesion);
+
+    } catch (err) {
+      console.error("Error al cargar perfil desde backend:", err);
+      cerrarSesion(); // Forzar logout si hay fallo de carga
     }
-
-    document.getElementById("cerrarSesion").addEventListener("click", (e) => {
-      e.preventDefault();
-      localStorage.removeItem("accessToken");
-      localStorage.setItem("usuarioActivo", "false");
-      localStorage.setItem("adminActivo", "false");
-      localStorage.removeItem("usuario");
-      window.location.href = "index.html";
-    });
-
-  // 🔹 Caso: Nadie logueado
   } else {
-    if (navFotoPerfil) {
-      navFotoPerfil.src = "./assets/imagenes/user.png";
-    }
-
+    // 🔒 Usuario no logueado
+    if (navFotoPerfil) navFotoPerfil.src = "./assets/imagenes/user.png";
     perfilOpciones.innerHTML = `
       <li><a class="dropdown-item" href="login.html">Iniciar sesión</a></li>
       <li><a class="dropdown-item" href="register.html">Registrarse</a></li>
@@ -82,9 +71,16 @@ if (adminActivo === "true") {
   }
 });
 
+function cerrarSesion() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("usuario");
+  localStorage.removeItem("admin");
+  localStorage.setItem("usuarioActivo", "false");
+  localStorage.setItem("adminActivo", "false");
+  window.location.href = "index.html";
+}
 
-// Modal Perfil (solo aplica para usuario normal)
-function inicializarPerfilUsuario() {
+function inicializarPerfilModal(usuario) {
   const fotoPerfil = document.getElementById("fotoPerfil");
   const inputNombre = document.getElementById("inputNombre");
   const inputEmail = document.getElementById("inputEmail");
@@ -92,120 +88,76 @@ function inicializarPerfilUsuario() {
   const inputFoto = document.getElementById("inputFoto");
   const guardarBtn = document.getElementById("guardarCambios");
 
-  if (!guardarBtn) return;
+  if (!usuario || !guardarBtn) return;
 
-  // Evitar abrir modal si es admin
-  const adminActivo = localStorage.getItem("adminActivo");
-  if (adminActivo === "true") return;
-
-  // Obtener datos de usuario normal
-  let usuario = JSON.parse(localStorage.getItem("usuario"));
-  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-  const usuarioActivoFlag = localStorage.getItem("usuarioActivo");
-  if (!usuario || usuarioActivoFlag !== "true") {
-    console.warn("No hay usuario activo logueado");
-    return;
-  }
-
-  // Mostrar datos actuales
   inputNombre.value = usuario.nombre || "";
-  inputEmail.value = usuario.email || usuario.correo || "";
+  inputEmail.value = usuario.correo || "";
   fotoPerfil.src = usuario.foto || "./assets/imagenes/user.png";
 
-  // Guardar cambios
-guardarBtn.addEventListener("click", function () {
-  const nuevoNombre = inputNombre.value.trim();
-  const nuevoEmail = inputEmail.value.trim();
-  const nuevaPassword = inputPassword.value.trim();
-  const nuevaFoto = inputFoto.files[0];
+  guardarBtn.onclick = async () => {
+    const nuevoNombre = inputNombre.value.trim();
+    const nuevoCorreo = inputEmail.value.trim();
+    const nuevaPassword = inputPassword.value.trim();
+    const nuevaFoto = inputFoto.files[0];
 
-  // Actualizar datos del usuario actual
-  usuario.nombre = nuevoNombre;
-  usuario.email = nuevoEmail;
-  if (nuevaPassword) usuario.password = nuevaPassword;
+    const accessToken = localStorage.getItem("accessToken");
+    const id = usuario.idUsuario;
 
-  if (nuevaFoto) {
-    const lector = new FileReader();
-    lector.onload = function (e) {
-      usuario.foto = e.target.result;
-      fotoPerfil.src = e.target.result;
+    let fotoBase64 = usuario.foto || "";
 
-      // 🔹 Guardar cambios y refrescar nav con la función unificada
-      actualizarUsuario(usuario, usuarios);
-    };
-    lector.readAsDataURL(nuevaFoto);
-  } else {
-    actualizarUsuario(usuario, usuarios);
-  }
-
-  // Cerrar modal
-  const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
-  if (modal) modal.hide();
-});
-
-}
-
-async function actualizarUsuario(usuario, usuarios) {
-  // Actualizar en la lista de usuarios
-  const index = usuarios.findIndex(
-    (u) => (u.email || u.correo) === (usuario.email || usuario.correo)
-  );
-
-  if (index !== -1) {
-    usuarios[index] = usuario;
-  }
-
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
-  await fetch(`http://localhost:8080/api/usuarios/${id}`, {
-  method: "PUT",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
-  },
-  body: JSON.stringify(usuarioActualizado)
-});
-
-
-  // 🔹 Refrescar inmediatamente el nav
-  const navFotoPerfil = document.getElementById("navFotoPerfil");
-  const perfilOpciones = document.getElementById("perfilOpciones");
-
-  if (navFotoPerfil) {
-    navFotoPerfil.src = usuario.foto || "./assets/imagenes/user.png";
-  }
-
-  if (perfilOpciones) {
-    perfilOpciones.innerHTML = `
-      <li><span class="dropdown-item-text">Hola, ${usuario.nombre}</span></li>
-      <li><a class="dropdown-item" href="#" id="abrirPerfil">Perfil</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
-    `;
-
-    // Volver a asignar eventos
-    const abrirPerfilBtn = document.getElementById("abrirPerfil");
-    if (abrirPerfilBtn) {
-      abrirPerfilBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const modal = new bootstrap.Modal(document.getElementById("perfilModal"));
-        modal.show();
-      });
+    // Si se selecciona nueva foto, convertirla a base64
+    if (nuevaFoto) {
+      fotoBase64 = await convertirA64(nuevaFoto);
     }
 
-    document.getElementById("cerrarSesion").addEventListener("click", (e) => {
-      e.preventDefault();
-      localStorage.removeItem("accessToken");
-      localStorage.setItem("usuarioActivo", "false");
-      localStorage.setItem("adminActivo", "false");
-      localStorage.removeItem("usuario");
-      window.location.href = "index.html";
-    });
-  }
+const payload = {
+  nombre: nuevoNombre,
+  correo: nuevoCorreo,
+  foto: fotoBase64 || null,
+  apellido: usuario.apellido,
+  telefono: usuario.telefono
+};
 
-  console.log("Usuario actualizado y nav refrescado:", usuario);
+// Solo enviar contraseña si fue escrita
+if (nuevaPassword && nuevaPassword.trim() !== "") {
+  payload.password = nuevaPassword;
 }
 
 
+    try {
+      const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(payload)
+      });
 
-document.addEventListener("DOMContentLoaded", inicializarPerfilUsuario);
+      if (!response.ok) throw new Error("Error al actualizar el perfil");
+
+      const actualizado = await response.json();
+      localStorage.setItem("usuario", JSON.stringify(actualizado));
+
+      // Actualiza navbar y cierra modal
+      document.getElementById("navFotoPerfil").src = actualizado.foto || "./assets/imagenes/user.png";
+      const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
+      if (modal) modal.hide();
+
+      alert("Perfil actualizado correctamente ✅");
+
+    } catch (err) {
+      console.error("Error actualizando perfil:", err);
+      alert("No se pudo actualizar el perfil ❌");
+    }
+  };
+}
+
+function convertirA64(archivo) {
+  return new Promise((resolve, reject) => {
+    const lector = new FileReader();
+    lector.onload = () => resolve(lector.result);
+    lector.onerror = reject;
+    lector.readAsDataURL(archivo);
+  });
+}

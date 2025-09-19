@@ -816,7 +816,7 @@ function verificarUsoLocalStorage() {
 }
 
 // ========================================
-// SIDEBAR Y PERFIL (se mantiene localStorage para admin perfil por ahora)
+// SIDEBAR Y PERFIL del ADMIN con conexión al backend
 // ========================================
 
 function inicializarSidebar() {
@@ -831,7 +831,12 @@ function inicializarSidebar() {
   inicializarPerfil();
 }
 
-function inicializarPerfil() {
+async function inicializarPerfil() {
+  const token = localStorage.getItem("accessToken");
+  const adminActivo = localStorage.getItem("adminActivo");
+
+  if (adminActivo !== "true" || !token) return;
+
   const nombreSidebar = document.querySelector(".profile h3");
   const fotoSidebar = document.querySelector(".profile img");
   const fotoPerfil = document.getElementById("fotoPerfil");
@@ -841,50 +846,103 @@ function inicializarPerfil() {
   const inputFoto = document.getElementById("inputFoto");
   const guardarBtn = document.getElementById("guardarCambios");
 
-  let adminData = JSON.parse(localStorage.getItem("admin")) || {};
-  if (inputNombre) inputNombre.value = adminData.nombre || "Admin";
-  if (inputCorreo) inputCorreo.value = adminData.correo || "admin@moodbox.com";
-  if (fotoPerfil) fotoPerfil.src = adminData.foto || "./assets/imagenes/user.png";
-  if (nombreSidebar) nombreSidebar.textContent = adminData.nombre || "Admin";
-  if (fotoSidebar) fotoSidebar.src = adminData.foto || "./assets/imagenes/user.png";
+  try {
+    const storedAdmin = JSON.parse(localStorage.getItem("admin"));
+    const idAdmin = storedAdmin?.idUsuario;
 
-  if (guardarBtn) {
-    guardarBtn.addEventListener("click", function () {
-      const nuevoNombre = inputNombre?.value || '';
-      const nuevoCorreo = inputCorreo?.value || '';
-      const nuevaPassword = inputPassword?.value || '';
-      const nuevaFoto = inputFoto?.files[0];
+    if (!idAdmin) throw new Error("No se encontró ID del administrador");
 
-      let adminData = JSON.parse(localStorage.getItem("admin")) || {};
-      adminData.nombre = nuevoNombre;
-      adminData.correo = nuevoCorreo;
-      if (nuevaPassword.trim() !== "") adminData.password = nuevaPassword;
+    const response = await fetch(`http://localhost:8080/api/usuarios/${idAdmin}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) throw new Error("No se pudo obtener el perfil del admin");
+
+    const admin = await response.json();
+
+    inputNombre.value = admin.nombre || "";
+    inputCorreo.value = admin.correo || "";
+    fotoPerfil.src = admin.foto || "./assets/imagenes/user.png";
+    if (nombreSidebar) nombreSidebar.textContent = admin.nombre;
+    if (fotoSidebar) fotoSidebar.src = admin.foto || "./assets/imagenes/user.png";
+
+    localStorage.setItem("admin", JSON.stringify(admin)); // refresca cache local
+
+    guardarBtn.onclick = async () => {
+      const nuevoNombre = inputNombre.value.trim();
+      const nuevoCorreo = inputCorreo.value.trim();
+      const nuevaPassword = inputPassword.value.trim();
+      const nuevaFoto = inputFoto.files[0];
+
+      const actualizado = {
+  ...admin,
+  nombre: nuevoNombre,
+  correo: nuevoCorreo,
+};
+
+if (nuevaPassword && nuevaPassword.trim() !== "") {
+  actualizado.password = nuevaPassword;
+}
 
       if (nuevaFoto) {
-        const lector = new FileReader();
-        lector.onload = function (e) {
-          adminData.foto = e.target.result;
-          fotoPerfil.src = e.target.result;
-          fotoSidebar.src = e.target.result;
-          localStorage.setItem("admin", JSON.stringify(adminData));
-          actualizarNavAdmin(adminData);
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+          actualizado.foto = e.target.result;
+          await actualizarPerfilAdmin(idAdmin, actualizado, token, fotoPerfil, fotoSidebar);
         };
-        lector.readAsDataURL(nuevaFoto);
+        reader.readAsDataURL(nuevaFoto);
       } else {
-        localStorage.setItem("admin", JSON.stringify(adminData));
-        actualizarNavAdmin(adminData);
+        await actualizarPerfilAdmin(idAdmin, actualizado, token, fotoPerfil, fotoSidebar);
       }
-      if (nombreSidebar) nombreSidebar.textContent = nuevoNombre;
-      const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
-      if (modal) modal.hide();
+    };
+
+  } catch (error) {
+    console.error("Error cargando perfil admin:", error);
+  }
+}
+
+async function actualizarPerfilAdmin(id, datos, token, fotoPerfil, fotoSidebar) {
+  try {
+    const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(datos)
     });
+
+    if (!response.ok) throw new Error("Error al actualizar el perfil");
+
+    const actualizado = await response.json();
+
+    fotoPerfil.src = actualizado.foto || "./assets/imagenes/user.png";
+    if (fotoSidebar) fotoSidebar.src = actualizado.foto || "./assets/imagenes/user.png";
+    document.querySelector(".profile h3").textContent = actualizado.nombre;
+
+    localStorage.setItem("admin", JSON.stringify(actualizado));
+
+// ✅ Refrescar nav
+actualizarNavAdmin(actualizado);
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
+    if (modal) modal.hide();
+
+    alert("Perfil actualizado correctamente");
+  } catch (err) {
+    console.error("Error actualizando perfil:", err);
+    alert("No se pudo actualizar el perfil");
   }
 }
 
 function actualizarNavAdmin(adminData) {
   const navFotoPerfil = document.getElementById("navFotoPerfil");
   const perfilOpciones = document.getElementById("perfilOpciones");
+
   if (navFotoPerfil) navFotoPerfil.src = adminData.foto || "./assets/imagenes/user.png";
+
   if (perfilOpciones) {
     perfilOpciones.innerHTML = `
       <li><span class="dropdown-item-text">Hola, ${escapeHtml(adminData.nombre || "Admin")}</span></li>
@@ -898,10 +956,19 @@ function actualizarNavAdmin(adminData) {
       localStorage.setItem("adminActivo", "false");
       localStorage.setItem("usuarioActivo", "false");
       localStorage.removeItem("usuario");
+      localStorage.removeItem("admin");
       window.location.href = "index.html";
     });
   }
 }
+
+// (Opcional) si usas escapeHtml
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.innerText = text;
+  return div.innerHTML;
+}
+
 
 // ========================================
 // UTIL: seguridad y escape
