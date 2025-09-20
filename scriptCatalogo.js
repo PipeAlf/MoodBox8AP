@@ -2,147 +2,10 @@
 (function () {
   "use strict";
 
-  
-  // Utilidades
-  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+  // ✅ Utilidades DOM
+  const $ = (selector, ctx = document) => ctx.querySelector(selector);
+  const $$ = (selector, ctx = document) => ctx.querySelectorAll(selector);
 
-    const productosPreCargados = [
-    {
-      id: Date.now(),
-      nombre: "Camiseta MoodBox",
-      precio: 25.99,
-      descripcion: "Camiseta de algodón con diseño exclusivo de Moodbox",
-      stock: 50,
-      codigo: "MBX001",
-      categorias: ["Ropa", "Algodón"],
-      imagen: "./assets/imagenes_catalogo/camiseta.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Mug Personalizado",
-      precio: 15.50,
-      descripcion: "Taza de cerámica con logo de MoodBox.",
-      stock: 30,
-      codigo: "MBX002",
-      categorias: ["Hogar", "Cerámica"],
-      imagen: "./assets/imagenes_catalogo/mug.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Llavero LED",
-      precio: 8.99,
-      descripcion: "Llavero con luz LED y diseño de MoodBox.",
-      stock: 10,
-      codigo: "MBX003",
-      categorias: ["Accesorios", "Electrónica"],
-      imagen: "./assets/imagenes_catalogo/llavero.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Bolsa Hogwarts",
-      precio: 6.99,
-      descripcion: "Bolsa de tela con tematica de Harry Potter y su escuela Hogwarts.",
-      stock: 100,
-      codigo: "MBX004",
-      categorias: ["Accesorios", "Hogar"],
-      imagen: "./assets/imagenes_catalogo/bolsa.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Botilito día de la madre",
-      precio: 10.99,
-      descripcion: "Botilito para frio/caliente con diseño para el día de la madre y capacidad de 300mL.",
-      stock: 30,
-      codigo: "MBX005",
-      categorias: ["Accesorios", "Hogar"],
-      imagen: "./assets/imagenes_catalogo/botilito.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Cojín Minecraft",
-      precio: 7.99,
-      descripcion: "Cojín de sofá con diseño de Minecraft.",
-      stock: 40,
-      codigo: "MBX006",
-      categorias: ["Accesorios", "Hogar", "Anime"],
-      imagen: "./assets/imagenes_catalogo/cojin.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Case de celular para papá",
-      precio: 4.99,
-      descripcion: "Case de celular para papá.",
-      stock: 10,
-      codigo: "MBX007",
-      categorias: ["Hogar", "Accesorios"],
-      imagen: "./assets/imagenes_catalogo/fundacel.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Gorra de dragón",
-      precio: 5.99,
-      descripcion: "Gorra negra con estampado de dragón rojo.",
-      stock: 30,
-      codigo: "MBX008",
-      categorias: ["Accesorios", "Hogar", "Ropa"],
-      imagen: "./assets/imagenes_catalogo/gorra.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "Morral Superman",
-      precio: 15.99,
-      descripcion: "Morral negro con logo de Superman.",
-      stock: 30,
-      codigo: "MBX009",
-      categorias: ["Accesorios", "Ropa"],
-      imagen: "./assets/imagenes_catalogo/morral.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    },
-    {
-      id: Date.now() + 1,
-      nombre: "PADMouse de Rick & Morty",
-      precio: 4.99,
-      descripcion: "PADMouse con estampado de Rick & Morty en un portal.",
-      stock: 30,
-      codigo: "MBX010",
-      categorias: ["Accesorios", "Anime"],
-      imagen: "./assets/imagenes_catalogo/padmouse.png",
-      activo: true,
-      fechaCreacion: new Date().toISOString(),
-      fechaModificacion: new Date().toISOString()
-    }
-    // ...agrega más productos si quieres...
-  ];
-  // Solo inicializa si no existen productos en localStorage
-  if (!localStorage.getItem("productos")) {
-    localStorage.setItem("productos", JSON.stringify(productosPreCargados));
-  }
   // -------------------------------
   // Estado
   // -------------------------------
@@ -150,19 +13,6 @@
   let filtrosActivos = false;
   let categoriasDisponibles = new Set();
   let categoriasSeleccionadas = new Set();
-
-
-
-
-
-  function cargarProductos() {
-    try {
-      const arr = JSON.parse(localStorage.getItem("productos")) || [];
-      productos = arr.filter((p) => p && p.activo !== false);
-    } catch {
-      productos = [];
-    }
-  }
 
   const el = {
     grid: $("#productos-container"),
@@ -173,6 +23,21 @@
     searchInput: $("#searchProducts"),
     clearSearchBtn: $("#clearSearch"),
   };
+
+  // -------------------------------
+  // Cargar productos del backend
+  // -------------------------------
+  async function cargarProductos() {
+    try {
+      const response = await fetch("http://localhost:8080/api/productos/activos");
+      if (!response.ok) throw new Error("Error al cargar productos");
+      const productosApi = await response.json();
+      productos = productosApi.filter(p => p.activo !== false);
+    } catch (error) {
+      console.error("Error cargando productos:", error);
+      productos = [];
+    }
+  }
 
   // -------------------------------
   // Lógica de columnas
@@ -186,7 +51,7 @@
   }
 
   // -------------------------------
-  // Sistema de categorías dinámicas
+  // Categorías dinámicas
   // -------------------------------
   function extraerCategoriasDeProductos() {
     const categorias = new Set();
@@ -206,15 +71,14 @@
     if (!el.categoriasDinamicas) return;
 
     categoriasDisponibles = new Set(extraerCategoriasDeProductos());
-    
+
     if (categoriasDisponibles.size === 0) {
       el.categoriasDinamicas.innerHTML = `
         <div class="categorias-vacio">
           <i class="bi bi-tags"></i>
           <p>No hay categorías disponibles</p>
           <small>Agrega productos desde el panel de administración para crear categorías</small>
-        </div>
-      `;
+        </div>`;
       return;
     }
 
@@ -231,7 +95,7 @@
     categoriasDisponibles.forEach(categoria => {
       const checkboxContainer = document.createElement('div');
       checkboxContainer.className = 'categoria-checkbox';
-      
+
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = `cat_${categoria.replace(/\s+/g, '_')}`;
@@ -255,13 +119,13 @@
     });
   }
 
+  // -------------------------------
+  // Búsqueda y filtros
+  // -------------------------------
   function getCategoriasSeleccionadas() {
     return Array.from(categoriasSeleccionadas);
   }
 
-  // -------------------------------
-  // Búsqueda por nombre
-  // -------------------------------
   function getSearchTerm() {
     return el.searchInput?.value?.trim().toLowerCase() || "";
   }
@@ -273,27 +137,22 @@
     }
   }
 
-  // -------------------------------
-  // Filtro
-  // -------------------------------
   function filtrar() {
     const searchTerm = getSearchTerm();
     const categoriasSel = getCategoriasSeleccionadas();
 
     const hayFiltros = searchTerm.length > 0 || categoriasSel.length > 0;
 
-    let list = productos.filter((p) => {
-      // Filtro por búsqueda de nombre
-      const matchSearch = 
-        searchTerm.length === 0 || 
+    const list = productos.filter(p => {
+      const matchSearch =
+        searchTerm.length === 0 ||
         p.nombre?.toLowerCase().includes(searchTerm) ||
         p.descripcion?.toLowerCase().includes(searchTerm);
-      
-      // Filtro por categorías seleccionadas
-      const matchCategorias = 
-        categoriasSel.length === 0 || 
-        (p.categorias && Array.isArray(p.categorias) && 
-         categoriasSel.some(cat => p.categorias.includes(cat)));
+
+      const matchCategorias =
+        categoriasSel.length === 0 ||
+        (p.categorias && Array.isArray(p.categorias) &&
+          categoriasSel.some(cat => p.categorias.includes(cat)));
 
       return matchSearch && matchCategorias;
     });
@@ -303,7 +162,7 @@
   }
 
   // -------------------------------
-  // Render
+  // Render de productos
   // -------------------------------
   function renderProductos(lista) {
     if (!el.grid) return;
@@ -338,41 +197,41 @@
             <h6 class="text-start">${p.nombre || "Sin nombre"}</h6>
             <p>$${precio.toLocaleString()}</p>
             <button class="btn btn-sm btn-custom add-to-cart" 
-                    data-name="${p.nombre || "Sin nombre"}" 
-                    data-price="${precio}" 
-                    data-image="${img}">
+              data-id="${p.id}" 
+              data-name="${p.nombre}" 
+              data-price="${precio}" 
+              data-image="${img}">
               Agregar al carrito
             </button>
           </div>
         </div>`;
       el.grid.appendChild(col);
     }
-
-    // El carrito se inicializa automáticamente desde carrito.js
-    // No es necesario llamar a inicializarCarrito aquí
   }
 
   // -------------------------------
-  // Inicializar
+  // Inicialización principal
   // -------------------------------
   function inicializarCatalogo() {
     if (!el.grid || !el.selectCols) return;
-    cargarProductos();
-    applyColumns();
+
+    cargarProductos().then(() => {
+      applyColumns();
+      renderizarCategoriasDinamicas();
+      renderProductos(productos);
+    });
+
     el.selectCols?.addEventListener("change", applyColumns);
 
-    // Event listeners para búsqueda
     if (el.searchInput) {
-      // Búsqueda en tiempo real con debounce
       let searchTimeout;
       el.searchInput.addEventListener("input", () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
           renderProductos(filtrar());
-        }, 300); // Esperar 300ms después de que el usuario deje de escribir
+        }, 300);
       });
 
-      // Búsqueda al presionar Enter
       el.searchInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -381,7 +240,6 @@
       });
     }
 
-    // Botón para limpiar búsqueda
     if (el.clearSearchBtn) {
       el.clearSearchBtn.addEventListener("click", () => {
         clearSearch();
@@ -389,12 +247,10 @@
       });
     }
 
-    // Aplicar filtros solo al presionar el botón
     el.btnAplicar?.addEventListener("click", () => {
       renderProductos(filtrar());
     });
 
-    // Limpiar filtros vuelve a todos
     el.formFiltros?.addEventListener("reset", () => {
       setTimeout(() => {
         clearSearch();
@@ -404,20 +260,14 @@
       }, 0);
     });
 
-    // Listener para cambios en localStorage (nuevos productos)
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'productos') {
-        cargarProductos();
-        renderizarCategoriasDinamicas();
-        renderProductos(filtrar());
+    window.addEventListener("storage", (e) => {
+      if (e.key === "productos") {
+        cargarProductos().then(() => {
+          renderizarCategoriasDinamicas();
+          renderProductos(filtrar());
+        });
       }
     });
-
-    // Renderizar categorías dinámicas
-    renderizarCategoriasDinamicas();
-
-    // 👇 al inicio mostrar TODOS los productos
-    renderProductos(productos);
   }
 
   if (document.readyState === "loading") {
@@ -425,4 +275,5 @@
   } else {
     inicializarCatalogo();
   }
+
 })();

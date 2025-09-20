@@ -94,63 +94,101 @@ function inicializarPerfilModal(usuario) {
   inputEmail.value = usuario.correo || "";
   fotoPerfil.src = usuario.foto || "./assets/imagenes/user.png";
 
-  guardarBtn.onclick = async () => {
-    const nuevoNombre = inputNombre.value.trim();
-    const nuevoCorreo = inputEmail.value.trim();
-    const nuevaPassword = inputPassword.value.trim();
-    const nuevaFoto = inputFoto.files[0];
+guardarBtn.onclick = async () => {
+  const nuevoNombre = inputNombre.value.trim();
+  const nuevoCorreo = inputEmail.value.trim();
+  const nuevaPassword = inputPassword.value.trim();
+  const nuevaFoto = inputFoto.files[0];
+  const mensaje = document.getElementById("mensajePerfil");
 
-    const accessToken = localStorage.getItem("accessToken");
-    const id = usuario.idUsuario;
+  if (mensaje) {
+    mensaje.textContent = "";
+    mensaje.className = "form-message";
+  }
 
-    let fotoBase64 = usuario.foto || "";
+  const accessToken = localStorage.getItem("accessToken");
+  const id = usuario.idUsuario;
 
-    // Si se selecciona nueva foto, convertirla a base64
-    if (nuevaFoto) {
-      fotoBase64 = await convertirA64(nuevaFoto);
-    }
+  let fotoBase64 = usuario.foto || "";
 
-const payload = {
-  nombre: nuevoNombre,
-  correo: nuevoCorreo,
-  foto: fotoBase64 || null,
-  apellido: usuario.apellido,
-  telefono: usuario.telefono
-};
+  if (nuevaFoto) {
+    fotoBase64 = await convertirA64(nuevaFoto);
+  }
 
-// Solo enviar contraseña si fue escrita
-if (nuevaPassword && nuevaPassword.trim() !== "") {
-  payload.password = nuevaPassword;
+  const payload = {
+    nombre: nuevoNombre,
+    correo: nuevoCorreo,
+    foto: fotoBase64 || null,
+    apellido: usuario.apellido,
+    telefono: usuario.telefono
+  };
+
+  if (nuevaPassword && nuevaPassword.trim() !== "") {
+    payload.password = nuevaPassword;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) throw new Error("Error al actualizar el perfil");
+
+const actualizado = await response.json();
+localStorage.setItem("usuario", JSON.stringify(actualizado));
+
+// ✅ Actualiza imágenes
+document.getElementById("navFotoPerfil").src = actualizado.foto || "./assets/imagenes/user.png";
+document.getElementById("fotoPerfil").src = actualizado.foto || "./assets/imagenes/user.png";
+
+// ✅ Actualiza el nombre en el navbar
+const perfilOpciones = document.getElementById("perfilOpciones");
+if (perfilOpciones) {
+  perfilOpciones.innerHTML = `
+    <li><span class="dropdown-item-text">Hola, ${actualizado.nombre}</span></li>
+    <li><a class="dropdown-item" href="#" id="abrirPerfil">Perfil</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="#" id="cerrarSesion">Cerrar sesión</a></li>
+  `;
+
+  document.getElementById("abrirPerfil").addEventListener("click", () => {
+    inicializarPerfilModal(actualizado);
+    const modal = new bootstrap.Modal(document.getElementById("perfilModal"));
+    modal.show();
+  });
+
+  document.getElementById("cerrarSesion").addEventListener("click", cerrarSesion);
 }
 
+const modalInstance = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
+if (modalInstance) modalInstance.hide();
 
-    try {
-      const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(payload)
-      });
 
-      if (!response.ok) throw new Error("Error al actualizar el perfil");
+// ✅ Mensaje de éxito
+if (mensaje) {
+  mensaje.textContent = "Perfil actualizado correctamente";
+  mensaje.classList.add("success");
+}
 
-      const actualizado = await response.json();
-      localStorage.setItem("usuario", JSON.stringify(actualizado));
+// Limpia contraseña
+inputPassword.value = "";
 
-      // Actualiza navbar y cierra modal
-      document.getElementById("navFotoPerfil").src = actualizado.foto || "./assets/imagenes/user.png";
-      const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
-      if (modal) modal.hide();
 
-      alert("Perfil actualizado correctamente ✅");
 
-    } catch (err) {
-      console.error("Error actualizando perfil:", err);
-      alert("No se pudo actualizar el perfil ❌");
+
+  } catch (err) {
+    console.error("Error actualizando perfil:", err);
+    if (mensaje) {
+      mensaje.textContent = "No se pudo actualizar el perfil";
+      mensaje.classList.add("error");
     }
-  };
+  }
+};
 }
 
 function convertirA64(archivo) {

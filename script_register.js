@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     registroForm.appendChild(registerMessage);
 
     // Placeholders
-    if (nombre) nombre.placeholder = nombre.placeholder || "Ej: Ana Gómez";
+    if (nombre) nombre.placeholder = nombre.placeholder || "Ej: Ana";
     if (apellido) apellido.placeholder = apellido.placeholder || "Ej: Pérez";
     if (telefono) telefono.placeholder = telefono.placeholder || "Ej: 3123456789";
     if (correo) correo.placeholder = correo.placeholder || "Ej: ejemplo@correo.com";
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
           correo: correo.value.trim(),
           telefono: telefono.value.trim(),
           password: password.value.trim(),
-          rol: "cliente"
+          rol: "CLIENTE"
         };
 
         try {

@@ -196,3 +196,18 @@ body {
         justify-content: flex-end !important; /* empuja el menú a la derecha */
     }
 }
+
+/* Mensaje error modal actualizar perfil */
+.form-message {
+  font-weight: bold;
+  font-size: 0.95rem;
+  display: block;
+}
+
+.form-message.success {
+  color: green;
+}
+
+.form-message.error {
+  color: red;
+}

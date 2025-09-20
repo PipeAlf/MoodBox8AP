@@ -917,6 +917,12 @@ async function actualizarPerfilAdmin(id, datos, token, fotoPerfil, fotoSidebar) 
     if (!response.ok) throw new Error("Error al actualizar el perfil");
 
     const actualizado = await response.json();
+    const mensaje = document.getElementById("mensajePerfil");
+
+    if (mensaje) {
+    mensaje.textContent = "";
+    mensaje.className = "form-message";
+    }
 
     fotoPerfil.src = actualizado.foto || "./assets/imagenes/user.png";
     if (fotoSidebar) fotoSidebar.src = actualizado.foto || "./assets/imagenes/user.png";
@@ -929,11 +935,16 @@ actualizarNavAdmin(actualizado);
 
     const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
     if (modal) modal.hide();
-
-    alert("Perfil actualizado correctamente");
+    if (mensaje) {
+      mensaje.textContent = "Perfil actualizado correctamente ";
+      mensaje.classList.add("success");
+    }
   } catch (err) {
     console.error("Error actualizando perfil:", err);
-    alert("No se pudo actualizar el perfil");
+    if (mensaje) {
+      mensaje.textContent = "No se pudo actualizar el perfil";
+      mensaje.classList.add("error");
+    }
   }
 }
 
