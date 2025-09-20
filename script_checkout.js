@@ -6,6 +6,14 @@ let currentStep = 1;
 let cart = []; // Se cargará desde el backend
 let mercadopago = null;
 
+const formatter = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+
 // ========================================
 // INICIALIZACIÓN
 // ========================================
@@ -228,7 +236,7 @@ function renderCartSummary() {
                 <div class="cart-item-name">${item.name}</div>
                 <div class="cart-item-details">Cantidad: ${item.qty}</div>
             </div>
-            <div class="cart-item-price">$${(item.price * item.qty).toLocaleString()}</div>
+            <div class="cart-item-price">${formatter.format(item.price * item.qty)}</div>
         </div>
     `).join("");
 }
@@ -242,7 +250,7 @@ function updateOrderSummary() {
         orderItems.innerHTML = cart.map(item => `
             <div class="d-flex justify-content-between mb-2">
                 <span>${item.name} x${item.qty}</span>
-                <span>$${(item.price * item.qty).toLocaleString()}</span>
+                <span>${formatter.format(item.price * item.qty)}</span>
             </div>
         `).join("");
     }
@@ -262,18 +270,26 @@ function updateOrderSummary() {
 }
 
 function updateTotals() {
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const shipping = 5000;
-    const total = subtotal + shipping;
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const shipping = 5000.00; // En pesos colombianos
+  const total = subtotal + shipping;
 
-    document.getElementById("sidebarSubtotal").textContent = `$${subtotal.toLocaleString()}`;
-    document.getElementById("sidebarShipping").textContent = `$${shipping.toLocaleString()}`;
-    document.getElementById("sidebarTotal").textContent = `$${total.toLocaleString()}`;
+  const formatter = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
-    document.getElementById("subtotal").textContent = `$${subtotal.toLocaleString()}`;
-    document.getElementById("shipping").textContent = `$${shipping.toLocaleString()}`;
-    document.getElementById("total").textContent = `$${total.toLocaleString()}`;
+  document.getElementById("sidebarSubtotal").textContent = formatter.format(subtotal);
+  document.getElementById("sidebarShipping").textContent = formatter.format(shipping);
+  document.getElementById("sidebarTotal").textContent = formatter.format(total);
+
+  document.getElementById("subtotal").textContent = formatter.format(subtotal);
+  document.getElementById("shipping").textContent = formatter.format(shipping);
+  document.getElementById("total").textContent = formatter.format(total);
 }
+
 
 // ========================================
 // PROCESAMIENTO DE PAGO
@@ -404,9 +420,10 @@ function showOrderConfirmation(venta, paymentResult) {
                     <button class="btn btn-primary" onclick="goToCatalog()">
                         <i class="bi bi-shop me-2"></i>Seguir Comprando
                     </button>
-                    <button class="btn btn-success" onclick="goToOrders()">
-                        <i class="bi bi-list-check me-2"></i>Ver Mis Pedidos
-                    </button>
+                    <button class="btn btn-success" onclick="verFactura(${venta.idVenta}, ${paymentResult.amount})">
+    <i class="bi bi-receipt me-2"></i>Ver Factura
+</button>
+
                 </div>
             </div>
         </div>
@@ -435,14 +452,7 @@ function goToOrders() {
 }
 
 
-// ========================================
-// EXPORTAR
-// ========================================
 
-window.goToCatalog = goToCatalog;
-window.goToOrders = goToOrders;
-window.nextStep = nextStep;
-window.prevStep = prevStep;
 
 // ========================================
 // FLUJO DE PASOS DEL CHECKOUT
@@ -561,3 +571,105 @@ function logout() {
   window.location.href = "login.html";
 }
 
+function verFactura(idVenta, total) {
+  const fecha = new Date().toLocaleString("es-CO");
+
+  const facturaHTML = `
+    <div class="modal fade" id="facturaModal" tabindex="-1" aria-labelledby="facturaLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="font-family: 'Segoe UI', sans-serif; padding: 20px;">
+          <div class="modal-header" style="background-color: #f8f9fa; color: #212529;">
+            <h5 class="modal-title" id="facturaLabel"><i class="bi bi-receipt me-2"></i>Factura Electrónica</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Encabezado -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h5 class="mb-1">MoodBox</h5>
+                <p class="mb-0">NIT: 900123456-7</p>
+                <p class="mb-0">Carrera 123 #45-67, Bogotá</p>
+                <p class="mb-0">Tel: +57 300 123 4567</p>
+              </div>
+              <div class="text-end">
+                <h6 class="mb-1">Factura N° <strong>#${idVenta}</strong></h6>
+                <p class="mb-0"><strong>Fecha:</strong> ${fecha}</p>
+              </div>
+            </div>
+
+            <!-- Cliente -->
+            <div class="mb-3">
+              <h6>Datos del Cliente</h6>
+              <p class="mb-1"><strong>Nombre:</strong> ${JSON.parse(localStorage.getItem("usuario")).nombre}</p>
+              <p class="mb-1"><strong>Email:</strong> ${JSON.parse(localStorage.getItem("usuario")).correo}</p>
+            </div>
+
+            <!-- Detalle -->
+            <h6 class="mt-4 mb-2">Detalle de la Compra</h6>
+            <table class="table table-bordered table-sm">
+              <thead class="table-light">
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-center">Cantidad</th>
+                  <th class="text-end">Precio Unitario</th>
+                  <th class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${cart.map(item => `
+                  <tr>
+                    <td>${item.name}</td>
+                    <td class="text-center">${item.qty}</td>
+                    <td class="text-end">$${item.price.toLocaleString("es-CO", { minimumFractionDigits: 2 })}</td>
+                    <td class="text-end">$${(item.price * item.qty).toLocaleString("es-CO", { minimumFractionDigits: 2 })}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="3" class="text-end">Envío:</th>
+                  <td class="text-end">$5.000,00</td>
+                </tr>
+                <tr>
+                  <th colspan="3" class="text-end">Total:</th>
+                  <td class="text-end fw-bold text-success">
+                    $${total.toLocaleString("es-CO", { minimumFractionDigits: 2 })}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <!-- Pie de página -->
+            <div class="text-center mt-4 text-muted" style="font-size: 0.9rem;">
+              Esta factura es un comprobante electrónico generado por MoodBox. No requiere firma ni sello.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Insertar y mostrar el modal
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = facturaHTML;
+  document.body.appendChild(tempDiv);
+  const modal = new bootstrap.Modal(tempDiv.querySelector("#facturaModal"));
+  modal.show();
+
+  // Limpiar después de cerrar
+  tempDiv.querySelector("#facturaModal").addEventListener("hidden.bs.modal", () => {
+    tempDiv.remove();
+  });
+}
+
+
+
+// ========================================
+// EXPORTAR
+// ========================================
+
+window.goToCatalog = goToCatalog;
+window.goToOrders = goToOrders;
+window.nextStep = nextStep;
+window.prevStep = prevStep;

@@ -3,6 +3,13 @@
 // ========================================
 
 let carritoItems = [];
+const formatter = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
 
 // Referencias DOM del carrito
 let cartPanel, cartOverlay, toggleCartBtn, closeCartBtn, cartItems, cartTotal;
@@ -90,7 +97,7 @@ function renderCart() {
     cartItems.appendChild(createCartItemElement(item, index));
   });
 
-  cartTotal.textContent = `$${total.toFixed(2)}`;
+  cartTotal.textContent = formatter.format(total);
   updateCartBadge();
 
   
@@ -108,7 +115,7 @@ function createCartItemElement(item, index) {
     <img src="${imagen}" alt="${nombre}" onerror="this.src='./assets/imagenes/logo.png'">
     <div class="cart-item-info">
       <h6>${nombre}</h6>
-      <p>$${precio.toFixed(2)}</p>
+      <p>${formatter.format(precio)}</p>
       <div class="cart-qty">
         <button onclick="changeQty(${item.id}, -1)">-</button>
         <span>${cantidad}</span>
