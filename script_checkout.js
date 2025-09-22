@@ -162,7 +162,7 @@ async function createOrder(paymentResult) {
     };
 
     console.log("Token JWT enviado:", token);
-    const response = await fetch("http://localhost:8080/api/ventas", {
+    const response = await fetch("https://main.drkoft4my5rgd.amplifyapp.com/api/ventas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -180,7 +180,7 @@ async function createOrder(paymentResult) {
     console.log(" Venta creada:", venta);
 
     // 🧹 Vaciar carrito en el backend
-    await fetch(`http://localhost:8080/api/carrito/vaciar/${usuario.idUsuario}`, {
+    await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/carrito/vaciar/${usuario.idUsuario}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`

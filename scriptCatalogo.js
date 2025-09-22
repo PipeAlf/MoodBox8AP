@@ -29,7 +29,7 @@
   // -------------------------------
   async function cargarProductos() {
     try {
-      const response = await fetch("http://localhost:8080/api/productos/activos");
+      const response = await fetch("https://main.drkoft4my5rgd.amplifyapp.com/api/productos/activos");
       if (!response.ok) throw new Error("Error al cargar productos");
       const productosApi = await response.json();
       productos = productosApi.filter(p => p.activo !== false);

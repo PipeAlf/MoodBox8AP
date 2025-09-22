@@ -73,7 +73,7 @@ function setupProductEventListeners() {
 
 async function fetchCarritoDelServidor(usuarioId, token) {
   try {
-    const response = await fetch(`http://localhost:8080/api/carrito/${usuarioId}`, {
+    const response = await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/carrito/${usuarioId}`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
     if (!response.ok) throw new Error("No se pudo obtener el carrito");
@@ -201,7 +201,7 @@ async function addToCart(product) {
       cantidad: 1
     };
 
-    const response = await fetch("http://localhost:8080/api/carrito", {
+    const response = await fetch("https://main.drkoft4my5rgd.amplifyapp.com/api/carrito", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -247,7 +247,7 @@ async function changeQty(itemId, delta) {
       cantidad: nuevaCantidad
     };
 
-    const response = await fetch("http://localhost:8080/api/carrito", {
+    const response = await fetch("https://main.drkoft4my5rgd.amplifyapp.com/api/carrito", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -273,7 +273,7 @@ async function changeQty(itemId, delta) {
 
 async function removeItem(itemId) {
   const token = localStorage.getItem("accessToken");
-  await fetch(`http://localhost:8080/api/carrito/${itemId}`, {
+  await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/carrito/${itemId}`, {
     method: "DELETE",
     headers: { "Authorization": `Bearer ${token}` }
   });

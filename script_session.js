@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
       const id = usuarioGuardado?.idUsuario;
 
-      const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+      const response = await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/usuarios/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -128,7 +128,7 @@ guardarBtn.onclick = async () => {
   }
 
   try {
-    const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+    const response = await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/usuarios/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

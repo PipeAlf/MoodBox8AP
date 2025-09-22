@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-          const response = await fetch("http://localhost:8080/api/usuarios", {
+          const response = await fetch("https://main.drkoft4my5rgd.amplifyapp.com/api/usuarios", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(usuario)
