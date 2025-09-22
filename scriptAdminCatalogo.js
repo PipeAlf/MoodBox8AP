@@ -5,7 +5,7 @@
 // CONFIG
 // ========================================
 
-const API_BASE = "https://main.drkoft4my5rgd.amplifyapp.com/api"; // <- ajusta si tu base difiere
+const API_BASE = "https://8mq33rknsp.us-east-1.awsapprunner.com/api"; // <- ajusta si tu base difiere
 const PRODUCTOS_ENDPOINT = `${API_BASE}/productos`;
 const token = localStorage.getItem("accessToken");
 const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
@@ -858,7 +858,7 @@ async function inicializarPerfil() {
 
     if (!idAdmin) throw new Error("No se encontró ID del administrador");
 
-    const response = await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/usuarios/${idAdmin}`, {
+    const response = await fetch(`https://8mq33rknsp.us-east-1.awsapprunner.com/api/usuarios/${idAdmin}`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -911,7 +911,7 @@ async function inicializarPerfil() {
 
 async function actualizarPerfilAdmin(id, datos, token, fotoPerfil, fotoSidebar) {
   try {
-    const response = await fetch(`https://main.drkoft4my5rgd.amplifyapp.com/api/usuarios/${id}`, {
+    const response = await fetch(`https://8mq33rknsp.us-east-1.awsapprunner.com/api/usuarios/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

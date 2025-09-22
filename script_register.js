@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-          const response = await fetch("https://main.drkoft4my5rgd.amplifyapp.com/api/usuarios", {
+          const response = await fetch("https://8mq33rknsp.us-east-1.awsapprunner.com/api/usuarios", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(usuario)
