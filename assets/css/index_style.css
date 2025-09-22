@@ -64,17 +64,52 @@
 }
 
 .btn-primary-hero {
-    background: #08E2E3;
-    color: #261E45;
-    border-color: #261E45;
+  color: #ffffff;
+  border-color: transparent;               /* quitar borde oscuro para que el gradiente luzca */
+  background: linear-gradient(100deg, #db4397 0%, #6690ea 45%, #46d2e5 80%);
+  background-size: 200% 200%;              /* permite desplazar el gradiente */
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.16);
+  transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease;
+  will-change: transform, background-position;
+  /* animación continua y muy sutil */
+  animation: gradientShift 6s ease infinite, subtleFloat 4s ease-in-out infinite;
 }
 
-.btn-primary-hero:hover {
-    background: #F74380;
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(247, 67, 128, 0.3);
+/* pausa la animación de fondo en hover y aplica acercamiento */
+.btn-primary-hero:hover,
+.btn-primary-hero:focus {
+  animation-play-state: paused;            /* pausa el movimiento del fondo */
+  transform: translateY(-4px) scale(1.04); /* acercarse sutilmente */
+  box-shadow: 0 16px 36px rgba(79, 70, 229, 0.22);
+  color: #fff;
+  outline: none;
 }
+
+/* accesibilidad para teclado */
+.btn-primary-hero:focus-visible {
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.18);
+}
+
+/* keyframes */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes subtleFloat {
+  0%   { transform: translateY(0) scale(1); }
+  50%  { transform: translateY(-2.5px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
 
 .btn-secondary-hero {
     background: transparent;

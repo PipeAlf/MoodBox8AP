@@ -52,7 +52,7 @@ function normalizeProducto(raw) {
   const precio = raw.precio ?? raw.price ?? 0;
   const stock = raw.stock ?? raw.cantidad ?? 0;
   const codigo = raw.codigo ?? raw.code ?? raw.sku ?? "";
-  
+
   // categorías
   let categorias = [];
   if (Array.isArray(raw.categorias)) categorias = raw.categorias;
@@ -336,12 +336,16 @@ function renderizarProductos() {
     const col = document.createElement("div");
     col.className = "col-lg-6 col-xl-4 mb-4";
 
-    const imagenHtml = producto.imagen ?
-      `<img src="${producto.imagen}" alt="${escapeHtml(producto.nombre)}" class="product-image" onerror="this.onerror=null; this.src='./assets/imagenes/logo.png';">` :
-      `<div class="product-image d-flex align-items-center justify-content-center bg-light">
-         <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-       </div>`;
-
+    const imagenHtml = producto.imagen
+      ? `<div class="product-image-wrapper">
+       <img src="${producto.imagen}" alt="${escapeHtml(producto.nombre)}" class="product-image" onerror="this.onerror=null; this.src='./assets/imagenes/logo.png';">
+     </div>`
+      : `<div class="product-image-wrapper">
+       <div class="placeholder d-flex align-items-center justify-content-center bg-light" style="width:100%;height:100%;">
+         <i class="bi bi-image text-muted" style="font-size:3rem;"></i>
+       </div>
+     </div>`;
+     
     const categoriasHtml = producto.categorias && producto.categorias.length > 0 ?
       producto.categorias.map(cat => `<span class="category-tag-small">${escapeHtml(cat)}</span>`).join('') :
       '<span class="category-tag-small">Sin categoría</span>';
@@ -877,14 +881,14 @@ async function inicializarPerfil() {
       const nuevaFoto = inputFoto.files[0];
 
       const actualizado = {
-  ...admin,
-  nombre: nuevoNombre,
-  correo: nuevoCorreo,
-};
+        ...admin,
+        nombre: nuevoNombre,
+        correo: nuevoCorreo,
+      };
 
-if (nuevaPassword && nuevaPassword.trim() !== "") {
-  actualizado.password = nuevaPassword;
-}
+      if (nuevaPassword && nuevaPassword.trim() !== "") {
+        actualizado.password = nuevaPassword;
+      }
 
       if (nuevaFoto) {
         const reader = new FileReader();
@@ -920,8 +924,8 @@ async function actualizarPerfilAdmin(id, datos, token, fotoPerfil, fotoSidebar) 
     const mensaje = document.getElementById("mensajePerfil");
 
     if (mensaje) {
-    mensaje.textContent = "";
-    mensaje.className = "form-message";
+      mensaje.textContent = "";
+      mensaje.className = "form-message";
     }
 
     fotoPerfil.src = actualizado.foto || "./assets/imagenes/user.png";
@@ -930,8 +934,8 @@ async function actualizarPerfilAdmin(id, datos, token, fotoPerfil, fotoSidebar) 
 
     localStorage.setItem("admin", JSON.stringify(actualizado));
 
-// ✅ Refrescar nav
-actualizarNavAdmin(actualizado);
+    // ✅ Refrescar nav
+    actualizarNavAdmin(actualizado);
 
     const modal = bootstrap.Modal.getInstance(document.getElementById("perfilModal"));
     if (modal) modal.hide();

@@ -124,20 +124,63 @@
   display: block;
 }
 
+/* --- Mensajes del formulario: más visibles pero sutiles --- */
 .form-message {
-  margin-top: 10px;
-  font-size: 0.9rem;
+  margin-top: 14px;
+  font-size: 0.95rem;
   text-align: center;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 100%;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: transform 220ms cubic-bezier(.2,.9,.3,1), opacity 220ms ease;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  z-index: 2000;
 }
 
-/* Colores más simples sin parecer botones */
+/* cuando mostramos el mensaje */
+.form-message.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* icono dentro del mensaje (Bootstrap Icons) */
+.form-message .bi {
+  font-size: 1.12rem;
+  line-height: 1;
+}
+
+/* variantes */
 .form-message.error {
+  background-color: rgba(214,0,61,0.06);
   color: #d6003d;
+  border-left: 4px solid #d6003d;
 }
 
 .form-message.success {
+  background-color: rgba(0,128,96,0.06);
   color: #008060;
+  border-left: 4px solid #008060;
+}
+
+.form-message.info {
+  background-color: rgba(102,126,234,0.06);
+  color: #667eea;
+  border-left: 4px solid #667eea;
+}
+
+@media (max-width: 480px) {
+  .form-message { font-size: 0.9rem; padding: 8px 10px; }
 }
 
 /* styles para el ojo dentro del input */

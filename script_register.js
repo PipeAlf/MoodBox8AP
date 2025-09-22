@@ -12,6 +12,50 @@ document.addEventListener("DOMContentLoaded", () => {
     registerMessage.className = "form-message";
     registroForm.appendChild(registerMessage);
 
+    // helper para mostrar mensajes con icono, accesibilidad y auto-dismiss
+    let _formMessageTimeout = null;
+
+    function showFormMessage(text, type = 'info', { autoDismiss = 0 } = {}) {
+      // limpiar timeout previo
+      if (_formMessageTimeout) {
+        clearTimeout(_formMessageTimeout);
+        _formMessageTimeout = null;
+      }
+
+      // limpiar y preparar
+      registerMessage.textContent = '';             // vacía contenido anterior
+      registerMessage.className = `form-message ${type} show`;
+      registerMessage.setAttribute('role', type === 'error' ? 'alert' : 'status');
+      registerMessage.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+      registerMessage.tabIndex = -1;                 // accesible para screenreaders si se necesita foco
+
+      // icono accesible (usa Bootstrap Icons "bi" que ya usas)
+      const icon = document.createElement('i');
+      icon.className = 'bi ' + (type === 'success' ? 'bi-check-circle-fill' : type === 'error' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill');
+      icon.setAttribute('aria-hidden', 'true');
+
+      const span = document.createElement('span');
+      span.textContent = text;                       // usar textContent evita XSS
+
+      registerMessage.appendChild(icon);
+      registerMessage.appendChild(span);
+
+      // Forzar reflow para que la animación funcione cuando se reaplique
+      void registerMessage.offsetWidth;
+
+      // si piden autoDismiss, lo manejamos
+      if (autoDismiss && typeof autoDismiss === 'number' && autoDismiss > 0) {
+        _formMessageTimeout = setTimeout(() => {
+          registerMessage.classList.remove('show');
+          // limpiar contenido después de la transición
+          setTimeout(() => {
+            registerMessage.textContent = '';
+          }, 260);
+        }, autoDismiss);
+      }
+    }
+
+
     // Placeholders
     if (nombre) nombre.placeholder = nombre.placeholder || "Ej: Ana";
     if (apellido) apellido.placeholder = apellido.placeholder || "Ej: Pérez";
@@ -73,8 +117,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Enviar formulario
     registroForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      registerMessage.textContent = "";
 
+      // ocultar mensaje previo (si existe)
+      if (_formMessageTimeout) {
+        clearTimeout(_formMessageTimeout);
+        _formMessageTimeout = null;
+      }
+      registerMessage.classList.remove('show');
+      registerMessage.textContent = '';
+
+      // validaciones
       const validNombre = validarCampo(nombre);
       const validApellido = validarCampo(apellido);
       const validTel = validarCampo(telefono);
@@ -99,25 +151,25 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
           if (response.ok) {
-            registerMessage.textContent = "Registro exitoso. Redirigiendo a inicio de sesión...";
-            registerMessage.className = "form-message success";
+            // éxito: mensaje visible y luego redirecciona
+            showFormMessage("  Registro exitoso. Redirigiendo a inicio de sesión...", "success", { autoDismiss: 2200 });
             setTimeout(() => (window.location.href = "login.html"), 1500);
           } else if (response.status === 409) {
-            registerMessage.textContent = "Este correo ya está registrado. Inicia sesión o usa otro.";
-            registerMessage.className = "form-message error";
+            // conflicto (correo ya registrado)
+            showFormMessage("  Este correo ya está registrado. Inicia sesión o usa otro.", "error", { autoDismiss: 5000 });
           } else {
+            // otros errores: leer texto de respuesta si viene
             const errorText = await response.text();
-            registerMessage.textContent = "Error en el registro: " + errorText;
-            registerMessage.className = "form-message error";
+            const msg = errorText ? `Error en el registro: ${errorText}` : "Error en el registro.";
+            showFormMessage(msg, "error", { autoDismiss: 7000 });
           }
         } catch (error) {
           console.error(error);
-          registerMessage.textContent = "Hubo un error en el servidor. Intenta más tarde.";
-          registerMessage.className = "form-message error";
+          showFormMessage("  Hubo un error en el servidor. Intenta más tarde.", "error", { autoDismiss: 6000 });
         }
       } else {
-        registerMessage.textContent = "Corrige los errores antes de continuar.";
-        registerMessage.className = "form-message error";
+        // validación fallida en cliente
+        showFormMessage("  Corrige los errores antes de continuar.", "error", { autoDismiss: 4000 });
       }
     });
   }
