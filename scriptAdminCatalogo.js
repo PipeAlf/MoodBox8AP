@@ -608,6 +608,8 @@ function mostrarSeccion(id) {
   const secciones = document.querySelectorAll('.seccion-admin');
   secciones.forEach(seccion => seccion.classList.add('d-none'));
   document.getElementById(id).classList.remove('d-none');
+  if (id === "usuarios") cargarUsuarios();
+
 }
 
 
@@ -1011,3 +1013,310 @@ function escapeHtml(unsafe) {
 function escapeJs(str) {
   return String(str || "").replace(/'/g, "\\'");
 }
+
+// ========================================
+// USUARIOS REGISTRADOS Y VENTAS (SECCIÓN ADMIN)
+// ========================================
+
+if (document.getElementById("usuarios")) {
+  cargarUsuarios();
+}
+
+async function cargarUsuarios() {
+  const token = localStorage.getItem("accessToken");
+  const listaUsuarios = document.getElementById("listaUsuarios");
+  const emptyState = document.getElementById("emptyStateUsuarios");
+  const totalUsuariosEl = document.getElementById("totalUsuarios");
+
+  try {
+    const res = await fetch(`${API_BASE}/usuarios`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error("Error cargando usuarios");
+
+    const usuarios = await res.json();
+
+    if (totalUsuariosEl) totalUsuariosEl.textContent = usuarios.length;
+
+    if (usuarios.length === 0) {
+      listaUsuarios.innerHTML = "";
+      emptyState.classList.remove("d-none");
+      return;
+    }
+
+    emptyState.classList.add("d-none");
+    listaUsuarios.innerHTML = "";
+
+    usuarios.forEach(usuario => {
+      const estadoClase = usuario.estado === "activo" ? "active" : "inactive";
+      const tarjeta = document.createElement("div");
+      tarjeta.className = "col-lg-6 col-xl-4";
+      tarjeta.innerHTML = `
+        <div class="user-card">
+          <div class="user-avatar">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <div class="user-info">
+            <h4 class="user-name">${escapeHtml(usuario.nombre)}</h4>
+            <p class="user-email">${escapeHtml(usuario.correo)}</p>
+            <div class="user-status ${estadoClase}">${usuario.estado}</div>
+            <div class="user-details">
+              <span><i class="bi bi-calendar3"></i> Registrado: ${formatFecha(usuario.fechaRegistro)}</span>
+              <span><i class="bi bi-geo-alt"></i> ${usuario.ciudad || "Sin ciudad"}</span>
+            </div>
+          </div>
+          <div class="user-actions">
+            <button class="btn btn-sm btn-outline-primary btn-ver-usuario"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-sm btn-outline-warning btn-editar-usuario"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger btn-eliminar-usuario"><i class="bi bi-trash"></i></button>
+          </div>
+        </div>
+      `;
+      listaUsuarios.appendChild(tarjeta);
+    });
+  } catch (err) {
+    console.error("Error cargando usuarios:", err);
+    mostrarNotificacion("Error al cargar usuarios", "danger");
+  }
+}
+
+function formatFecha(fechaStr) {
+  try {
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString("es-CO");
+  } catch {
+    return fechaStr;
+  }
+}
+
+if (document.getElementById("compras")) {
+  cargarCompras();
+}
+
+async function cargarCompras() {
+  const token = localStorage.getItem("accessToken");
+  const listaCompras = document.getElementById("listaCompras");
+  const emptyState = document.getElementById("emptyStateCompras");
+  const totalComprasEl = document.getElementById("totalCompras");
+
+  try {
+    const res = await fetch(`${API_BASE}/ventas`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error("Error cargando ventas");
+
+    const ventas = await res.json();
+
+    if (totalComprasEl) totalComprasEl.textContent = ventas.length;
+
+    if (ventas.length === 0) {
+      listaCompras.innerHTML = "";
+      emptyState.classList.remove("d-none");
+      return;
+    }
+
+    emptyState.classList.add("d-none");
+    listaCompras.innerHTML = "";
+
+    ventas.forEach((venta, index) => {
+      const productosHTML = venta.detalles.map(
+        d => `<span class="producto-tag">${escapeHtml(d.producto.nombre)}</span>`
+      ).join("");
+
+      const row = document.createElement("tr");
+      row.className = "compra-row";
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>
+          <div class="user-compra">
+            <div class="user-avatar-small"><i class="bi bi-person-circle"></i></div>
+            <div class="user-info-compra">
+              <strong>${escapeHtml(venta.usuario.correo)}</strong>
+              <small class="text-muted d-block">${escapeHtml(venta.usuario.nombre)}</small>
+            </div>
+          </div>
+        </td>
+        <td><div class="productos-compra">${productosHTML}</div></td>
+        <td><div class="fecha-compra"><i class="bi bi-calendar3 text-primary"></i> ${formatFecha(venta.fechaVenta)}</div></td>
+        <td><span class="badge bg-${getEstadoClase(venta.estado)}">${venta.estado}</span></td>
+        <td><strong class="text-success">$${venta.total.toLocaleString("es-CO")}</strong></td>
+        <td>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-sm btn-outline-primary btn-ver-venta" data-id="${venta.idVenta}">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-warning btn-editar-venta" data-id="${venta.idVenta}">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-cancelar-venta" data-id="${venta.idVenta}">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      listaCompras.appendChild(row);
+    });
+
+    // Resumen de compras
+    let totalVentas = 0;
+    let totalProductos = 0;
+    const usuariosSet = new Set();
+
+    ventas.forEach(venta => {
+      totalVentas += venta.total;
+      usuariosSet.add(venta.usuario.idUsuario);
+      venta.detalles.forEach(detalle => {
+        totalProductos += detalle.cantidad;
+      });
+    });
+
+    const promedioCompra = ventas.length > 0 ? totalVentas / ventas.length : 0;
+
+    document.getElementById("totalVentas").textContent = `$${totalVentas.toLocaleString("es-CO", { minimumFractionDigits: 2 })}`;
+    document.getElementById("promedioCompra").textContent = `$${promedioCompra.toLocaleString("es-CO", { minimumFractionDigits: 2 })}`;
+    document.getElementById("usuariosUnicos").textContent = usuariosSet.size;
+    document.getElementById("productosVendidos").textContent = totalProductos;
+
+  } catch (err) {
+    console.error("Error cargando compras:", err);
+    mostrarNotificacion("Error al cargar compras", "danger");
+  }
+}
+
+function getEstadoClase(estado) {
+  switch ((estado || "").toLowerCase()) {
+    case "completada": return "success";
+    case "pendiente": return "warning";
+    case "cancelada": return "danger";
+    default: return "secondary";
+  }
+}
+
+// ===========================
+// VENTAS: Acciones
+// ===========================
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const id = btn.dataset.id;
+
+  if (btn.classList.contains("btn-ver-venta")) verVenta(id);
+  if (btn.classList.contains("btn-editar-venta")) editarVenta(id);
+  if (btn.classList.contains("btn-cancelar-venta")) {
+    mostrarModalConfirmacion("¿Seguro que deseas cancelar esta venta?", () => cancelarVenta(id));
+  }
+
+  const tarjeta = btn.closest(".user-card");
+  if (!tarjeta) return;
+
+  const correo = tarjeta.querySelector(".user-email")?.textContent;
+  const nombre = tarjeta.querySelector(".user-name")?.textContent;
+
+  if (btn.classList.contains("btn-ver-usuario")) mostrarModalDetalleUsuario(nombre, correo);
+  if (btn.classList.contains("btn-editar-usuario")) mostrarNotificacion("Funcionalidad aún no implementada", "info");
+  if (btn.classList.contains("btn-eliminar-usuario")) {
+    mostrarModalConfirmacion(`¿Eliminar al usuario <strong>${nombre}</strong>?`, () => eliminarUsuario(correo));
+  }
+});
+
+function verVenta(id) {
+  const token = localStorage.getItem("accessToken");
+
+  fetch(`${API_BASE}/ventas/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(venta => {
+      const productos = venta.detalles.map(
+        d => `<li>${escapeHtml(d.producto.nombre)} x${d.cantidad} - $${d.subtotal}</li>`
+      ).join("");
+
+      const html = `
+        <p><strong>Usuario:</strong> ${escapeHtml(venta.usuario.nombre)} (${escapeHtml(venta.usuario.correo)})</p>
+        <p><strong>Fecha:</strong> ${formatFecha(venta.fechaVenta)}</p>
+        <p><strong>Estado:</strong> ${venta.estado}</p>
+        <p><strong>Método de Pago:</strong> ${venta.metodoPago}</p>
+        <p><strong>Total:</strong> $${venta.total.toLocaleString("es-CO")}</p>
+        <p><strong>Productos:</strong></p>
+        <ul>${productos}</ul>
+      `;
+
+      document.getElementById("modalVerDetalleBody").innerHTML = html;
+      new bootstrap.Modal(document.getElementById("modalVerDetalle")).show();
+    })
+    .catch(err => {
+      console.error("Error al cargar venta:", err);
+      mostrarNotificacion("No se pudo mostrar la venta", "danger");
+    });
+}
+
+function editarVenta(id) {
+  mostrarNotificacion("Funcionalidad de edición aún no implementada", "info");
+}
+
+function cancelarVenta(id) {
+  const token = localStorage.getItem("accessToken");
+
+  fetch(`${API_BASE}/ventas/${id}/cancelar`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Error al cancelar venta");
+      mostrarNotificacion("Venta cancelada", "warning");
+      cargarCompras();
+    })
+    .catch(err => {
+      console.error("Error cancelando venta:", err);
+      mostrarNotificacion("No se pudo cancelar la venta", "danger");
+    });
+}
+
+function mostrarModalDetalleUsuario(nombre, correo) {
+  const html = `
+    <p><strong>Nombre:</strong> ${escapeHtml(nombre)}</p>
+    <p><strong>Correo:</strong> ${escapeHtml(correo)}</p>
+  `;
+  document.getElementById("modalVerDetalleBody").innerHTML = html;
+  new bootstrap.Modal(document.getElementById("modalVerDetalle")).show();
+}
+
+function eliminarUsuario(correo) {
+  const token = localStorage.getItem("accessToken");
+
+  fetch(`${API_BASE}/usuarios/eliminar-por-correo?correo=${encodeURIComponent(correo)}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Error eliminando usuario");
+      mostrarNotificacion("Usuario eliminado", "danger");
+      cargarUsuarios();
+    })
+    .catch(err => {
+      console.error("Error eliminando usuario:", err);
+      mostrarNotificacion("No se pudo eliminar el usuario", "danger");
+    });
+}
+
+function mostrarModalConfirmacion(mensaje, onConfirm) {
+  const body = document.getElementById("modalConfirmarBody");
+  const btnConfirmar = document.getElementById("btnConfirmarAccion");
+
+  body.innerHTML = mensaje;
+
+  const modal = new bootstrap.Modal(document.getElementById("modalConfirmar"));
+  modal.show();
+
+  const confirmarHandler = () => {
+    onConfirm();
+    btnConfirmar.removeEventListener("click", confirmarHandler);
+    modal.hide();
+  };
+
+  btnConfirmar.addEventListener("click", confirmarHandler);
+}
+
