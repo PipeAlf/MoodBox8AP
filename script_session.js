@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // 👤 CLIENTE (obtener desde backend)
+  //  CLIENTE (obtener desde backend)
   if (accessToken && usuarioActivo === "true") {
     try {
       const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
